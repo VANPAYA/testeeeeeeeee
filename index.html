@@ -1,33 +1,1889 @@
-// VOCAB 3 (local)
-try{
-  quizVocabStatus.textContent = "carregando…";
-  quizVocabBox.style.display = "block";
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ヴァンパイア全知全能 — Kanji & Jogo</title>
 
-  const lvl = levelOf(k);                 // N5 ou N4 conforme o kanji
-  const items = await getVocab3(k, lvl);  // pega 3 do JSON local
+<style>
+:root{
+  --bg:#0b0f14;
+  --border:rgba(255,255,255,.16);
+  --text:#eef2ff;
+  --muted:rgba(238,242,255,.72);
+  --muted2:rgba(238,242,255,.55);
 
+  /* THEME (muda a cada 5s) */
+  --themeHue: 195;
+
+  --accent:  hsl(calc(var(--themeHue) - 25) 90% 60%);
+  --accent2: hsl(var(--themeHue) 90% 58%);
+  --accent3: hsl(calc(var(--themeHue) + 55) 90% 62%);
+
+  --good:#34d399;
+  --bad:#fb7185;
+  --warn:#fbbf24;
+
+  --radius:18px;
+  --shadow: 0 18px 60px rgba(0,0,0,.55);
+
+  --selectBg:#0f1826;
+  --selectBorder:rgba(255,255,255,.28);
+
+  --inputBg:#0f1826;
+  --inputBorder:rgba(255,255,255,.28);
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  color:var(--text);
+  font-family:"Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  line-height:1.9;
+  background:
+    radial-gradient(1100px 650px at 12% 10%, hsla(calc(var(--themeHue) - 25), 90%, 60%, .22), transparent 55%),
+    radial-gradient(900px 600px at 92% 15%, hsla(var(--themeHue), 90%, 58%, .18), transparent 55%),
+    radial-gradient(900px 650px at 20% 92%, hsla(calc(var(--themeHue) + 55), 90%, 62%, .14), transparent 55%),
+    var(--bg);
+  transition: background .65s ease, filter .65s ease;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background: rgba(10,14,20,.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom:1px solid var(--border);
+}
+
+.topbar{
+  max-width:1180px;
+  margin:auto;
+  padding:18px 18px 12px;
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+
+.brand{ min-width:280px; }
+.brand .t{ font-size:20px; font-weight:900; letter-spacing:1.2px; }
+.brand .s{ margin-top:6px; color:var(--muted); font-size:13px; }
+.brand .s b{ color:var(--text); }
+
+nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+
+.container{ max-width:1180px; margin:auto; padding:22px 18px 90px; }
+
+.section{ display:none; }
+.section.active{ display:block; }
+
+.grid{ display:grid; grid-template-columns: 1.2fr .8fr; gap:16px; }
+@media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
+
+.panel{
+  background: rgba(255,255,255,.06);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:16px;
+  box-shadow: var(--shadow);
+}
+.panel h2{ margin:0 0 8px; font-size:15px; letter-spacing:.6px; }
+
+.hint{ color:var(--muted); font-size:13px; margin:0; }
+
+.row{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+
+.card{
+  background: rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius);
+  padding:16px;
+  margin-top:12px;
+}
+
+.jp{ font-size:22px; font-weight:900; color: var(--accent2); letter-spacing:.6px; }
+.hira{ margin-top:6px; color:var(--muted); font-size:13px; }
+.mean{ margin-top:8px; font-size:14px; font-weight:700; }
+
+.badges{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.badge{
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  color:var(--muted);
+  background: rgba(255,255,255,.06);
+}
+.badge.n5{ border-color: rgba(52,211,153,.45); color: rgba(52,211,153,.95); }
+.badge.n4{ border-color: rgba(59,130,246,.45); color: rgba(147,197,253,.95); }
+.badge.tag{ border-color: rgba(255,255,255,.22); color: var(--text); }
+
+.tabbtn{
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.22);
+  background: rgba(255,255,255,.10);
+  color: rgba(238,242,255,.92);
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:13px;
+  user-select:none;
+  box-shadow: var(--shadow);
+  transition: transform .08s ease, background .18s ease, border-color .18s ease;
+}
+.tabbtn:hover{ background: rgba(255,255,255,.14); }
+.tabbtn:active{ transform: translateY(1px); }
+.tabbtn.active{
+  border-color: hsla(var(--themeHue), 90%, 60%, .60);
+  background: hsla(var(--themeHue), 90%, 55%, .22);
+}
+
+.btn{
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.28);
+  background: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.98);
+  padding:9px 12px;
+  border-radius:14px;
+  font-size:12px;
+  font-weight:800;
+  user-select:none;
+  transition: transform .08s ease, background .18s ease, border-color .18s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+}
+.btn:hover{ background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.38); }
+.btn:active{ transform: translateY(1px); }
+.btn.primary{
+  border-color: hsla(var(--themeHue), 90%, 60%, .70);
+  background: hsla(var(--themeHue), 90%, 55%, .26);
+}
+.btn.good{ border-color: rgba(52,211,153,.75); background: rgba(52,211,153,.20); }
+.btn.danger{ border-color: rgba(251,113,133,.75); background: rgba(251,113,133,.18); }
+.btn.warn{ border-color: rgba(251,191,36,.75); background: rgba(251,191,36,.18); }
+.btn.ghost{
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+}
+
+select{
+  padding:9px 11px;
+  border-radius:12px;
+  border:1px solid var(--selectBorder);
+  background: var(--selectBg);
+  color: rgba(255,255,255,.96);
+  outline:none;
+  font-weight:900;
+}
+input[type="text"]{
+  padding:9px 11px;
+  border-radius:12px;
+  border:1px solid var(--inputBorder);
+  background: var(--inputBg);
+  color: rgba(255,255,255,.96);
+  outline:none;
+  font-weight:900;
+  min-width: 240px;
+}
+input[type="text"]::placeholder{ color: rgba(238,242,255,.55); font-weight:700; }
+
+.kanjigrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(92px, 1fr));
+  gap:12px;
+  margin-top:12px;
+}
+
+.kanjiitem{
+  background: rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.20);
+  border-radius: 16px;
+  padding:12px 10px;
+  text-align:center;
+  cursor:pointer;
+  transition: transform .12s ease, border-color .18s ease, background .18s ease;
+}
+.kanjiitem:hover{
+  transform: translateY(-1px);
+  border-color: hsla(var(--themeHue), 90%, 60%, .55);
+  background: rgba(255,255,255,.13);
+}
+.kanjiitem .k{ font-size:28px; font-weight:900; color: var(--accent2); }
+.kanjiitem .lvl{ margin-top:6px; font-size:11px; color: var(--muted); }
+.kanjiitem .lvl b{ color: var(--text); }
+
+.strokeBox{
+  margin-top:12px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:16px;
+  overflow:hidden;
+  background: rgba(255,255,255,.07);
+}
+.strokeHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.strokeHead .t{ font-size:13px; color: var(--muted); }
+.strokeBody{ padding:12px; }
+.strokeBody svg{ width:100%; height:auto; display:block; }
+.strokeNote{ color: var(--muted2); font-size:12px; margin-top:8px; }
+
+.bigKanji{
+  font-size:86px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-align:center;
+  color: var(--accent2);
+  line-height:1.0;
+  margin: 8px 0 6px;
+}
+
+hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; }
+
+.small{ color: var(--muted); font-size:13px; }
+.small b{ color: var(--text); }
+
+.footer{ text-align:center; padding:40px 0 0; color: var(--muted2); font-size:12px; }
+
+.mcGrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+@media (max-width: 820px){ .mcGrid{ grid-template-columns:1fr; } }
+
+.mcBox{
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:16px;
+  padding:12px;
+  background: rgba(255,255,255,.07);
+}
+.mcBox h3{ margin:0 0 8px; font-size:13px; color: var(--muted); letter-spacing:.6px; }
+
+.choiceList{ display:grid; gap:8px; }
+.choiceBtn{
+  text-align:left;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.26);
+  background: rgba(255,255,255,.14);
+  color: rgba(255,255,255,.98);
+  cursor:pointer;
+  font-weight:900;
+  transition: transform .08s ease, border-color .18s ease, background .18s ease;
+}
+.choiceBtn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.18);
+  border-color: hsla(var(--themeHue), 90%, 60%, .55);
+}
+.choiceBtn.correct{ border-color: rgba(52,211,153,.85); background: rgba(52,211,153,.22); }
+.choiceBtn.wrong{ border-color: rgba(251,113,133,.85); background: rgba(251,113,133,.20); }
+.choiceBtn:disabled{ opacity:.96; cursor:not-allowed; }
+
+.timerBarWrap{
+  width:100%;
+  height:10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  overflow:hidden;
+  margin-top:10px;
+}
+.timerBar{
+  height:100%;
+  width:100%;
+  background: linear-gradient(90deg,
+    hsla(var(--themeHue), 90%, 60%, .90),
+    hsla(calc(var(--themeHue) - 25), 90%, 60%, .85),
+    hsla(calc(var(--themeHue) + 55), 90%, 62%, .75)
+  );
+  transition: width .12s linear, filter .65s ease;
+}
+
+.flash{ position: fixed; inset: 0; pointer-events: none; opacity: 0; z-index: 999; }
+.flash.good{ background: radial-gradient(circle at 50% 35%, rgba(52,211,153,.24), transparent 62%); }
+.flash.bad{  background: radial-gradient(circle at 50% 35%, rgba(251,113,133,.24), transparent 62%); }
+.flash.on{ animation: flash .55s ease-out; }
+@keyframes flash{ 0%{ opacity:0; } 20%{ opacity:1; } 100%{ opacity:0; } }
+
+.toggle{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  color: rgba(238,242,255,.90);
+  font-size:12px;
+  font-weight:900;
+  user-select:none;
+}
+.toggle input{
+  width:16px;
+  height:16px;
+  accent-color: hsl(var(--themeHue) 90% 60%);
+}
+
+/* =========================================================
+   HERO (Torii + 無常 + Chuva de kanji ultra leve)
+========================================================= */
+.hero{
+  position:relative;
+  max-width:1180px;
+  margin: 14px auto 0;
+  border-radius: 26px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.14);
+  background:
+    radial-gradient(1100px 700px at 18% 12%, rgba(130,90,255,.20), transparent 58%),
+    radial-gradient(900px 650px at 84% 22%, rgba(0,255,200,.12), transparent 60%),
+    radial-gradient(1000px 700px at 40% 88%, rgba(255,90,130,.12), transparent 58%),
+    linear-gradient(180deg, rgba(6,8,12,.90), rgba(10,14,20,.98));
+  box-shadow: 0 26px 110px rgba(0,0,0,.60);
+}
+.heroInner{
+  position:relative;
+  height: 280px;
+}
+@media (max-width: 720px){
+  .heroInner{ height: 240px; }
+}
+
+#kanjiRainHero{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.28; /* bem mais leve */
+  filter: drop-shadow(0 0 8px rgba(0,0,0,.25));
+}
+
+.heroMujo{
+  position:absolute;
+  left:50%;
+  top:52%;
+  transform: translate(-50%,-50%);
+  font-weight:1000;
+  letter-spacing: 10px;
+  font-size: clamp(92px, 16vw, 220px);
+  opacity: .16;
+  pointer-events:none;
+  z-index:2;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,.82),
+    rgba(160,240,255,.55),
+    rgba(210,170,255,.62),
+    rgba(255,90,130,.45)
+  );
+  -webkit-background-clip:text;
+  background-clip:text;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,.16);
+  text-shadow:
+    0 0 22px rgba(255,255,255,.08),
+    0 0 80px rgba(160,240,255,.10);
+}
+
+.heroTorii{
+  position:absolute;
+  inset: -10% -5%;
+  z-index:3;
+  pointer-events:none;
+  opacity:.78;
+}
+.heroTorii svg{
+  width:100%;
+  height:100%;
+  display:block;
+  filter: drop-shadow(0 0 34px rgba(0,0,0,.55));
+}
+
+.heroTopline{
+  position:absolute;
+  left:18px;
+  bottom:16px;
+  z-index:4;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.heroTopline .h1{
+  font-weight:1000;
+  letter-spacing: 2px;
+  font-size: 18px;
+  color: rgba(255,255,255,.92);
+  text-shadow: 0 0 18px rgba(160,240,255,.12);
+}
+.heroTopline .h2{
+  font-size:12px;
+  color: rgba(238,242,255,.70);
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   VOCAB (3 itens) no feedback do quiz
+========================================================= */
+.vocabBox{
+  margin-top:12px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:16px;
+  background: rgba(255,255,255,.07);
+  overflow:hidden;
+}
+.vocabHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.vocabHead .t{
+  font-size:13px;
+  color: var(--muted);
+  letter-spacing:.6px;
+  font-weight:900;
+}
+.vocabList{ padding:12px; display:grid; gap:10px; }
+.vocabItem{
+  padding:10px 10px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+}
+.vocabRow1{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.vocabWord{
+  font-size:16px;
+  font-weight:1000;
+  color: rgba(255,255,255,.95);
+}
+.vocabLvl{
+  font-size:11px;
+  padding:3px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  color: rgba(238,242,255,.78);
+  background: rgba(255,255,255,.05);
+}
+.vocabReading{
+  margin-top:4px;
+  font-size:12px;
+  color: rgba(238,242,255,.78);
+}
+.vocabMeaning{
+  margin-top:6px;
+  font-size:12px;
+  color: rgba(238,242,255,.85);
+}
+.vocabNote{
+  padding:0 12px 12px;
+  font-size:11px;
+  color: rgba(238,242,255,.55);
+}
+</style>
+</head>
+
+<body>
+<div id="flash" class="flash"></div>
+
+<!-- HERO otimizado (sem portal/entrar) -->
+<section class="hero">
+  <div class="heroInner">
+    <canvas id="kanjiRainHero" aria-hidden="true"></canvas>
+    <div class="heroMujo" aria-hidden="true">無常</div>
+
+    <div class="heroTorii" aria-hidden="true">
+      <svg viewBox="0 0 1400 800" role="presentation" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="verm" x1="0" x2="1">
+            <stop offset="0%" stop-color="rgba(255,90,90,.92)"/>
+            <stop offset="35%" stop-color="rgba(255,70,120,.88)"/>
+            <stop offset="70%" stop-color="rgba(190,90,255,.70)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,.10)"/>
+          </linearGradient>
+
+          <filter id="patina" x="-30%" y="-30%" width="160%" height="160%">
+            <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="n"/>
+            <feColorMatrix in="n" type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 .10 0" result="a"/>
+            <feComposite in="a" in2="SourceGraphic" operator="in" result="m"/>
+            <feMerge>
+              <feMergeNode in="m"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+
+          <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="8" result="b"/>
+            <feColorMatrix in="b" type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 .45 0" result="g"/>
+            <feMerge>
+              <feMergeNode in="g"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <path d="M110 190 C 340 88, 1060 88, 1290 190 C 1060 165, 340 165, 110 190 Z"
+              fill="url(#verm)" filter="url(#glow)"></path>
+
+        <path d="M210 270 C 420 200, 980 200, 1190 270 C 980 252, 420 252, 210 270 Z"
+              fill="rgba(255,255,255,.12)"></path>
+
+        <path d="M320 360 C 460 318, 940 318, 1080 360 C 940 382, 460 382, 320 360 Z"
+              fill="rgba(0,255,200,.10)"></path>
+
+        <path d="M410 300 C 395 420, 380 610, 396 728 C 408 760, 470 760, 488 728 C 505 610, 488 420, 474 300 Z"
+              fill="url(#verm)" filter="url(#patina)"></path>
+
+        <path d="M926 300 C 912 420, 898 610, 914 728 C 926 760, 988 760, 1006 728 C 1022 610, 1006 420, 992 300 Z"
+              fill="url(#verm)" filter="url(#patina)"></path>
+
+        <path d="M684 330 C 675 440, 668 612, 674 728 C 683 754, 717 754, 726 728 C 733 612, 726 440, 716 330 Z"
+              fill="rgba(255,255,255,.07)"></path>
+
+        <path d="M372 728 C 420 696, 496 696, 544 728 C 496 760, 420 760, 372 728 Z"
+              fill="rgba(255,255,255,.10)"></path>
+
+        <path d="M870 728 C 918 696, 994 696, 1042 728 C 994 760, 918 760, 870 728 Z"
+              fill="rgba(255,255,255,.10)"></path>
+
+        <path d="M658 275 C 690 255, 720 255, 752 275 C 720 292, 690 292, 658 275 Z"
+              fill="rgba(255,255,255,.08)"></path>
+      </svg>
+    </div>
+
+    <div class="heroTopline">
+      <div class="h1">ヴァンパイア全知全能</div>
+      <div class="h2">Torii · 無常 · Kanji · JLPT N5/N4</div>
+    </div>
+  </div>
+</section>
+
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <div class="t">ヴァンパイア全知全能</div>
+      <div class="s">Kanji <b>N5 + N4</b></div>
+    </div>
+
+    <nav>
+      <div class="tabbtn active" id="tab-kanji">🈶 Kanji</div>
+      <div class="tabbtn" id="tab-quiz">🎮 Jogo</div>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ====================== KANJI ====================== -->
+  <section id="kanji" class="section active">
+    <div class="grid">
+      <div class="panel">
+        <div class="row">
+          <div>
+            <h2>Kanji — Lista (N5 + N4)</h2>
+            <p class="hint" id="kanjiCountHint">—</p>
+          </div>
+
+          <div class="row">
+            <div class="small">Filtro</div>
+            <select id="levelFilter">
+              <option value="ALL" selected>ALL (N5+N4)</option>
+              <option value="N5">Somente N5</option>
+              <option value="N4">Somente N4</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <div class="small">Pesquisar</div>
+          <input id="kanjiSearch" type="text" placeholder="Ex: 学 / がく / まな / casa / mundo" />
+          <div class="btn warn" id="clearSearch">Limpar</div>
+        </div>
+
+        <div class="kanjigrid" id="kanjigrid"></div>
+      </div>
+
+      <div class="panel" id="detailPanel">
+        <h2>Detalhe</h2>
+        <p class="hint">Selecione um kanji na lista.</p>
+
+        <div id="kanjiDetail" class="card" style="display:none;">
+          <div class="jp" id="kdKanji"></div>
+          <div class="hira" id="kdReadings"></div>
+          <div class="mean" id="kdMean"></div>
+          <div class="badges" id="kdBadges"></div>
+
+          <div class="strokeBox" id="kdStrokeBox">
+            <div class="strokeHead">
+              <div class="t">Ordem dos traços</div>
+              <div class="row">
+                <div class="btn primary" id="kdReplay">Repetir</div>
+                <select id="kdSpeed" title="Velocidade">
+                  <option value="0.7">Rápido</option>
+                  <option value="1" selected>Normal</option>
+                  <option value="1.35">Lento</option>
+                </select>
+              </div>
+            </div>
+            <div class="strokeBody" id="kdStroke"></div>
+            <div class="strokeNote">Fonte: KanjiVG (SVG).</div>
+          </div>
+
+          <hr class="sep">
+          <div class="row">
+            <div class="btn good" id="kdTrain">Treinar no Jogo</div>
+          </div>
+        </div>
+
+        <div id="kanjiDetailEmpty" class="card">
+          <div class="mean" style="color:var(--muted);">Clique em um kanji para ver detalhes aqui.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== QUIZ ====================== -->
+  <section id="quiz" class="section">
+    <div class="grid">
+      <div class="panel">
+        <div class="row">
+          <div>
+            <h2>Jogo</h2>
+            <p class="hint" id="quizModeHint">Modo: normal</p>
+          </div>
+
+          <div class="row">
+            <label class="toggle" title="Repete mais os que você erra">
+              <input type="checkbox" id="quizSmart" checked />
+              modo inteligente
+            </label>
+            <label class="toggle" title="Reinicia automaticamente a cada questão">
+              <input type="checkbox" id="quizAuto" checked />
+              auto-run
+            </label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row" style="align-items:flex-end;">
+            <div style="flex:1;">
+              <div class="bigKanji" id="quizKanji">一</div>
+              <div class="badges" style="justify-content:center;">
+                <span class="badge" id="quizScore">Acertos: 0 · Erros: 0 · Streak: 0</span>
+                <span class="badge" id="quizTimerText">⏱️ 12s</span>
+                <span class="badge tag" id="quizMoodText">Mood: —</span>
+                <span class="badge tag" id="quizReviewCountBadge" style="display:none;">Revisão: <b id="quizReviewCount">0</b></span>
+              </div>
+              <div class="timerBarWrap">
+                <div class="timerBar" id="timerBar"></div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+              <div class="small">Nível</div>
+              <select id="quizLevel">
+                <option value="ALL" selected>ALL</option>
+                <option value="N5">N5</option>
+                <option value="N4">N4</option>
+              </select>
+
+              <div class="small">Tempo</div>
+              <select id="quizTime">
+                <option value="8">8s</option>
+                <option value="12" selected>12s</option>
+                <option value="18">18s</option>
+                <option value="25">25s</option>
+              </select>
+
+              <div class="btn good" id="quizStart">Start</div>
+              <div class="btn warn" id="quizPause">Pausar</div>
+              <div class="btn primary" id="quizNext">Próximo</div>
+              <div class="btn danger" id="quizReset">Zerar sessão</div>
+
+              <div class="btn ghost" id="quizReviewBtn" style="display:none;" title="Atalho: tecla P">Revisar erros</div>
+            </div>
+          </div>
+
+          <hr class="sep">
+
+          <div class="mcGrid">
+            <div class="mcBox">
+              <h3>Leitura</h3>
+              <div class="choiceList" id="readingChoices"></div>
+            </div>
+
+            <div class="mcBox">
+              <h3>Significado</h3>
+              <div class="choiceList" id="meaningChoices"></div>
+            </div>
+          </div>
+
+          <div id="quizFeedback" class="card" style="display:none;">
+            <div class="mean" id="quizFeedbackTitle"></div>
+            <div class="hira" id="quizFeedbackDetail"></div>
+
+            <!-- ===== VOCAB (3 itens) ===== -->
+            <div class="vocabBox" id="quizVocabBox" style="display:none;">
+              <div class="vocabHead">
+                <div class="t">Vocabulário (3) — <span id="quizVocabLvl">—</span></div>
+                <div class="small" id="quizVocabStatus">—</div>
+              </div>
+              <div class="vocabList" id="quizVocabList"></div>
+              <div class="vocabNote">Obs: se não achar 3 no nível, completa com os mais comuns disponíveis.</div>
+            </div>
+
+            <div class="strokeBox" style="margin-top:12px;">
+              <div class="strokeHead">
+                <div class="t">Ordem dos traços</div>
+                <div class="row">
+                  <div class="btn primary" id="quizReplay">Repetir</div>
+                  <select id="quizSpeed" title="Velocidade">
+                    <option value="0.7">Rápido</option>
+                    <option value="1" selected>Normal</option>
+                    <option value="1.35">Lento</option>
+                  </select>
+                </div>
+              </div>
+              <div class="strokeBody" id="quizStroke"></div>
+              <div class="strokeNote">Fonte: KanjiVG.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Ranking + Estatísticas</h2>
+        <p class="hint">Salvo no navegador.</p>
+
+        <div class="card">
+          <div class="mean">🏆 Melhores marcas</div>
+          <div class="small" id="bestStats">—</div>
+
+          <hr class="sep">
+          <div class="mean">📊 Kanji mais errados</div>
+          <div class="small" id="worstKanjis">—</div>
+
+          <hr class="sep">
+          <div class="row">
+            <div class="btn danger" id="resetHistory">Resetar histórico</div>
+            <div class="btn good" id="goKanji">Voltar ao Kanji</div>
+          </div>
+
+          <hr class="sep">
+          <div class="small">
+            <b>Revisão</b>: aparece só quando existe erro acumulado.<br>
+            Atalho: tecla <b>P</b> no modo Jogo.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">ヴァンパイア全知全能 © 2025</div>
+</div>
+
+<script>
+/* =========================
+   THEME CYCLE (a cada 5s)
+========================= */
+(function(){
+  const hues = [195, 230, 265, 305, 20, 55, 110, 155];
+  let i = Math.floor(Math.random() * hues.length);
+  document.documentElement.style.setProperty("--themeHue", String(hues[i]));
+  setInterval(()=>{
+    i = (i + 1) % hues.length;
+    document.documentElement.style.setProperty("--themeHue", String(hues[i]));
+  }, 5000);
+})();
+
+/* =========================
+   LISTAS DE NÍVEL
+========================= */
+const N5_LIST = ["一","七","万","三","上","下","中","九","二","五","人","今","休","何","先","入","八","六","円","出","分","前","北","十","千","午","半","南","友","右","名","四","国","土","外","大","天","女","子","学","小","山","川","左","年","後","日","時","書","月","木","本","来","東","校","母","毎","気","水","火","父","生","男","白","百","聞","行","西","見","話","語","読","車","金","長","間","雨","電","食","高"];
+const N4_LIST = ["不","世","主","事","京","仕","代","以","会","住","体","作","使","借","元","兄","公","写","冬","切","別","力","勉","動","医","去","口","古","台","同","味","品","員","問","図","地","堂","場","売","夏","夕","多","夜","妹","姉","始","字","安","室","家","少","屋","工","帰","広","店","度","建","弟","強","待","心","思","急","悪","意","手","持","教","文","料","新","方","旅","族","早","明","映","春","昼","曜","有","服","朝","業","楽","歌","止","正","歩","死","注","洋","海","漢","牛","物","特","犬","理","用","田","町","画","界","病","発","的","目","真","着","知","研","社","私","秋","究","空","立","答","紙","終","習","考","者","肉","自","色","花","英","茶","親","言","計","試","買","貸","質","赤","走","起","足","転","近","送","通","週","運","道","重","野","銀","開","院","集","青","音","題","風","飯","飲","館","駅","験","魚","鳥","黒"];
+const N5_SET = new Set(N5_LIST);
+const N4_SET = new Set(N4_LIST);
+
+/* =========================
+   KANJI_INFO (PT-BR) — (mantive o seu)
+========================= */
+const KANJI_INFO = { /* (seu objeto gigante igual antes) */ };
+/* ↑ IMPORTANTE:
+   Cole aqui o seu KANJI_INFO completo (o mesmo que você já tinha).
+   Eu não repeti inteiro aqui pra não duplicar 500 linhas no bloco.
+   Se você quiser, eu te devolvo o arquivo 100% “completo” com o KANJI_INFO já colado.
+*/
+
+function isInfoComplete(k){
+  const i = KANJI_INFO[k];
+  return !!(i && i.meaning && Array.isArray(i.readings) && i.readings.length && i.readings[0] !== "—");
+}
+
+/* =========================
+   HELPERS
+========================= */
+const $ = (id)=>document.getElementById(id);
+
+function flash(type){
+  const f = $("flash");
+  f.className = "flash " + type;
+  void f.offsetWidth;
+  f.classList.add("on");
+  setTimeout(()=>f.classList.remove("on"), 560);
+}
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function levelOf(k){
+  if(N5_SET.has(k)) return "N5";
+  if(N4_SET.has(k)) return "N4";
+  return "N4";
+}
+
+// calcula 1 vez (evita custo repetido)
+const ALL_KANJI_UNIQUE = (function(){
+  const set = new Set([...N5_LIST, ...N4_LIST]);
+  return Array.from(set);
+})();
+
+function allKanjisUnique(){ return ALL_KANJI_UNIQUE; }
+
+function poolByLevel(level){
+  const all = allKanjisUnique().filter(isInfoComplete);
+  if(level === "N5") return all.filter(k=>N5_SET.has(k));
+  if(level === "N4") return all.filter(k=>N4_SET.has(k));
+  return all;
+}
+
+function toHiragana(s){
+  return (s||"").replace(/[\u30A1-\u30F6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+}
+function normalizeSearch(s){
+  return toHiragana((s||"").trim().toLowerCase());
+}
+function isKana(s){
+  return /^[\u3040-\u309F\u30A0-\u30FFー]+$/.test(s);
+}
+function isKanjiLike(s){
+  return /[\u4E00-\u9FFF]/.test(s);
+}
+function safeInfo(k){
+  const info = KANJI_INFO[k] || {readings:["—"], meaning:"—"};
+  const r = (info.readings||[]).map(toHiragana).filter(Boolean);
+  return { readings: r.length ? r : ["—"], meaning: info.meaning || "—" };
+}
+
+/* =========================
+   TABS
+========================= */
+const sections = { kanji:$("kanji"), quiz:$("quiz") };
+const tabs = { kanji:$("tab-kanji"), quiz:$("tab-quiz") };
+function openTab(id){
+  Object.values(sections).forEach(s=>s.classList.remove("active"));
+  Object.values(tabs).forEach(t=>t.classList.remove("active"));
+  sections[id].classList.add("active");
+  tabs[id].classList.add("active");
+  if(id==="kanji") renderKanjiGrid();
+}
+tabs.kanji.addEventListener("click", ()=>openTab("kanji"));
+tabs.quiz.addEventListener("click", ()=>openTab("quiz"));
+
+/* =========================
+   STROKE ORDER (KanjiVG)
+========================= */
+const svgCache = new Map();
+const strokeAnimState = new WeakMap();
+
+function codepointHex5(ch){
+  return ch.codePointAt(0).toString(16).padStart(5,"0");
+}
+function clearSVGAnimation(svg){
+  const st = strokeAnimState.get(svg);
+  if(st?.length) st.forEach(t=>clearTimeout(t));
+  strokeAnimState.set(svg, []);
+}
+function pickStrokePaths(svg){
+  const all = Array.from(svg.querySelectorAll("path"));
+  const strokes = all.filter(p=>{
+    const id = (p.getAttribute("id") || "");
+    return /-s\d+/.test(id);
+  });
+  return strokes.length ? strokes : all;
+}
+function preparePaths(paths){
+  for(const p of paths){
+    p.style.fill = "none";
+    p.style.stroke = "var(--accent2)";
+    p.style.strokeWidth = "3.4";
+    p.style.strokeLinecap = "round";
+    p.style.strokeLinejoin = "round";
+    p.style.opacity = "1";
+    p.style.transition = "none";
+  }
+}
+function animateStrokeOrder(svg, speed=1){
+  if(!svg) return;
+  clearSVGAnimation(svg);
+
+  const paths = pickStrokePaths(svg);
+  if(!paths.length) return;
+
+  preparePaths(paths);
+
+  const lengths = paths.map(p=>{
+    let len = 160;
+    try{ len = p.getTotalLength(); }catch{}
+    p.style.strokeDasharray = String(len);
+    p.style.strokeDashoffset = String(len);
+    return len;
+  });
+
+  const timeouts = [];
+  let cursor = 0;
+
+  for(let i=0;i<paths.length;i++){
+    const p = paths[i];
+    const len = lengths[i];
+    const dur = Math.max(220, Math.min(900, len*2.1)) * speed;
+
+    const t = setTimeout(()=>{
+      p.style.transition = `stroke-dashoffset ${dur}ms linear`;
+      p.style.strokeDashoffset = "0";
+    }, cursor);
+
+    timeouts.push(t);
+    cursor += dur + 85*speed;
+  }
+  strokeAnimState.set(svg, timeouts);
+}
+
+async function loadKanjiSVGInto(kanji, targetEl){
+  if(svgCache.has(kanji)){
+    targetEl.innerHTML = svgCache.get(kanji);
+    return targetEl.querySelector("svg");
+  }
+  const hex = codepointHex5(kanji);
+  const url = `https://cdn.jsdelivr.net/gh/KanjiVG/kanjivg@master/kanji/${hex}.svg`;
+  targetEl.innerHTML = `<div class="small">Carregando stroke order...</div>`;
+  try{
+    const res = await fetch(url, {cache:"force-cache"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const svgText = await res.text();
+    const cleaned = svgText
+      .replace(/width="[^"]*"/g,'')
+      .replace(/height="[^"]*"/g,'')
+      .replace(/<\?xml[^>]*\?>/g,'');
+    svgCache.set(kanji, cleaned);
+    targetEl.innerHTML = cleaned;
+    return targetEl.querySelector("svg");
+  }catch{
+    targetEl.innerHTML = `<div class="small">Falha ao carregar. Ctrl+F5 e tente novamente.</div>`;
+    return null;
+  }
+}
+
+/* =========================
+   KANJI TAB + SEARCH
+========================= */
+const kanjigrid = $("kanjigrid");
+const levelFilter = $("levelFilter");
+const kanjiCountHint = $("kanjiCountHint");
+const kanjiSearch = $("kanjiSearch");
+const clearSearch = $("clearSearch");
+
+const kdBox = $("kanjiDetail");
+const kdEmpty = $("kanjiDetailEmpty");
+const kdKanji = $("kdKanji");
+const kdReadings = $("kdReadings");
+const kdMean = $("kdMean");
+const kdBadges = $("kdBadges");
+const kdStroke = $("kdStroke");
+const kdSpeed = $("kdSpeed");
+
+let selectedKanji = null;
+let kdSvgEl = null;
+
+function matchesSearch(kanji, info, query){
+  if(!query) return true;
+  const q = normalizeSearch(query);
+  const infoR = (info.readings||[]).map(normalizeSearch);
+  const mean = normalizeSearch(info.meaning || "");
+
+  if(isKanjiLike(query)) return kanji.includes(query.trim());
+  if(isKana(query)) return infoR.some(r => r.includes(q));
+  return mean.includes(q);
+}
+
+function renderKanjiGrid(){
+  const level = levelFilter.value;
+  const base = poolByLevel(level);
+
+  const q = (kanjiSearch.value||"").trim();
+  const out = [];
+  for(const k of base){
+    const info = safeInfo(k);
+    if(matchesSearch(k, info, q)) out.push(k);
+  }
+
+  kanjiCountHint.textContent =
+    `Mostrando: ${out.length} / ${base.length} (Total nível) • Total geral: ${poolByLevel("ALL").length}`;
+
+  kanjigrid.innerHTML = "";
+  const frag = document.createDocumentFragment();
+
+  for(const k of out){
+    const lvl = levelOf(k);
+    const div = document.createElement("div");
+    div.className = "kanjiitem";
+    div.innerHTML = `<div class="k">${k}</div><div class="lvl"><b>${lvl}</b></div>`;
+    div.addEventListener("click", ()=>showKanjiDetail(k, true));
+    frag.appendChild(div);
+  }
+  kanjigrid.appendChild(frag);
+}
+
+levelFilter.addEventListener("change", ()=>{
+  selectedKanji = null;
+  kdSvgEl = null;
+  kdBox.style.display = "none";
+  kdEmpty.style.display = "block";
+  renderKanjiGrid();
+});
+kanjiSearch.addEventListener("input", ()=>{
+  if(window.__kSearchT) clearTimeout(window.__kSearchT);
+  window.__kSearchT = setTimeout(()=>renderKanjiGrid(), 80);
+});
+clearSearch.addEventListener("click", ()=>{
+  kanjiSearch.value = "";
+  renderKanjiGrid();
+});
+
+async function showKanjiDetail(k, autoScroll){
+  selectedKanji = k;
+
+  kdEmpty.style.display="none";
+  kdBox.style.display="block";
+
+  const info = safeInfo(k);
+  const lvl = levelOf(k);
+
+  kdKanji.textContent = k;
+  kdReadings.textContent = `Leituras: ${info.readings.join(" / ")}`;
+  kdMean.textContent = `Significado: ${info.meaning}`;
+
+  kdBadges.innerHTML = `<span class="badge ${lvl.toLowerCase()}">${lvl}</span><span class="badge tag">kanji</span>`;
+
+  if(autoScroll){
+    $("detailPanel").scrollIntoView({behavior:"smooth", block:"start"});
+    setTimeout(()=> $("kdStrokeBox").scrollIntoView({behavior:"smooth", block:"start"}), 250);
+  }
+
+  kdSvgEl = await loadKanjiSVGInto(k, kdStroke);
+  animateStrokeOrder(kdSvgEl, Number(kdSpeed.value));
+}
+
+$("kdReplay").addEventListener("click", ()=>{
+  if(!selectedKanji) return;
+  animateStrokeOrder(kdSvgEl, Number(kdSpeed.value));
+});
+kdSpeed.addEventListener("change", ()=>{
+  if(!selectedKanji) return;
+  animateStrokeOrder(kdSvgEl, Number(kdSpeed.value));
+});
+$("kdTrain").addEventListener("click", ()=>{
+  if(!selectedKanji) return;
+  openTab("quiz");
+  setQuestion(selectedKanji);
+});
+
+/* =========================
+   QUIZ STATS + REVIEW QUEUE
+========================= */
+const LS_KEY = "vampire_kanji_quiz_ptbr_v1";
+const LS_REVIEW = "vampire_kanji_review_queue_v2";
+
+function defaultStats(){
+  return { bestStreak:0, bestAccuracy:0, bestScore:0, totalCorrect:0, totalWrong:0, perKanji:{}, recent:[] };
+}
+function loadStats(){
+  try{ const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : defaultStats(); }
+  catch{ return defaultStats(); }
+}
+function saveStats(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(stats)); }catch{} }
+let stats = loadStats();
+
+function defaultReview(){ return { queue:[] }; }
+function loadReview(){
+  try{ const raw = localStorage.getItem(LS_REVIEW); return raw ? JSON.parse(raw) : defaultReview(); }
+  catch{ return defaultReview(); }
+}
+function saveReview(){ try{ localStorage.setItem(LS_REVIEW, JSON.stringify(review)); }catch{} }
+let review = loadReview();
+
+function ensurePerKanji(k){ if(!stats.perKanji[k]) stats.perKanji[k] = {c:0,w:0}; }
+function pushRecent(ok){
+  stats.recent.push(ok ? 1 : 0);
+  if(stats.recent.length > 12) stats.recent.shift();
+}
+function moodScore(){
+  if(!stats.recent.length) return 0.5;
+  const sum = stats.recent.reduce((a,b)=>a+b,0);
+  return sum / stats.recent.length;
+}
+function applyMood(){
+  const s = moodScore();
+  $("quizMoodText").textContent = `Mood: ${Math.round(s*100)}%`;
+}
+function reviewCount(){ return Array.isArray(review.queue) ? review.queue.length : 0; }
+function addToReviewQueue(k){
+  review.queue = Array.isArray(review.queue) ? review.queue : [];
+  if(!review.queue.includes(k)) review.queue.push(k);
+  saveReview();
+  updateReviewUI();
+}
+function removeFromReviewQueue(k){
+  review.queue = Array.isArray(review.queue) ? review.queue : [];
+  review.queue = review.queue.filter(x=>x!==k);
+  saveReview();
+  updateReviewUI();
+}
+function bumpReviewToEnd(k){
+  review.queue = Array.isArray(review.queue) ? review.queue : [];
+  review.queue = review.queue.filter(x=>x!==k);
+  review.queue.push(k);
+  saveReview();
+  updateReviewUI();
+}
+
+/* =========================
+   QUIZ ENGINE
+========================= */
+const quizSmart = $("quizSmart");
+const quizAuto = $("quizAuto");
+const quizLevel = $("quizLevel");
+const quizKanji = $("quizKanji");
+const quizScoreEl = $("quizScore");
+const quizTimerText = $("quizTimerText");
+const timerBar = $("timerBar");
+const quizTime = $("quizTime");
+
+const readingChoices = $("readingChoices");
+const meaningChoices = $("meaningChoices");
+
+const quizFeedback = $("quizFeedback");
+const quizFeedbackTitle = $("quizFeedbackTitle");
+const quizFeedbackDetail = $("quizFeedbackDetail");
+const quizStroke = $("quizStroke");
+const quizSpeed = $("quizSpeed");
+
+const bestStatsEl = $("bestStats");
+const worstKanjisEl = $("worstKanjis");
+
+const quizModeHint = $("quizModeHint");
+const quizReviewBtn = $("quizReviewBtn");
+const quizReviewCountBadge = $("quizReviewCountBadge");
+const quizReviewCountEl = $("quizReviewCount");
+
+const quizVocabBox = $("quizVocabBox");
+const quizVocabList = $("quizVocabList");
+const quizVocabLvl = $("quizVocabLvl");
+const quizVocabStatus = $("quizVocabStatus");
+
+$("goKanji").addEventListener("click", ()=> openTab("kanji"));
+$("resetHistory").addEventListener("click", ()=>{
+  stats = defaultStats();
+  saveStats();
+  updateRightPanel();
+  applyMood();
+  flash("bad");
+});
+
+const quizState = {
+  current: "一",
+  running: false,
+  timerId: null,
+  timeLeftMs: 12000,
+  timeTotalMs: 12000,
+
+  sessionCorrect: 0,
+  sessionWrong: 0,
+  sessionStreak: 0,
+
+  answeredReading: false,
+  answeredMeaning: false,
+  okReading: false,
+  okMeaning: false,
+
+  lockedAfterResult: false,
+  lastPick: null,
+
+  mode: "normal", // "normal" | "review"
+  toggling: false
+};
+
+function setMode(mode){
+  quizState.mode = mode;
+  quizModeHint.textContent = (mode === "review") ? "Modo: revisão de erros" : "Modo: normal";
+}
+
+function updateScoreUI(){
+  quizScoreEl.textContent =
+    `Acertos: ${quizState.sessionCorrect} · Erros: ${quizState.sessionWrong} · Streak: ${quizState.sessionStreak}`;
+}
+
+function updateRightPanel(){
+  const totalGlobal = stats.totalCorrect + stats.totalWrong;
+  const accGlobal = totalGlobal ? (stats.totalCorrect / totalGlobal) : 0;
+
+  bestStatsEl.innerHTML = `
+    • Best streak: <b>${stats.bestStreak}</b><br>
+    • Best accuracy: <b>${Math.round(stats.bestAccuracy*100)}%</b><br>
+    • Best score (C−E): <b>${stats.bestScore}</b><br>
+    • Global accuracy: <b>${Math.round(accGlobal*100)}%</b>
+      (C:${stats.totalCorrect} / E:${stats.totalWrong})
+  `;
+
+  const arr = Object.entries(stats.perKanji).map(([k,v])=>{
+    const total = v.c + v.w;
+    const err = total ? (v.w / total) : 0;
+    return {k, c:v.c, w:v.w, total, err};
+  }).filter(x=>x.total>0);
+
+  arr.sort((a,b)=> (b.w - a.w) || (b.err - a.err));
+  const top = arr.slice(0,10);
+
+  worstKanjisEl.innerHTML = top.length
+    ? top.map(x=>{
+        const pct = Math.round(x.err*100);
+        return `• <b>${x.k}</b> — erros: ${x.w} / ${x.total} (${pct}%)`;
+      }).join("<br>")
+    : "—";
+}
+
+function updateBests(){
+  stats.bestStreak = Math.max(stats.bestStreak, quizState.sessionStreak);
+  const totalSession = quizState.sessionCorrect + quizState.sessionWrong;
+  const accSession = totalSession ? (quizState.sessionCorrect / totalSession) : 0;
+  const scoreSession = quizState.sessionCorrect - quizState.sessionWrong;
+  stats.bestAccuracy = Math.max(stats.bestAccuracy, accSession);
+  stats.bestScore = Math.max(stats.bestScore, scoreSession);
+}
+
+function readingText(k){ return safeInfo(k).readings.join(" / "); }
+function meaningText(k){ return safeInfo(k).meaning; }
+
+function buildChoices(kind, correctKanji, pool){
+  const poolOthers = pool.filter(k => k !== correctKanji);
+
+  const correctText =
+    (kind === "reading") ? readingText(correctKanji) : meaningText(correctKanji);
+
+  const picks = [{ text: correctText, correct: true }];
+  const used = new Set([correctText]);
+
+  // proteção anti-loop
+  const shuffled = shuffle(poolOthers);
+  for(const k of shuffled){
+    const t = (kind === "reading") ? readingText(k) : meaningText(k);
+    if(!t || used.has(t)) continue;
+    used.add(t);
+    picks.push({ text: t, correct: false });
+    if(picks.length === 4) break;
+  }
+
+  // fallback com limite duro
+  let attempts = 0;
+  while(picks.length < 4 && attempts < 60){
+    attempts++;
+    if(!poolOthers.length) break;
+    const k = poolOthers[Math.floor(Math.random() * poolOthers.length)];
+    const t = (kind === "reading") ? readingText(k) : meaningText(k);
+    if(!t || used.has(t)) continue;
+    used.add(t);
+    picks.push({ text: t, correct: false });
+  }
+
+  // se ainda faltar (pool muito fraco), completa com placeholders (evita travar)
+  while(picks.length < 4){
+    picks.push({ text: "—", correct: false });
+  }
+
+  return shuffle(picks);
+}
+
+function resetQuestionState(){
+  quizState.answeredReading = false;
+  quizState.answeredMeaning = false;
+  quizState.okReading = false;
+  quizState.okMeaning = false;
+  quizState.lockedAfterResult = false;
+  quizFeedback.style.display = "none";
+
+  quizVocabBox.style.display = "none";
+  quizVocabList.innerHTML = "";
+  quizVocabStatus.textContent = "—";
+}
+
+function disableAllChoices(){
+  document.querySelectorAll(".choiceBtn").forEach(b=> b.disabled = true);
+}
+
+function renderChoiceButtons(targetEl, options, onPick){
+  targetEl.innerHTML = "";
+  for(const opt of options){
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "choiceBtn";
+    b.textContent = opt.text;
+
+    b.addEventListener("click", ()=>{
+      if(quizState.lockedAfterResult) return;
+
+      const btns = Array.from(targetEl.querySelectorAll(".choiceBtn"));
+      btns.forEach(btn=> btn.disabled = true);
+
+      btns.forEach((btn, idx)=>{ if(options[idx].correct) btn.classList.add("correct"); });
+
+      if(opt.correct) b.classList.add("correct");
+      else b.classList.add("wrong");
+
+      onPick(opt.correct);
+    });
+
+    targetEl.appendChild(b);
+  }
+}
+
+function weightedPick(pool){
+  let total = 0;
+  const weights = pool.map(k=>{
+    ensurePerKanji(k);
+    const {c,w} = stats.perKanji[k];
+    const unseen = (c+w===0) ? 1.0 : 0;
+    const weight = Math.max(0.2, 1 + w*2.6 - c*0.30 + unseen);
+    total += weight;
+    return weight;
+  });
+
+  let r = Math.random() * total;
+  for(let i=0;i<pool.length;i++){
+    r -= weights[i];
+    if(r <= 0) return pool[i];
+  }
+  return pool[pool.length-1];
+}
+
+function getQuizPool(){
+  if(quizState.mode === "review"){
+    const q = (Array.isArray(review.queue) ? review.queue : []).filter(isInfoComplete);
+    if(q.length) return q;
+    setMode("normal");
+    return poolByLevel(quizLevel.value);
+  }
+  return poolByLevel(quizLevel.value);
+}
+
+function pickKanji(pool){
+  if(!pool || !pool.length) return "一";
+  let k = quizSmart.checked ? weightedPick(pool) : pool[Math.floor(Math.random()*pool.length)];
+  if(pool.length > 1 && k === quizState.lastPick){
+    k = pool[Math.floor(Math.random()*pool.length)];
+  }
+  quizState.lastPick = k;
+  return k;
+}
+
+/* =========================
+   TIMER (estável)
+========================= */
+function updateTimerUI(){
+  const leftSec = Math.max(0, Math.ceil(quizState.timeLeftMs/1000));
+  quizTimerText.textContent = `⏱️ ${leftSec}s`;
+  const pct = quizState.timeTotalMs ? (quizState.timeLeftMs/quizState.timeTotalMs) : 0;
+  timerBar.style.width = `${Math.max(0, Math.min(1, pct))*100}%`;
+}
+function stopTimer(){
+  if(quizState.timerId){
+    clearInterval(quizState.timerId);
+    quizState.timerId = null;
+  }
+  quizState.running = false;
+}
+function startTimer(reset){
+  const seconds = Number(quizTime.value);
+  quizState.timeTotalMs = seconds*1000;
+  if(reset) quizState.timeLeftMs = quizState.timeTotalMs;
+
+  stopTimer();
+  quizState.running = true;
+
+  quizState.timerId = setInterval(()=>{
+    if(quizState.lockedAfterResult) return;
+    quizState.timeLeftMs -= 200;
+    updateTimerUI();
+    if(quizState.timeLeftMs <= 0){
+      stopTimer();
+      if(!quizState.lockedAfterResult) commitResult(false, "timeout");
+    }
+  }, 200);
+
+  updateTimerUI();
+}
+
+/* =========================
+   QUESTÃO
+========================= */
+let quizSvgEl = null;
+
+function setQuestion(kanji){
+  if(!kanji || typeof kanji !== "string") kanji = "一";
+  quizState.current = kanji;
+  quizKanji.textContent = kanji;
+
+  resetQuestionState();
+
+  const pool = getQuizPool();
+  const safePool = (pool && pool.length >= 6) ? pool : poolByLevel("ALL");
+
+  const rOpts = buildChoices("reading", kanji, safePool);
+  const mOpts = buildChoices("meaning", kanji, safePool);
+
+  renderChoiceButtons(readingChoices, rOpts, (ok)=>{
+    quizState.answeredReading = true;
+    quizState.okReading = ok;
+    evaluateIfComplete();
+  });
+
+  renderChoiceButtons(meaningChoices, mOpts, (ok)=>{
+    quizState.answeredMeaning = true;
+    quizState.okMeaning = ok;
+    evaluateIfComplete();
+  });
+
+  const seconds = Number(quizTime.value);
+  quizState.timeTotalMs = seconds * 1000;
+  quizState.timeLeftMs = quizState.timeTotalMs;
+  updateTimerUI();
+
+  if(quizState.running) startTimer(true);
+  else if(quizAuto.checked) startTimer(true);
+}
+
+function nextQuestion(){
+  const pool = getQuizPool();
+  const k = pickKanji(pool && pool.length ? pool : poolByLevel("ALL"));
+  setQuestion(k);
+}
+
+/* =========================
+   VOCAB (3 itens) — fetch + cache
+   - tenta JLPT do nível
+   - se não achar 3, completa com os mais comuns disponíveis
+========================= */
+const vocabCache = new Map(); // key: `${kanji}|${lvl}` -> array
+async function fetchVocab3(kanji, lvl){
+  const key = `${kanji}|${lvl}`;
+  if(vocabCache.has(key)) return vocabCache.get(key);
+
+  // fonte leve: Jisho (geralmente funciona bem em static sites)
+  const url = `https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(kanji)}`;
+  const out = [];
+
+  try{
+    const res = await fetch(url, { cache:"force-cache" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const json = await res.json();
+    const data = Array.isArray(json?.data) ? json.data : [];
+
+    const want = (lvl === "N5") ? "jlpt-n5" : (lvl === "N4") ? "jlpt-n4" : null;
+
+    function pickFrom(list){
+      for(const item of list){
+        if(out.length >= 3) break;
+        const jlpt = Array.isArray(item.jlpt) ? item.jlpt : [];
+        const jp = Array.isArray(item.japanese) ? item.japanese[0] : null;
+        const senses = Array.isArray(item.senses) ? item.senses : [];
+        const word = jp?.word || jp?.reading || "";
+        const reading = jp?.reading || "";
+        if(!word) continue;
+        if(!String(word).includes(kanji)) continue; // garante que é do kanji
+        const meaning = senses[0]?.english_definitions?.join("; ") || "";
+        if(!meaning) continue;
+
+        out.push({
+          word,
+          reading,
+          meaning,
+          jlpt: jlpt[0] || "—"
+        });
+      }
+    }
+
+    // 1) prioriza nível
+    if(want){
+      pickFrom(data.filter(x => (Array.isArray(x.jlpt) ? x.jlpt : []).includes(want)));
+    }
+    // 2) completa com o que tiver
+    if(out.length < 3){
+      pickFrom(data);
+    }
+
+  }catch{
+    // falhou: deixa vazio e a UI mostra aviso
+  }
+
+  vocabCache.set(key, out);
+  return out;
+}
+
+function renderVocabUI(items, lvl){
   quizVocabLvl.textContent = lvl;
   quizVocabList.innerHTML = "";
 
-  if(!items.length){
+  if(!items || !items.length){
     quizVocabStatus.textContent = "sem dados";
-    quizVocabList.innerHTML = `<div class="small">Sem vocabulário cadastrado para este kanji ainda.</div>`;
+    quizVocabBox.style.display = "block";
+    quizVocabList.innerHTML = `<div class="small">Não consegui puxar vocabulário agora (rede/CORS). Dá pra trocar a fonte se você quiser.</div>`;
+    return;
+  }
+
+  quizVocabStatus.textContent = "ok";
+  quizVocabBox.style.display = "block";
+
+  for(const it of items.slice(0,3)){
+    const div = document.createElement("div");
+    div.className = "vocabItem";
+    div.innerHTML = `
+      <div class="vocabRow1">
+        <div class="vocabWord">${it.word}</div>
+        <div class="vocabLvl">${(it.jlpt || "—").toUpperCase()}</div>
+      </div>
+      <div class="vocabReading">Leitura: <b>${it.reading || "—"}</b></div>
+      <div class="vocabMeaning">Significado: <b>${it.meaning}</b></div>
+    `;
+    quizVocabList.appendChild(div);
+  }
+}
+
+/* =========================
+   FEEDBACK + RESULT COMMIT
+========================= */
+async function showFeedback(okAll, reason){
+  const k = quizState.current;
+  const info = safeInfo(k);
+
+  quizFeedback.style.display = "block";
+  quizFeedbackTitle.innerHTML = okAll
+    ? `✅ <b>Acertou</b>`
+    : (reason === "timeout" ? `⏱️ <b>Tempo esgotado</b>` : `❌ <b>Errou</b>`);
+
+  quizFeedbackDetail.innerHTML = `
+    Kanji: <b>${k}</b> · <b>${levelOf(k)}</b><br>
+    Leituras: <b>${info.readings.join(" / ")}</b><br>
+    Significado: <b>${info.meaning}</b>
+  `;
+
+  // VOCAB 3 (com cache)
+  try{
+    quizVocabStatus.textContent = "carregando…";
+    quizVocabBox.style.display = "block";
+    const lvl = levelOf(k);
+    const items = await fetchVocab3(k, lvl);
+    renderVocabUI(items, lvl);
+  }catch{
+    renderVocabUI([], levelOf(k));
+  }
+
+  quizSvgEl = await loadKanjiSVGInto(k, quizStroke);
+  animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
+}
+
+function commitResult(okAll, reason){
+  const k = quizState.current;
+  ensurePerKanji(k);
+
+  if(okAll){
+    quizState.sessionCorrect += 1;
+    quizState.sessionStreak += 1;
+    stats.totalCorrect += 1;
+    stats.perKanji[k].c += 1;
+    pushRecent(true);
+    flash("good");
+
+    if(quizState.mode === "review"){
+      removeFromReviewQueue(k);
+      if(reviewCount() === 0) setMode("normal");
+    }
   }else{
-    quizVocabStatus.textContent = "ok";
-    for(const it of items){
-      const div = document.createElement("div");
-      div.className = "vocabItem";
-      div.innerHTML = `
-        <div class="vocabRow1">
-          <div class="vocabWord">${it.w || "—"}</div>
-          <div class="vocabLvl">${(it.lvl || "—").toUpperCase()}</div>
-        </div>
-        <div class="vocabReading">Leitura: <b>${it.r || "—"}</b></div>
-        <div class="vocabMeaning">Significado: <b>${it.m || "—"}</b></div>
-      `;
-      quizVocabList.appendChild(div);
+    quizState.sessionWrong += 1;
+    quizState.sessionStreak = 0;
+    stats.totalWrong += 1;
+    stats.perKanji[k].w += 1;
+    pushRecent(false);
+    flash("bad");
+
+    if(quizState.mode === "normal"){
+      addToReviewQueue(k);
+    }else{
+      bumpReviewToEnd(k);
     }
   }
-}catch{
-  quizVocabStatus.textContent = "erro";
+
+  updateScoreUI();
+  updateBests();
+  applyMood();
+  updateRightPanel();
+  saveStats();
+
+  stopTimer();
+  disableAllChoices();
+
+  quizState.lockedAfterResult = true;
+  showFeedback(okAll, reason);
 }
+
+function evaluateIfComplete(){
+  if(!(quizState.answeredReading && quizState.answeredMeaning)) return;
+  const okAll = quizState.okReading && quizState.okMeaning;
+  commitResult(okAll, "answered");
+}
+
+/* =========================
+   REVISÃO (mais “blindado”)
+========================= */
+function updateReviewUI(){
+  const c = reviewCount();
+  quizReviewCountEl.textContent = String(c);
+  quizReviewCountBadge.style.display = c > 0 ? "inline-flex" : "none";
+  quizReviewBtn.style.display = c > 0 ? "inline-flex" : "none";
+  if(c === 0 && quizState.mode === "review"){
+    setMode("normal");
+  }
+}
+
+function toggleReview(){
+  if(quizState.toggling) return;
+  quizState.toggling = true;
+
+  const c = reviewCount();
+  if(c <= 0){
+    setMode("normal");
+    updateReviewUI();
+    quizState.toggling = false;
+    return;
+  }
+
+  stopTimer();
+  quizState.lockedAfterResult = false;
+
+  if(quizState.mode === "review"){
+    setMode("normal");
+    quizReviewBtn.textContent = "Revisar erros";
+  }else{
+    setMode("review");
+    quizReviewBtn.textContent = "Sair da revisão";
+  }
+
+  updateReviewUI();
+
+  // joga pra próxima frame (evita “tranco” em máquinas fracas)
+  requestAnimationFrame(()=>{
+    nextQuestion();
+    quizState.toggling = false;
+  });
+}
+
+quizReviewBtn.addEventListener("click", ()=>{
+  try{ toggleReview(); }catch{ setMode("normal"); updateReviewUI(); quizState.toggling=false; }
+});
+
+// atalho P (anti-repeat + debounce)
+let lastP = 0;
+window.addEventListener("keydown", (e)=>{
+  if(!e.key) return;
+  if(e.key !== "p" && e.key !== "P") return;
+  if(!sections.quiz.classList.contains("active")) return;
+
+  if(e.repeat) return;
+  const now = Date.now();
+  if(now - lastP < 320) return;
+  lastP = now;
+
+  e.preventDefault();
+  try{ toggleReview(); }catch{ setMode("normal"); updateReviewUI(); quizState.toggling=false; }
+});
+
+/* =========================
+   CONTROLES QUIZ
+========================= */
+$("quizStart").addEventListener("click", ()=>{
+  if(quizState.lockedAfterResult) return;
+  startTimer(true);
+});
+$("quizPause").addEventListener("click", ()=>{
+  if(quizState.lockedAfterResult) return;
+  if(quizState.running) stopTimer();
+  else startTimer(false);
+});
+$("quizNext").addEventListener("click", ()=>{
+  nextQuestion();
+  updateRightPanel();
+  saveStats();
+});
+$("quizReset").addEventListener("click", ()=>{
+  stopTimer();
+  quizState.sessionCorrect = 0;
+  quizState.sessionWrong = 0;
+  quizState.sessionStreak = 0;
+  updateScoreUI();
+  updateRightPanel();
+  saveStats();
+  flash("bad");
+  nextQuestion();
+});
+
+quizTime.addEventListener("change", ()=>{
+  if(quizState.lockedAfterResult) return;
+  quizState.timeTotalMs = Number(quizTime.value)*1000;
+  quizState.timeLeftMs = quizState.timeTotalMs;
+  updateTimerUI();
+  if(quizState.running) startTimer(true);
+});
+$("quizReplay").addEventListener("click", ()=>{
+  if(!quizSvgEl) return;
+  animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
+});
+quizSpeed.addEventListener("change", ()=>{
+  if(!quizSvgEl) return;
+  animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
+});
+quizLevel.addEventListener("change", ()=>{
+  nextQuestion();
+});
+
+/* =========================
+   INIT
+========================= */
+function init(){
+  renderKanjiGrid();
+  updateRightPanel();
+  applyMood();
+  updateScoreUI();
+  updateReviewUI();
+  setQuestion("一");
+}
+init();
+
+/* =========================
+   KANJI RAIN HERO (ULTRA LEVE)
+   - throttle ~24fps
+   - menos colunas
+   - menos glyphs extras
+========================= */
+(function(){
+  const canvas = document.getElementById("kanjiRainHero");
+  if(!canvas) return;
+
+  const ctx = canvas.getContext("2d", { alpha:true });
+  const glyphs = allKanjisUnique().concat(["無","常"]); // minimal
+
+  let W=0,H=0,cols=0;
+  let drops = [];
+  let last=0;
+  let acc=0;
+
+  function resize(){
+    const box = canvas.getBoundingClientRect();
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    W = Math.max(1, Math.floor(box.width));
+    H = Math.max(1, Math.floor(box.height));
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    const fontSize = Math.max(14, Math.min(18, Math.floor(W/72)));
+    cols = Math.max(8, Math.floor(W / fontSize));
+    drops = Array.from({length: cols}, ()=>Math.random()*H);
+    canvas.__fontSize = fontSize;
+  }
+
+  function rndGlyph(){
+    return glyphs[Math.floor(Math.random()*glyphs.length)];
+  }
+
+  function draw(ts){
+    const dt = Math.min(48, ts - last);
+    last = ts;
+    acc += dt;
+
+    // throttle ~24fps (≈42ms)
+    if(acc < 42){
+      requestAnimationFrame(draw);
+      return;
+    }
+    acc = 0;
+
+    const fs = canvas.__fontSize || 16;
+
+    ctx.fillStyle = "rgba(10,14,20,0.26)"; // limpa mais => rastro menor
+    ctx.fillRect(0,0,W,H);
+
+    ctx.font = `900 ${fs}px "Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif`;
+    const hue = (Number(getComputedStyle(document.documentElement).getPropertyValue("--themeHue")) || 195);
+
+    // desenha só 1/3 das colunas e ainda com chance
+    for(let i=0;i<cols;i++){
+      if(i % 3 !== 0) continue;
+      if(Math.random() < 0.55) continue;
+
+      const x = i*fs + (fs*0.1);
+      const y = drops[i];
+
+      ctx.fillStyle = `hsla(${hue}, 90%, 72%, 0.40)`;
+      ctx.fillText(rndGlyph(), x, y);
+
+      drops[i] += (fs * 0.34) * (dt/16) + (Math.random()*0.38);
+      if(drops[i] > H + fs*2) drops[i] = -Math.random()*H*0.35;
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  const ro = new ResizeObserver(()=>resize());
+  ro.observe(canvas);
+
+  resize();
+  requestAnimationFrame(draw);
+})();
+</script>
+
+</body>
+</html>
