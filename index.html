@@ -35,6 +35,9 @@
 
   --inputBg:#0f1826;
   --inputBorder:rgba(255,255,255,.28);
+
+  --toastBg: rgba(10,14,20,.84);
+  --toastBorder: rgba(255,255,255,.18);
 }
 
 *{ box-sizing:border-box; }
@@ -125,7 +128,6 @@ nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content
 .badge.n5{ border-color: rgba(52,211,153,.45); color: rgba(52,211,153,.95); }
 .badge.n4{ border-color: rgba(59,130,246,.45); color: rgba(147,197,253,.95); }
 .badge.tag{ border-color: rgba(255,255,255,.22); color: var(--text); }
-.badge.review{ border-color: hsla(var(--themeHue), 90%, 60%, .55); color: rgba(238,242,255,.92); }
 
 .tabbtn{
   cursor:pointer;
@@ -306,6 +308,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 .flash{ position: fixed; inset: 0; pointer-events: none; opacity: 0; z-index: 999; }
 .flash.good{ background: radial-gradient(circle at 50% 35%, rgba(52,211,153,.24), transparent 62%); }
 .flash.bad{  background: radial-gradient(circle at 50% 35%, rgba(251,113,133,.24), transparent 62%); }
+.flash.warn{ background: radial-gradient(circle at 50% 35%, rgba(251,191,36,.18), transparent 62%); }
 .flash.on{ animation: flash .55s ease-out; }
 @keyframes flash{ 0%{ opacity:0; } 20%{ opacity:1; } 100%{ opacity:0; } }
 
@@ -328,32 +331,61 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   accent-color: hsl(var(--themeHue) 90% 60%);
 }
 
-/* vocabulário */
-.vocabList{
-  margin-top:10px;
-  display:grid;
-  gap:8px;
+/* ===== VOCAB (3 exemplos) ===== */
+.vocab3{
+  margin-top:12px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:16px;
+  background: rgba(255,255,255,.06);
+  padding:12px;
+}
+.vocab3 h4{
+  margin:0 0 8px;
+  font-size:13px;
+  letter-spacing:.6px;
+  color: var(--muted);
 }
 .vocabItem{
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
+  padding:10px 10px;
   border-radius:14px;
-  padding:10px 12px;
+  background: rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  margin-top:8px;
 }
-.vocabTop{
-  display:flex;
+.vocabTop{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.vocabWord{ font-size:18px; font-weight:1000; color: rgba(255,255,255,.96); }
+.vocabReading{ font-size:12px; color: var(--muted); font-weight:900; }
+.vocabMeaning{ margin-top:6px; font-size:13px; color: rgba(238,242,255,.88); }
+
+/* ===== TOAST ===== */
+#toastWrap{
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 99999;
+  display:grid;
   gap:10px;
-  align-items:baseline;
-  justify-content:space-between;
-  flex-wrap:wrap;
+  max-width: min(420px, calc(100vw - 28px));
 }
-.vWord{ font-weight:1000; font-size:16px; color: rgba(255,255,255,.96); }
-.vReading{ font-size:12px; color: var(--muted); font-weight:900; }
-.vMean{ font-size:13px; color: rgba(238,242,255,.90); margin-top:4px; }
-.vLoading{ font-size:13px; color: var(--muted); }
+.toast{
+  background: var(--toastBg);
+  border:1px solid var(--toastBorder);
+  border-radius: 16px;
+  padding: 10px 12px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: toastIn .22s ease both;
+}
+@keyframes toastIn{ from{ opacity:0; transform: translateY(8px) scale(.98);} to{ opacity:1; transform: translateY(0) scale(1);} }
+.toast .t{ font-weight:1000; font-size:12px; letter-spacing:.5px; }
+.toast .m{ margin-top:4px; color: rgba(238,242,255,.84); font-size:12px; }
+.toast.good{ border-color: rgba(52,211,153,.34); }
+.toast.bad{ border-color: rgba(251,113,133,.34); }
+.toast.warn{ border-color: rgba(251,191,36,.34); }
 
 /* =========================================================
-   PORTAL / ENTRADA — MAIS IMERSIVO (parallax, fog, kanji rain)
+   PORTAL / ENTRADA — MAIS IMERSIVO (KANJI RAIN + FX)
 ========================================================= */
 #app.appHidden{ display:none; }
 
@@ -365,83 +397,65 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   align-items:center;
   justify-content:center;
   overflow:hidden;
-  perspective: 900px;
 }
 
 .jp-bg{
   position:absolute;
-  inset:-60px;
+  inset:-40px;
   background:
-    radial-gradient(1200px 760px at 18% 12%, rgba(130,90,255,.26), transparent 58%),
-    radial-gradient(980px 720px at 84% 22%, rgba(0,255,200,.16), transparent 60%),
-    radial-gradient(1100px 760px at 40% 88%, rgba(255,90,130,.16), transparent 58%),
+    radial-gradient(1100px 700px at 18% 12%, rgba(130,90,255,.26), transparent 58%),
+    radial-gradient(900px 650px at 84% 22%, rgba(0,255,200,.16), transparent 60%),
+    radial-gradient(1000px 700px at 40% 88%, rgba(255,90,130,.16), transparent 58%),
     linear-gradient(180deg, rgba(8,10,14,.94), rgba(10,14,20,.98));
   transform: scale(1.05);
-  filter: saturate(1.06);
-  will-change: transform;
+  filter: saturate(1.05);
 }
+
+.jp-vignette{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(900px 650px at 50% 45%, rgba(255,255,255,.06), transparent 58%),
+    radial-gradient(900px 750px at 50% 50%, transparent 55%, rgba(0,0,0,.55) 78%),
+    linear-gradient(180deg, rgba(0,0,0,.28), transparent 30%, rgba(0,0,0,.36));
+  pointer-events:none;
+  z-index:2;
+  opacity:.9;
+}
+.jp-scan{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+  opacity:.14;
+  background:
+    repeating-linear-gradient(180deg, rgba(255,255,255,.10) 0 1px, transparent 1px 4px);
+  mix-blend-mode: overlay;
+  animation: scan 9.5s linear infinite;
+}
+@keyframes scan{ 0%{ transform: translateY(-8%); } 100%{ transform: translateY(8%);} }
 
 .jp-pattern{
   position:absolute;
   inset:0;
-  opacity:.16;
+  opacity:.14;
   mix-blend-mode: screen;
   background:
     radial-gradient(circle at 0 0, rgba(255,255,255,.20) 0 2px, transparent 2px 18px) 0 0/38px 38px,
     radial-gradient(circle at 19px 19px, rgba(255,255,255,.14) 0 2px, transparent 2px 18px) 0 0/38px 38px,
     radial-gradient(circle at 0 0, rgba(120,90,255,.18) 0 1px, transparent 1px 22px) 0 0/44px 44px;
   filter: blur(.2px);
+  z-index:1;
 }
 
-.fog{
-  position:absolute;
-  inset:-20%;
-  background:
-    radial-gradient(900px 600px at 35% 40%, rgba(255,255,255,.10), transparent 60%),
-    radial-gradient(900px 700px at 65% 55%, rgba(0,255,200,.08), transparent 62%),
-    radial-gradient(1000px 760px at 50% 60%, rgba(120,90,255,.10), transparent 62%);
-  opacity:.35;
-  filter: blur(10px);
-  transform: translateZ(0);
-  animation: fog 12s ease-in-out infinite alternate;
-  pointer-events:none;
-  z-index:2;
-}
-@keyframes fog{
-  from{ transform: translate3d(-1.2%, -0.6%, 0) scale(1.02); }
-  to{ transform: translate3d(1.2%, 0.8%, 0) scale(1.06); }
-}
-
-.kanjiRain{
+/* Kanji rain canvas */
+#kanjiRain{
   position:absolute;
   inset:0;
-  pointer-events:none;
   z-index:1;
-  opacity:.16;
+  opacity:.42;
   mix-blend-mode: screen;
-  filter: blur(.1px);
-  font-weight:1000;
-}
-.krCol{
-  position:absolute;
-  top:-30%;
-  width: 24px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  animation: fallKr var(--dur) linear var(--delay) infinite;
-}
-.krCol span{
-  display:block;
-  text-align:center;
-  color: rgba(160,240,255,.65);
-  text-shadow: 0 0 12px rgba(0,0,0,.45);
-  transform: rotate(-2deg);
-}
-@keyframes fallKr{
-  0%{ transform: translateY(-20vh); opacity:0; }
-  10%{ opacity:.75; }
-  100%{ transform: translateY(140vh); opacity:0; }
+  filter: blur(.15px) saturate(1.05);
 }
 
 /* ===== 無常 (MAIS VISÍVEL) ===== */
@@ -455,7 +469,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   font-size: clamp(180px, 24vw, 360px);
   line-height: 1;
   opacity: .34;
-  z-index: 3;
+  z-index: 2;
   pointer-events:none;
 
   background: linear-gradient(90deg,
@@ -512,9 +526,8 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   transform: translate(-50%,-54%);
   opacity:.78;
   pointer-events:none;
-  z-index:4;
+  z-index:3;
   animation: toriiFloat 5.6s ease-in-out infinite;
-  will-change: transform;
 }
 .jp-torii svg{
   width:100%;
@@ -540,7 +553,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   opacity:.95;
-  z-index:6;
+  z-index:4;
 }
 .shoji.left{ left:0; border-right:1px solid rgba(255,255,255,.16); }
 .shoji.right{ right:0; border-left:1px solid rgba(255,255,255,.16); }
@@ -554,7 +567,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 
 .jp-card{
   position:relative;
-  z-index:7;
+  z-index:6;
   width:min(720px, 92vw);
   border-radius: 26px;
   border: 1px solid rgba(255,255,255,.18);
@@ -698,7 +711,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   pointer-events:none;
   z-index:5;
 }
-
 .petal{
   position:absolute;
   top:-12%;
@@ -732,7 +744,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
     radial-gradient(900px 650px at 50% 55%, rgba(120,90,255,.20), transparent 62%),
     radial-gradient(900px 650px at 55% 50%, rgba(0,255,200,.16), transparent 62%);
   transform: scale(1);
-  z-index:8;
+  z-index:7;
 }
 
 /* saída mais devagar */
@@ -761,20 +773,20 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 
 <body>
 <div id="flash" class="flash"></div>
+<div id="toastWrap"></div>
 
 <!-- ====== PORTAL / TELA DE ENTRADA ====== -->
 <section id="gate" class="jpGate">
-  <div class="jp-bg" id="gateBg"></div>
+  <div class="jp-bg"></div>
+  <canvas id="kanjiRain"></canvas>
   <div class="jp-pattern"></div>
-  <div class="fog"></div>
-
-  <div class="kanjiRain" id="kanjiRain"></div>
+  <div class="jp-scan"></div>
 
   <!-- 無常 gigante -->
   <div class="mujo" aria-hidden="true">無常</div>
 
   <!-- TORII -->
-  <div class="jp-torii" id="gateTorii" aria-hidden="true">
+  <div class="jp-torii" aria-hidden="true">
     <svg viewBox="0 0 1400 800" role="presentation">
       <defs>
         <linearGradient id="verm" x1="0" x2="1">
@@ -812,52 +824,36 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
         </filter>
       </defs>
 
-      <path d="M110 190
-               C 340 88, 1060 88, 1290 190
-               C 1060 165, 340 165, 110 190 Z"
+      <path d="M110 190 C 340 88, 1060 88, 1290 190 C 1060 165, 340 165, 110 190 Z"
             fill="url(#verm)" filter="url(#glow)"></path>
 
-      <path d="M210 270
-               C 420 200, 980 200, 1190 270
-               C 980 252, 420 252, 210 270 Z"
+      <path d="M210 270 C 420 200, 980 200, 1190 270 C 980 252, 420 252, 210 270 Z"
             fill="rgba(255,255,255,.12)"></path>
 
-      <path d="M320 360
-               C 460 318, 940 318, 1080 360
-               C 940 382, 460 382, 320 360 Z"
+      <path d="M320 360 C 460 318, 940 318, 1080 360 C 940 382, 460 382, 320 360 Z"
             fill="rgba(0,255,200,.10)"></path>
 
-      <path d="M410 300
-               C 395 420, 380 610, 396 728
-               C 408 760, 470 760, 488 728
-               C 505 610, 488 420, 474 300 Z"
+      <path d="M410 300 C 395 420, 380 610, 396 728 C 408 760, 470 760, 488 728 C 505 610, 488 420, 474 300 Z"
             fill="url(#verm)" filter="url(#patina)"></path>
 
-      <path d="M926 300
-               C 912 420, 898 610, 914 728
-               C 926 760, 988 760, 1006 728
-               C 1022 610, 1006 420, 992 300 Z"
+      <path d="M926 300 C 912 420, 898 610, 914 728 C 926 760, 988 760, 1006 728 C 1022 610, 1006 420, 992 300 Z"
             fill="url(#verm)" filter="url(#patina)"></path>
 
-      <path d="M684 330
-               C 675 440, 668 612, 674 728
-               C 683 754, 717 754, 726 728
-               C 733 612, 726 440, 716 330 Z"
+      <path d="M684 330 C 675 440, 668 612, 674 728 C 683 754, 717 754, 726 728 C 733 612, 726 440, 716 330 Z"
             fill="rgba(255,255,255,.07)"></path>
 
-      <path d="M372 728 C 420 696, 496 696, 544 728
-               C 496 760, 420 760, 372 728 Z"
+      <path d="M372 728 C 420 696, 496 696, 544 728 C 496 760, 420 760, 372 728 Z"
             fill="rgba(255,255,255,.10)"></path>
 
-      <path d="M870 728 C 918 696, 994 696, 1042 728
-               C 994 760, 918 760, 870 728 Z"
+      <path d="M870 728 C 918 696, 994 696, 1042 728 C 994 760, 918 760, 870 728 Z"
             fill="rgba(255,255,255,.10)"></path>
 
-      <path d="M658 275 C 690 255, 720 255, 752 275
-               C 720 292, 690 292, 658 275 Z"
+      <path d="M658 275 C 690 255, 720 255, 752 275 C 720 292, 690 292, 658 275 Z"
             fill="rgba(255,255,255,.08)"></path>
     </svg>
   </div>
+
+  <div class="jp-vignette"></div>
 
   <div class="shoji left"></div>
   <div class="shoji right"></div>
@@ -965,12 +961,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
           </div>
 
           <hr class="sep">
-
-          <div class="mean">📚 Vocabulário (3 exemplos)</div>
-          <div class="small" id="kdVocabHint">—</div>
-          <div class="vocabList" id="kdVocab"></div>
-
-          <hr class="sep">
           <div class="row">
             <div class="btn good" id="kdTrain">Treinar no Jogo</div>
           </div>
@@ -990,10 +980,10 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
         <div class="row">
           <div>
             <h2>Jogo</h2>
-            <p class="hint" id="reviewHint">Revisão (erros): —</p>
+            <p class="hint" id="reviewHint">Atalho: <b>P</b> = Revisão (só aparece quando existir erro).</p>
           </div>
 
-          <div class="row">
+          <div class="row" style="justify-content:flex-end;">
             <label class="toggle" title="Repete mais os que você erra">
               <input type="checkbox" id="quizSmart" checked />
               modo inteligente
@@ -1002,10 +992,14 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
               <input type="checkbox" id="quizAuto" checked />
               auto-run
             </label>
-            <label class="toggle" title="Apenas revisão (só aparece quando tiver erro)">
-              <input type="checkbox" id="reviewOnly" />
-              só errados
-            </label>
+
+            <!-- container que some quando não há erros -->
+            <div id="reviewToggleWrap" style="display:none;">
+              <label class="toggle" title="Somente kanjis errados (revisão)">
+                <input type="checkbox" id="reviewOnly" />
+                revisão (P)
+              </label>
+            </div>
           </div>
         </div>
 
@@ -1017,7 +1011,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
                 <span class="badge" id="quizScore">Acertos: 0 · Erros: 0 · Streak: 0</span>
                 <span class="badge" id="quizTimerText">⏱️ 12s</span>
                 <span class="badge tag" id="quizMoodText">Mood: —</span>
-                <span class="badge review" id="reviewBadge" style="display:none;">Review</span>
               </div>
               <div class="timerBarWrap">
                 <div class="timerBar" id="timerBar"></div>
@@ -1065,10 +1058,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
             <div class="mean" id="quizFeedbackTitle"></div>
             <div class="hira" id="quizFeedbackDetail"></div>
 
-            <div class="mean" style="margin-top:12px;">📚 Vocabulário (3 exemplos)</div>
-            <div class="small" id="quizVocabHint">—</div>
-            <div class="vocabList" id="quizVocab"></div>
-
             <div class="strokeBox" style="margin-top:12px;">
               <div class="strokeHead">
                 <div class="t">Ordem dos traços</div>
@@ -1083,6 +1072,13 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
               </div>
               <div class="strokeBody" id="quizStroke"></div>
               <div class="strokeNote">Fonte: KanjiVG.</div>
+            </div>
+
+            <!-- 3 vocábulos -->
+            <div class="vocab3" id="vocabBox">
+              <h4>Vocabulário (3 exemplos — PT-BR)</h4>
+              <div class="small" id="vocabStatus">—</div>
+              <div id="vocabList"></div>
             </div>
           </div>
         </div>
@@ -1101,7 +1097,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
           <div class="small" id="worstKanjis">—</div>
 
           <hr class="sep">
-          <div class="mean">🧪 Revisão (fila de erros)</div>
+          <div class="mean">🧠 Revisão (erros pendentes)</div>
           <div class="small" id="reviewList">—</div>
 
           <hr class="sep">
@@ -1125,6 +1121,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   const hues = [195, 230, 265, 305, 20, 55, 110, 155];
   let i = Math.floor(Math.random() * hues.length);
   document.documentElement.style.setProperty("--themeHue", String(hues[i]));
+
   setInterval(()=>{
     i = (i + 1) % hues.length;
     document.documentElement.style.setProperty("--themeHue", String(hues[i]));
@@ -1144,7 +1141,7 @@ const N5_SET = new Set(N5_LIST);
 const N4_SET = new Set(N4_LIST);
 
 /* =========================
-   KANJI_INFO (PT-BR) — MANTIVE O SEU
+   KANJI_INFO (PT-BR)
 ========================= */
 const KANJI_INFO = {
   "一":{readings:["いち","ひと"], meaning:"um"},
@@ -1403,9 +1400,24 @@ function isInfoComplete(k){
 }
 
 /* =========================
-   HELPERS
+   HELPERS + UI SAFETY
 ========================= */
 const $ = (id)=>document.getElementById(id);
+
+function toast(title, msg, type="warn", ms=2200){
+  const wrap = $("toastWrap");
+  if(!wrap) return;
+  const el = document.createElement("div");
+  el.className = "toast " + type;
+  el.innerHTML = `<div class="t">${title}</div><div class="m">${msg||""}</div>`;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(8px)"; }, ms);
+  setTimeout(()=>{ el.remove(); }, ms + 260);
+}
+
+window.addEventListener("error", (e)=>{
+  toast("Erro", (e?.message || "Ocorreu um erro.").slice(0,160), "bad", 2600);
+});
 
 function flash(type){
   const f = $("flash");
@@ -1414,7 +1426,6 @@ function flash(type){
   f.classList.add("on");
   setTimeout(()=>f.classList.remove("on"), 560);
 }
-
 function shuffle(arr){
   const a = [...arr];
   for(let i=a.length-1;i>0;i--){
@@ -1423,40 +1434,33 @@ function shuffle(arr){
   }
   return a;
 }
-
 function levelOf(k){
   if(N5_SET.has(k)) return "N5";
   if(N4_SET.has(k)) return "N4";
   return "N4";
 }
-
 function allKanjisUnique(){
   const set = new Set([...N5_LIST, ...N4_LIST]);
   return Array.from(set);
 }
-
 function poolByLevel(level){
   const all = allKanjisUnique().filter(isInfoComplete);
   if(level === "N5") return all.filter(k=>N5_SET.has(k));
   if(level === "N4") return all.filter(k=>N4_SET.has(k));
   return all;
 }
-
 function toHiragana(s){
   return (s||"").replace(/[\u30A1-\u30F6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 }
-
 function normalizeSearch(s){
   return toHiragana((s||"").trim().toLowerCase());
 }
-
 function isKana(s){
   return /^[\u3040-\u309F\u30A0-\u30FFー]+$/.test(s);
 }
 function isKanjiLike(s){
   return /[\u4E00-\u9FFF]/.test(s);
 }
-
 function safeInfo(k){
   const info = KANJI_INFO[k] || {readings:["—"], meaning:"—"};
   const r = (info.readings||[]).map(toHiragana).filter(Boolean);
@@ -1572,177 +1576,6 @@ async function loadKanjiSVGInto(kanji, targetEl){
   }
 }
 
-/* =========================================================
-   VOCAB (3 palavras) — JP->PT via jmdict_portuguese (Yomichan)
-   Motivo: Jisho no browser tende a CORS, então usamos dataset JP-PT estável em CDN.
-========================================================= */
-const VOCAB = (()=> {
-  const BASE = "https://cdn.jsdelivr.net/gh/elementare/jmdict_portuguese@master/";
-  const BANKS = 29; // repo tem term_bank_1..term_bank_29 (se mudar, só ajuste aqui)
-  const bankCache = new Map(); // LRU simples
-  const bankOrder = [];
-  const bankMax = 3; // segura memória
-  const kanjiCache = new Map(); // kanji -> examples array
-
-  function lruPut(k, v){
-    if(bankCache.has(k)){
-      bankOrder.splice(bankOrder.indexOf(k),1);
-    }
-    bankCache.set(k, v);
-    bankOrder.push(k);
-    while(bankOrder.length > bankMax){
-      const old = bankOrder.shift();
-      bankCache.delete(old);
-    }
-  }
-
-  async function loadBank(i){
-    const key = "term_bank_"+i;
-    if(bankCache.has(key)) return bankCache.get(key);
-    const url = `${BASE}term_bank_${i}.json`;
-    const res = await fetch(url, {cache:"force-cache"});
-    if(!res.ok) throw new Error("Vocab HTTP "+res.status);
-    const data = await res.json();
-    lruPut(key, data);
-    return data;
-  }
-
-  function cleanGloss(g){
-    if(g == null) return "";
-    if(typeof g === "string") return g;
-    if(Array.isArray(g)){
-      // pode ser array de strings/objetos
-      const parts = g.map(x=>{
-        if(typeof x === "string") return x;
-        if(x && typeof x === "object"){
-          if(typeof x.content === "string") return x.content;
-          if(typeof x.text === "string") return x.text;
-          if(typeof x.value === "string") return x.value;
-        }
-        return "";
-      }).filter(Boolean);
-      return parts.join("; ");
-    }
-    if(typeof g === "object"){
-      if(typeof g.content === "string") return g.content;
-      if(typeof g.text === "string") return g.text;
-      if(typeof g.value === "string") return g.value;
-    }
-    return "";
-  }
-
-  function parseEntry(e){
-    // Yomichan term bank typical:
-    // [expression, reading, definitionTags, rules, score, glossary, sequence, termTags]
-    // mas pode variar — então pegamos por posição “provável”
-    const term = (e && e[0]) ? String(e[0]) : "";
-    const reading = (e && e[1]) ? String(e[1]) : "";
-    const score = (e && typeof e[4] === "number") ? e[4] : 0;
-    const gloss = cleanGloss(e ? e[5] : "");
-    const tags = e ? (e[7] || e[2] || "") : "";
-    return {term, reading, gloss, score, tags};
-  }
-
-  function okWord(w, kanji){
-    if(!w.term) return false;
-    if(!w.term.includes(kanji)) return false;
-    if(w.term.length > 10) return false;
-    // evita entradas “estranhas”
-    if(/[A-Za-z0-9]/.test(w.term)) return false;
-    if(!w.gloss) return false;
-    return true;
-  }
-
-  function scoreWord(w){
-    // heurística leve: menor termo + score maior primeiro
-    const lenBonus = Math.max(0, 10 - w.term.length);
-    const s = (w.score || 0) * 0.001 + lenBonus;
-    return s;
-  }
-
-  async function getExamples(kanji, n=3){
-    if(kanjiCache.has(kanji)) return kanjiCache.get(kanji);
-
-    const picks = [];
-    const used = new Set();
-
-    for(let i=1;i<=BANKS;i++){
-      let bank;
-      try{
-        bank = await loadBank(i);
-      }catch{
-        continue;
-      }
-
-      // banco é array de entradas
-      const candidates = [];
-      for(const e of bank){
-        const w = parseEntry(e);
-        if(!okWord(w, kanji)) continue;
-        if(used.has(w.term)) continue;
-        candidates.push(w);
-      }
-
-      // ordena candidatos deste bank por score heurístico
-      candidates.sort((a,b)=> scoreWord(b) - scoreWord(a));
-
-      for(const w of candidates){
-        used.add(w.term);
-        picks.push({
-          term: w.term,
-          reading: toHiragana(w.reading || ""),
-          meaning: w.gloss
-        });
-        if(picks.length >= n) break;
-      }
-      if(picks.length >= n) break;
-    }
-
-    // fallback bem seguro (não quebra UI)
-    while(picks.length < n){
-      picks.push({term:"—", reading:"—", meaning:"Sem entrada (offline/limite do dicionário)."});
-    }
-
-    kanjiCache.set(kanji, picks);
-    return picks;
-  }
-
-  return { getExamples };
-})();
-
-function renderVocab(containerEl, hintEl, items){
-  containerEl.innerHTML = "";
-  if(!items || !items.length){
-    hintEl.textContent = "—";
-    return;
-  }
-  hintEl.textContent = "3 exemplos (JP → PT-BR)";
-  for(const it of items){
-    const div = document.createElement("div");
-    div.className = "vocabItem";
-    div.innerHTML = `
-      <div class="vocabTop">
-        <div class="vWord">${it.term}</div>
-        <div class="vReading">${it.reading ? `(${it.reading})` : ""}</div>
-      </div>
-      <div class="vMean">${it.meaning}</div>
-    `;
-    containerEl.appendChild(div);
-  }
-}
-
-async function loadAndShowVocabForKanji(kanji, containerEl, hintEl){
-  hintEl.textContent = "Carregando do dicionário JP-PT...";
-  containerEl.innerHTML = `<div class="vLoading">Buscando 3 palavras…</div>`;
-  try{
-    const ex = await VOCAB.getExamples(kanji, 3);
-    renderVocab(containerEl, hintEl, ex);
-  }catch{
-    hintEl.textContent = "Falha ao carregar vocabulário.";
-    containerEl.innerHTML = `<div class="vLoading">Sem vocabulário (erro de rede).</div>`;
-  }
-}
-
 /* =========================
    KANJI TAB + SEARCH
 ========================= */
@@ -1760,8 +1593,6 @@ const kdMean = $("kdMean");
 const kdBadges = $("kdBadges");
 const kdStroke = $("kdStroke");
 const kdSpeed = $("kdSpeed");
-const kdVocab = $("kdVocab");
-const kdVocabHint = $("kdVocabHint");
 
 let selectedKanji = null;
 let kdSvgEl = null;
@@ -1849,9 +1680,6 @@ async function showKanjiDetail(k, autoScroll){
 
   kdSvgEl = await loadKanjiSVGInto(k, kdStroke);
   animateStrokeOrder(kdSvgEl, Number(kdSpeed.value));
-
-  // VOCAB
-  loadAndShowVocabForKanji(k, kdVocab, kdVocabHint);
 }
 
 $("kdReplay").addEventListener("click", ()=>{
@@ -1869,19 +1697,79 @@ $("kdTrain").addEventListener("click", ()=>{
 });
 
 /* =========================
+   REVISÃO (erros) — NÃO CAI + SOMENTE QUANDO EXISTE
+========================= */
+const reviewToggleWrap = $("reviewToggleWrap");
+const reviewOnly = $("reviewOnly");
+let reviewSet = new Set(); // kanjis errados pendentes
+
+function updateReviewUI(){
+  const arr = Array.from(reviewSet);
+  $("reviewList").innerHTML = arr.length
+    ? arr.map(k=>`<b>${k}</b>`).join("  ")
+    : "—";
+
+  if(arr.length){
+    reviewToggleWrap.style.display = "block";
+  }else{
+    reviewToggleWrap.style.display = "none";
+    if(reviewOnly) reviewOnly.checked = false;
+  }
+}
+
+function safeEnableReview(on){
+  const has = reviewSet.size > 0;
+  if(!has){
+    if(reviewOnly) reviewOnly.checked = false;
+    updateReviewUI();
+    flash("warn");
+    toast("Revisão", "Você ainda não errou nenhum kanji. Sem revisão por enquanto.", "warn", 2200);
+    return false;
+  }
+  if(reviewOnly) reviewOnly.checked = !!on;
+  updateReviewUI();
+  return true;
+}
+
+document.addEventListener("keydown", (e)=>{
+  const tag = (e.target?.tagName || "").toLowerCase();
+  const typing = (tag === "input" || tag === "textarea");
+  if(typing) return;
+  if(e.key === "p" || e.key === "P"){
+    e.preventDefault();
+    const targetState = !(reviewOnly?.checked);
+    safeEnableReview(targetState);
+    if(reviewOnly?.checked){
+      toast("Revisão", "Modo revisão ligado (somente erros).", "good", 1800);
+      nextQuestion();
+    }else{
+      toast("Revisão", "Modo revisão desligado (pool normal).", "warn", 1800);
+      nextQuestion();
+    }
+  }
+});
+
+if(reviewOnly){
+  reviewOnly.addEventListener("change", ()=>{
+    if(reviewOnly.checked){
+      if(!safeEnableReview(true)) return;
+      toast("Revisão", "Somente kanjis errados.", "good", 1800);
+      nextQuestion();
+    }else{
+      toast("Revisão", "Pool normal (ALL/N5/N4).", "warn", 1600);
+      nextQuestion();
+    }
+  });
+}
+
+/* =========================
    QUIZ STATS
 ========================= */
 const LS_KEY = "vampire_kanji_quiz_ptbr_v2";
 
 function defaultStats(){
-  return {
-    bestStreak:0, bestAccuracy:0, bestScore:0,
-    totalCorrect:0, totalWrong:0,
-    perKanji:{}, recent:[],
-    review:{ set:[], counts:{} } // set = array (persistência), counts = {kanji: {w,c}}
-  };
+  return { bestStreak:0, bestAccuracy:0, bestScore:0, totalCorrect:0, totalWrong:0, perKanji:{}, recent:[] };
 }
-
 function loadStats(){
   try{ const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : defaultStats(); }
   catch{ return defaultStats(); }
@@ -1889,22 +1777,7 @@ function loadStats(){
 function saveStats(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(stats)); }catch{} }
 let stats = loadStats();
 
-/* revisão (erros) — runtime */
-let reviewSet = new Set(stats.review?.set || []);
-let reviewCounts = stats.review?.counts || {}; // {k:{w,c}}
-function ensureReviewCounts(k){ if(!reviewCounts[k]) reviewCounts[k] = {w:0,c:0}; }
-
-function persistReview(){
-  stats.review = stats.review || {};
-  stats.review.set = Array.from(reviewSet);
-  stats.review.counts = reviewCounts;
-  saveStats();
-}
-
-function reviewSize(){ return reviewSet.size; }
-
 function ensurePerKanji(k){ if(!stats.perKanji[k]) stats.perKanji[k] = {c:0,w:0}; }
-
 function pushRecent(ok){
   stats.recent.push(ok ? 1 : 0);
   if(stats.recent.length > 12) stats.recent.shift();
@@ -1924,7 +1797,6 @@ function applyMood(){
 ========================= */
 const quizSmart = $("quizSmart");
 const quizAuto = $("quizAuto");
-const reviewOnly = $("reviewOnly");
 const quizLevel = $("quizLevel");
 const quizKanji = $("quizKanji");
 const quizScoreEl = $("quizScore");
@@ -1941,14 +1813,11 @@ const quizFeedbackDetail = $("quizFeedbackDetail");
 const quizStroke = $("quizStroke");
 const quizSpeed = $("quizSpeed");
 
-const quizVocab = $("quizVocab");
-const quizVocabHint = $("quizVocabHint");
-
 const bestStatsEl = $("bestStats");
 const worstKanjisEl = $("worstKanjis");
-const reviewHint = $("reviewHint");
-const reviewListEl = $("reviewList");
-const reviewBadge = $("reviewBadge");
+
+const vocabStatus = $("vocabStatus");
+const vocabList = $("vocabList");
 
 let quizSvgEl = null;
 
@@ -1956,13 +1825,12 @@ $("goKanji").addEventListener("click", ()=> openTab("kanji"));
 $("resetHistory").addEventListener("click", ()=>{
   stats = defaultStats();
   reviewSet = new Set();
-  reviewCounts = {};
-  persistReview();
   saveStats();
   updateRightPanel();
   updateReviewUI();
   applyMood();
   flash("bad");
+  toast("Reset", "Histórico zerado.", "bad", 1800);
 });
 
 const quizState = {
@@ -1989,43 +1857,6 @@ function updateScoreUI(){
   quizScoreEl.textContent =
     `Acertos: ${quizState.sessionCorrect} · Erros: ${quizState.sessionWrong} · Streak: ${quizState.sessionStreak}`;
 }
-
-function updateReviewUI(){
-  const n = reviewSize();
-  if(n > 0){
-    reviewHint.textContent = `Revisão (erros): ${n} kanji na fila`;
-    reviewOnly.disabled = false;
-    reviewOnly.parentElement.style.opacity = "1";
-  }else{
-    reviewHint.textContent = `Revisão (erros): nenhum`;
-    reviewOnly.checked = false;
-    reviewOnly.disabled = true;
-    reviewOnly.parentElement.style.opacity = ".65";
-  }
-
-  reviewBadge.style.display = reviewOnly.checked ? "inline-block" : "none";
-
-  // lista (top 12)
-  const arr = Array.from(reviewSet).map(k=>{
-    ensureReviewCounts(k);
-    return {k, w: reviewCounts[k].w || 0, c: reviewCounts[k].c || 0};
-  });
-  arr.sort((a,b)=> (b.w - a.w) || (a.c - b.c));
-  const top = arr.slice(0,12);
-  reviewListEl.innerHTML = top.length
-    ? top.map(x=>`• <b>${x.k}</b> — erros: ${x.w} · acertos(rev): ${x.c}`).join("<br>")
-    : "—";
-}
-
-reviewOnly.addEventListener("change", ()=>{
-  // só permite ligar se tiver erro
-  if(reviewOnly.checked && reviewSize() === 0){
-    reviewOnly.checked = false;
-    return;
-  }
-  updateReviewUI();
-  nextQuestion(true); // força nova seleção coerente
-});
 
 function updateRightPanel(){
   const totalGlobal = stats.totalCorrect + stats.totalWrong;
@@ -2089,7 +1920,7 @@ function buildChoices(kind, correctKanji, pool){
     if(picks.length === 4) break;
   }
 
-  while(picks.length < 4 && poolOthers.length){
+  while(picks.length < 4){
     const k = poolOthers[Math.floor(Math.random() * poolOthers.length)];
     const t = (kind === "reading") ? readingText(k) : meaningText(k);
     if(!t || used.has(t)) continue;
@@ -2107,8 +1938,6 @@ function resetQuestionState(){
   quizState.okMeaning = false;
   quizState.lockedAfterResult = false;
   quizFeedback.style.display = "none";
-  quizVocabHint.textContent = "—";
-  quizVocab.innerHTML = "";
 }
 
 function disableAllChoices(){
@@ -2147,7 +1976,8 @@ function weightedPick(pool){
     ensurePerKanji(k);
     const {c,w} = stats.perKanji[k];
     const unseen = (c+w===0) ? 1.0 : 0;
-    const weight = Math.max(0.2, 1 + w*2.6 - c*0.30 + unseen);
+    const inReview = reviewSet.has(k) ? 0.65 : 0;
+    const weight = Math.max(0.2, 1 + w*2.6 - c*0.30 + unseen + inReview);
     total += weight;
     return weight;
   });
@@ -2165,22 +1995,23 @@ function getBasePool(){
   const pool = poolByLevel(lvl);
   return pool.length < 6 ? poolByLevel("ALL") : pool;
 }
-
-function getActivePool(){
-  // Se reviewOnly ligado, pool = reviewSet intersect basePool
+function getReviewPool(){
   const base = getBasePool();
-  if(!reviewOnly.checked) return base;
-
-  if(reviewSize() === 0){
-    // safety (nunca cai)
-    reviewOnly.checked = false;
+  const only = base.filter(k => reviewSet.has(k));
+  return only.length ? only : [];
+}
+function getQuizPool(){
+  // Se revisão ligada e existirem erros, só usa erros.
+  if(reviewOnly && reviewOnly.checked){
+    const rp = getReviewPool();
+    if(rp.length) return rp;
+    // nunca cai: desliga se ficar vazio
+    if(reviewOnly) reviewOnly.checked = false;
     updateReviewUI();
-    return base;
+    toast("Revisão", "Sua revisão acabou (nenhum erro pendente).", "good", 2200);
+    return getBasePool();
   }
-  const rs = reviewSet;
-  const reviewPool = base.filter(k => rs.has(k));
-  // se filtro de nível zerar o reviewPool, faz fallback só para reviewSet (sem nível)
-  return reviewPool.length ? reviewPool : Array.from(rs);
+  return getBasePool();
 }
 
 function pickKanji(pool){
@@ -2192,6 +2023,289 @@ function pickKanji(pool){
   return k;
 }
 
+/* =========================
+   VOCAB 3 EXEMPLOS — JP→PT + filtro JLPT N4/N5
+========================= */
+/*
+  Fontes:
+  - Dicionário JP→PT (Yomichan) do elementare/jmdict_portuguese (term_bank_*.json)
+  - Lista JLPTWords (palavra→nível) do Bluskyo/JLPT_Vocabulary (release v1.2)
+*/
+const JLPT_WORDS_URLS = [
+  "https://github.com/Bluskyo/JLPT_Vocabulary/releases/download/v1.2/JLPTWords.json",
+  "https://objects.githubusercontent.com/github-production-release-asset-2e65be/0/0?raw=1" // fallback genérico (se GitHub redirecionar)
+];
+
+const PT_DICT_BASE = "https://cdn.jsdelivr.net/gh/elementare/jmdict_portuguese@master/";
+const PT_BANK_COUNT = 29;
+
+let jlptWordLevel = null;          // Map(word -> "N5"/"N4"/...)
+let jlptKanjiIndex = null;         // Map(kanjiChar -> {N5: [word], N4:[word]})
+const ptTermCache = new Map();     // term -> {term, reading, meaning, score}
+const ptLoadedBanks = new Set();   // loaded bank indices
+let ptBankPromises = new Map();
+
+function isCJKKanjiChar(ch){
+  return /[\u4E00-\u9FFF]/.test(ch);
+}
+function normalizeJLPTLevel(v){
+  // v pode vir como "N 5" ou "N5"
+  const s = String(v||"").replace(/\s+/g,"").toUpperCase();
+  if(/^N[1-5]$/.test(s)) return s;
+  return null;
+}
+
+async function fetchJsonAny(urls){
+  let lastErr = null;
+  for(const url of urls){
+    try{
+      const r = await fetch(url, {cache:"force-cache", redirect:"follow"});
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      return await r.json();
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error("fetch failed");
+}
+
+async function ensureJLPTWords(){
+  if(jlptWordLevel) return jlptWordLevel;
+
+  // tentativa 1: GitHub release direto
+  // se falhar (CORS), o fetch vai cair e a gente avisa
+  try{
+    const data = await fetchJsonAny(JLPT_WORDS_URLS);
+    const m = new Map();
+    for(const [w, lvl] of Object.entries(data||{})){
+      const L = normalizeJLPTLevel(lvl);
+      if(L) m.set(w, L);
+    }
+    jlptWordLevel = m;
+    return jlptWordLevel;
+  }catch(err){
+    jlptWordLevel = new Map();
+    toast("Vocabulário", "Falha ao carregar JLPTWords.json (rede/CORS). Vou tentar ainda assim com o dicionário PT.", "warn", 3000);
+    return jlptWordLevel;
+  }
+}
+
+async function ensureJLPTKanjiIndex(){
+  if(jlptKanjiIndex) return jlptKanjiIndex;
+
+  const map = await ensureJLPTWords();
+  const idx = new Map();
+
+  // indexa só N4/N5 porque você pediu
+  for(const [word, lvl] of map.entries()){
+    if(lvl !== "N5" && lvl !== "N4") continue;
+    if(!word || typeof word !== "string") continue;
+    if(word.length > 12) continue; // corta frases gigantes
+
+    const chars = Array.from(word);
+    const unique = new Set(chars.filter(isCJKKanjiChar));
+    for(const ch of unique){
+      if(!idx.has(ch)) idx.set(ch, {N5:[], N4:[]});
+      idx.get(ch)[lvl].push(word);
+    }
+  }
+
+  jlptKanjiIndex = idx;
+  return jlptKanjiIndex;
+}
+
+function parseGlossary(gloss){
+  // gloss pode ser string, array de strings ou objetos
+  if(!gloss) return "";
+  if(typeof gloss === "string") return gloss;
+  if(Array.isArray(gloss)){
+    const parts = [];
+    for(const g of gloss){
+      if(typeof g === "string") parts.push(g);
+      else if(g && typeof g === "object"){
+        if(typeof g.content === "string") parts.push(g.content);
+        else if(typeof g.text === "string") parts.push(g.text);
+      }
+      if(parts.length >= 2) break;
+    }
+    return parts.join("; ");
+  }
+  if(typeof gloss === "object"){
+    if(typeof gloss.content === "string") return gloss.content;
+    if(typeof gloss.text === "string") return gloss.text;
+  }
+  return "";
+}
+
+function parseTermEntry(entry){
+  // formato yomichan: [term, reading, defTags, rules, score, glossary, seq, termTags]
+  if(!Array.isArray(entry)) return null;
+  const term = entry[0];
+  const reading = entry[1];
+  const score = Number(entry[4] ?? 0);
+  const glossary = entry[5];
+  const meaning = parseGlossary(glossary);
+  if(!term || !meaning) return null;
+  return {term, reading: reading || "", meaning, score};
+}
+
+async function loadPTBank(i){
+  if(ptLoadedBanks.has(i)) return true;
+  if(ptBankPromises.has(i)) return ptBankPromises.get(i);
+
+  const p = (async ()=>{
+    const url = PT_DICT_BASE + `term_bank_${i}.json`;
+    try{
+      const r = await fetch(url, {cache:"force-cache"});
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      const data = await r.json();
+      // não indexa tudo (pesado). Apenas varre e guarda conforme for solicitado.
+      // Mas vamos aproveitar para capturar "top termos comuns" do banco: nada.
+      ptLoadedBanks.add(i);
+      return data;
+    }catch(e){
+      return null;
+    }finally{
+      // keep promise
+    }
+  })();
+
+  ptBankPromises.set(i, p);
+  return p;
+}
+
+async function lookupPortugueseTerm(term){
+  if(ptTermCache.has(term)) return ptTermCache.get(term);
+
+  // Estratégia:
+  // - carrega bancos progressivamente até encontrar
+  // - para ser "eficiente", para quando achar algo bom
+  let best = null;
+
+  for(let i=1;i<=PT_BANK_COUNT;i++){
+    const bank = await loadPTBank(i);
+    if(!bank) continue;
+
+    // varre por matches (termo exato)
+    for(const entry of bank){
+      if(entry && entry[0] === term){
+        const parsed = parseTermEntry(entry);
+        if(parsed){
+          if(!best || parsed.score > best.score) best = parsed;
+          // se score muito alto, para cedo
+          if(best.score >= 5000) break;
+        }
+      }
+    }
+    if(best && best.score >= 5000) break;
+  }
+
+  if(best){
+    ptTermCache.set(term, best);
+    return best;
+  }
+
+  ptTermCache.set(term, null);
+  return null;
+}
+
+function kanjiJLPTLevel(kanji){
+  // regra que você pediu: se o KANJI é N5 -> pega vocabulário N5, se N4 -> vocabulário N4
+  return levelOf(kanji); // "N5" ou "N4"
+}
+
+async function get3VocabForKanji(kanji){
+  const targetLevel = kanjiJLPTLevel(kanji);
+
+  // pega candidatos do índice JLPTWords
+  const idx = await ensureJLPTKanjiIndex();
+  const bucket = idx.get(kanji);
+  const candidates = bucket ? (bucket[targetLevel] || []) : [];
+
+  if(!candidates.length){
+    return { level: targetLevel, items: [], note: "Não achei palavras JLPT (N4/N5) para este kanji nesta base." };
+  }
+
+  // para reduzir custo, tenta um subconjunto primeiro
+  // (muitos candidatos podem existir; a gente quer 3 "bons")
+  const sample = shuffle(candidates).slice(0, Math.min(60, candidates.length));
+
+  const found = [];
+  for(const w of sample){
+    // corta termos com símbolos/espacos estranhos
+    if(/[ 　]/.test(w)) continue;
+    if(w.length > 10) continue;
+
+    const data = await lookupPortugueseTerm(w);
+    if(data && data.meaning){
+      found.push(data);
+      if(found.length >= 12) break; // junta um pool e rankeia
+    }
+  }
+
+  if(!found.length){
+    return { level: targetLevel, items: [], note: "Encontrei candidatos JLPT, mas não consegui casar com o dicionário PT (rede/limite/cobertura)." };
+  }
+
+  // ranking: score desc, depois tamanho asc
+  found.sort((a,b)=> (b.score - a.score) || (a.term.length - b.term.length));
+  const top3 = [];
+  const seen = new Set();
+  for(const it of found){
+    if(seen.has(it.term)) continue;
+    seen.add(it.term);
+    top3.push(it);
+    if(top3.length === 3) break;
+  }
+
+  return { level: targetLevel, items: top3, note: top3.length < 3 ? "Não deu 3 completos (cobertura/limite), mostrei o que deu." : "" };
+}
+
+function renderVocabBoxLoading(kanji){
+  vocabList.innerHTML = "";
+  vocabStatus.textContent = `Carregando 3 vocábulos (${kanjiJLPTLevel(kanji)})...`;
+}
+
+function renderVocabBoxEmpty(msg){
+  vocabList.innerHTML = "";
+  vocabStatus.textContent = msg || "—";
+}
+
+function renderVocabItems(items){
+  vocabList.innerHTML = "";
+  for(const it of items){
+    const el = document.createElement("div");
+    el.className = "vocabItem";
+    const r = (it.reading || "").trim();
+    const m = (it.meaning || "").trim();
+    el.innerHTML = `
+      <div class="vocabTop">
+        <div class="vocabWord">${it.term}</div>
+        <div class="vocabReading">${r ? `(${toHiragana(r)})` : ""}</div>
+      </div>
+      <div class="vocabMeaning">${m || "—"}</div>
+    `;
+    vocabList.appendChild(el);
+  }
+}
+
+async function renderVocabForKanji(kanji){
+  try{
+    renderVocabBoxLoading(kanji);
+    const res = await get3VocabForKanji(kanji);
+    if(!res.items.length){
+      renderVocabBoxEmpty(`Sem exemplos (${res.level}). ${res.note || ""}`.trim());
+      return;
+    }
+    vocabStatus.textContent = `Nível alvo: ${res.level}${res.note ? " • " + res.note : ""}`;
+    renderVocabItems(res.items);
+  }catch(e){
+    renderVocabBoxEmpty("Falha ao carregar vocabulário (rede/CORS).");
+    toast("Vocabulário", "Falha ao montar 3 exemplos.", "warn", 2600);
+  }
+}
+
+/* =========================
+   QUIZ FLOW
+========================= */
 async function showFeedback(okAll, reason){
   const k = quizState.current;
   const info = safeInfo(k);
@@ -2207,41 +2321,16 @@ async function showFeedback(okAll, reason){
     Significado: <b>${info.meaning}</b>
   `;
 
-  // vocab 3 palavras
-  loadAndShowVocabForKanji(k, quizVocab, quizVocabHint);
-
   quizSvgEl = await loadKanjiSVGInto(k, quizStroke);
   animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
-}
 
-function addToReview(k){
-  reviewSet.add(k);
-  ensureReviewCounts(k);
-  reviewCounts[k].w += 1;
-  persistReview();
-  updateReviewUI();
-}
-
-function removeFromReviewIfCleared(k){
-  // regra: em revisão, ao acertar o kanji -> sai da fila
-  if(reviewSet.has(k)){
-    reviewSet.delete(k);
-    ensureReviewCounts(k);
-    reviewCounts[k].c += 1;
-    persistReview();
-  }
-  // se zerou a fila, desliga o modo automaticamente
-  if(reviewSize() === 0){
-    reviewOnly.checked = false;
-  }
-  updateReviewUI();
+  // 3 vocábulos
+  renderVocabForKanji(k);
 }
 
 function commitResult(okAll, reason){
   const k = quizState.current;
   ensurePerKanji(k);
-
-  const inReviewMode = reviewOnly.checked;
 
   if(okAll){
     quizState.sessionCorrect += 1;
@@ -2251,8 +2340,17 @@ function commitResult(okAll, reason){
     pushRecent(true);
     flash("good");
 
-    // se estava em revisão, remove da fila
-    if(inReviewMode) removeFromReviewIfCleared(k);
+    // Se estava na revisão (errado pendente), "resetar": remove quando acertar.
+    if(reviewSet.has(k)){
+      reviewSet.delete(k);
+      updateReviewUI();
+      if(reviewOnly && reviewOnly.checked && reviewSet.size === 0){
+        // termina revisão automaticamente
+        reviewOnly.checked = false;
+        updateReviewUI();
+        toast("Revisão", "Você limpou todos os erros. Revisão encerrada.", "good", 2400);
+      }
+    }
   }else{
     quizState.sessionWrong += 1;
     quizState.sessionStreak = 0;
@@ -2261,8 +2359,9 @@ function commitResult(okAll, reason){
     pushRecent(false);
     flash("bad");
 
-    // adiciona na revisão sempre que errar (ou timeout)
-    addToReview(k);
+    // adiciona a lista de revisão
+    reviewSet.add(k);
+    updateReviewUI();
   }
 
   updateScoreUI();
@@ -2276,13 +2375,6 @@ function commitResult(okAll, reason){
 
   quizState.lockedAfterResult = true;
   showFeedback(okAll, reason);
-
-  // auto-run (se ligado) pega próxima questão com delay — mas SEM quebrar revisão
-  if(quizAuto.checked){
-    setTimeout(()=>{
-      nextQuestion(true);
-    }, 850);
-  }
 }
 
 function evaluateIfComplete(){
@@ -2297,10 +2389,9 @@ function setQuestion(kanji, keepTimerRunning){
 
   resetQuestionState();
 
-  const pool = getActivePool();
-
-  // se pool estiver vazio (não deve), fallback seguro
-  const safePool = (pool && pool.length) ? pool : getBasePool();
+  const pool = getQuizPool();
+  // segurança: se pool vier vazio por algum bug, cai para base
+  const safePool = pool.length ? pool : getBasePool();
 
   const rOpts = buildChoices("reading", kanji, safePool);
   const mOpts = buildChoices("meaning", kanji, safePool);
@@ -2316,8 +2407,6 @@ function setQuestion(kanji, keepTimerRunning){
     quizState.okMeaning = ok;
     evaluateIfComplete();
   });
-
-  updateReviewUI();
 
   if(quizState.running){
     startTimer(true);
@@ -2337,15 +2426,10 @@ function setQuestion(kanji, keepTimerRunning){
   }
 }
 
-function nextQuestion(keepTimerRunning){
-  const pool = getActivePool();
-  if(reviewOnly.checked && reviewSize() === 0){
-    // nunca cai, só desliga review e segue
-    reviewOnly.checked = false;
-    updateReviewUI();
-  }
-  const p = (pool && pool.length) ? pool : getBasePool();
-  setQuestion(pickKanji(p), keepTimerRunning);
+function nextQuestion(){
+  const pool = getQuizPool();
+  const safePool = pool.length ? pool : getBasePool();
+  setQuestion(pickKanji(safePool), true);
 }
 
 /* =========================
@@ -2398,7 +2482,7 @@ $("quizPause").addEventListener("click", ()=>{
   else startTimer(false);
 });
 $("quizNext").addEventListener("click", ()=>{
-  nextQuestion(true);
+  nextQuestion();
   updateRightPanel();
   saveStats();
 });
@@ -2411,7 +2495,7 @@ $("quizReset").addEventListener("click", ()=>{
   updateRightPanel();
   saveStats();
   flash("bad");
-  nextQuestion(false);
+  nextQuestion();
 });
 
 quizTime.addEventListener("change", ()=>{
@@ -2431,7 +2515,7 @@ quizSpeed.addEventListener("change", ()=>{
   if(!quizSvgEl) return;
   animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
 });
-quizLevel.addEventListener("change", ()=> nextQuestion(false));
+quizLevel.addEventListener("change", ()=> nextQuestion());
 
 /* =========================
    INIT
@@ -2439,27 +2523,98 @@ quizLevel.addEventListener("change", ()=> nextQuestion(false));
 function init(){
   renderKanjiGrid();
   updateRightPanel();
+  updateReviewUI();
   applyMood();
   updateScoreUI();
-  updateReviewUI();
   setQuestion("一", false);
 }
 init();
 
 /* =========================
-   PORTAL / ENTRADA (mais imersiva + parallax + kanji rain)
+   PORTAL / ENTRADA — CHUVA DE KANJI
 ========================= */
 (function(){
   const gate = document.getElementById("gate");
   const app  = document.getElementById("app");
   const btn  = document.getElementById("enterBtn");
   const petalsBox = document.getElementById("petals");
-  const rain = document.getElementById("kanjiRain");
-  const bg = document.getElementById("gateBg");
-  const torii = document.getElementById("gateTorii");
-
+  const canvas = document.getElementById("kanjiRain");
   if(!gate || !app || !btn || !petalsBox) return;
 
+  // KANJI RAIN
+  const ctx = canvas?.getContext?.("2d");
+  let rainRAF = null;
+  let drops = [];
+  const rainChars = allKanjisUnique();
+
+  function resizeRain(){
+    if(!canvas || !ctx) return;
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    const cols = Math.floor(window.innerWidth / 22);
+    drops = new Array(cols).fill(0).map((_,i)=>({
+      x: i * 22 + (Math.random()*10 - 5),
+      y: Math.random() * window.innerHeight,
+      sp: 2.2 + Math.random()*3.6,
+      size: 14 + Math.random()*12,
+      trail: 8 + Math.floor(Math.random()*16),
+      hue: 170 + Math.random()*140
+    }));
+  }
+
+  function drawRain(){
+    if(!ctx || !canvas) return;
+    ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+
+    // leve “fade” para rastro
+    ctx.fillStyle = "rgba(10,14,20,0.10)";
+    ctx.fillRect(0,0,window.innerWidth, window.innerHeight);
+
+    for(const d of drops){
+      d.y += d.sp;
+      if(d.y > window.innerHeight + d.trail * d.size){
+        d.y = -Math.random()*200;
+        d.sp = 2.0 + Math.random()*4.2;
+        d.size = 14 + Math.random()*12;
+        d.trail = 8 + Math.floor(Math.random()*16);
+        d.hue = 170 + Math.random()*140;
+      }
+
+      ctx.font = `${Math.floor(d.size)}px "Yu Gothic", system-ui, sans-serif`;
+      for(let t=0;t<d.trail;t++){
+        const ch = rainChars[(Math.random()*rainChars.length)|0] || "無";
+        const yy = d.y - t * (d.size * 1.15);
+        const a = Math.max(0, 0.95 - t*(0.95/d.trail));
+        ctx.fillStyle = `hsla(${d.hue}, 92%, 70%, ${a*0.35})`;
+        ctx.fillText(ch, d.x, yy);
+      }
+
+      // cabeça mais brilhante
+      const head = rainChars[(Math.random()*rainChars.length)|0] || "無";
+      ctx.fillStyle = `hsla(${d.hue}, 95%, 86%, .55)`;
+      ctx.fillText(head, d.x, d.y);
+    }
+
+    rainRAF = requestAnimationFrame(drawRain);
+  }
+
+  function startRain(){
+    if(!canvas || !ctx) return;
+    resizeRain();
+    cancelAnimationFrame(rainRAF);
+    drawRain();
+  }
+  function stopRain(){
+    cancelAnimationFrame(rainRAF);
+    rainRAF = null;
+  }
+
+  // petals
   function spawnPetals(n=28){
     petalsBox.innerHTML = "";
     for(let i=0;i<n;i++){
@@ -2484,61 +2639,38 @@ init();
     }
   }
 
-  function spawnKanjiRain(cols=18){
-    if(!rain) return;
-    rain.innerHTML = "";
-    const chars = ["無","常","闇","夜","影","月","血","魔","神","魂","夢","炎","雪","花","心","目","音","風","雨","道","力","光"];
-    for(let i=0;i<cols;i++){
-      const c = document.createElement("div");
-      c.className = "krCol";
-      const left = (i/(cols-1))*100;
-      const dur = 8 + Math.random()*9;
-      const delay = Math.random()*6;
-      c.style.left = `calc(${left}% - 12px)`;
-      c.style.setProperty("--dur", `${dur}s`);
-      c.style.setProperty("--delay", `${delay}s`);
-
-      const rows = 10 + Math.floor(Math.random()*8);
-      for(let r=0;r<rows;r++){
-        const s = document.createElement("span");
-        s.textContent = chars[(Math.random()*chars.length)|0];
-        s.style.opacity = (0.35 + Math.random()*0.55).toFixed(2);
-        s.style.fontSize = `${12 + Math.random()*10}px`;
-        c.appendChild(s);
-      }
-      rain.appendChild(c);
-    }
-  }
-
   function chime(){
     try{
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
+      const ctxA = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctxA.createOscillator();
+      const g = ctxA.createGain();
       o.type = "sine";
-      o.frequency.setValueAtTime(880, ctx.currentTime);
-      o.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.10);
-      g.gain.setValueAtTime(0.0001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
-      o.connect(g); g.connect(ctx.destination);
+      o.frequency.setValueAtTime(880, ctxA.currentTime);
+      o.frequency.exponentialRampToValueAtTime(1320, ctxA.currentTime + 0.10);
+      g.gain.setValueAtTime(0.0001, ctxA.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.12, ctxA.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctxA.currentTime + 0.22);
+      o.connect(g); g.connect(ctxA.destination);
       o.start();
-      o.stop(ctx.currentTime + 0.24);
-      setTimeout(()=>ctx.close?.(), 380);
+      o.stop(ctxA.currentTime + 0.24);
+      setTimeout(()=>ctxA.close?.(), 380);
     }catch{}
   }
 
-  spawnPetals(28);
-  spawnKanjiRain(18);
+  spawnPetals(30);
+  startRain();
 
   function enter(){
     gate.classList.add("leaving");
     btn.disabled = true;
     chime();
+
     setTimeout(()=>{
+      stopRain();
       gate.style.display = "none";
       app.classList.remove("appHidden");
       window.scrollTo(0,0);
+      toast("Bem-vindo", "Que comece a caçada. 🦇", "good", 2200);
     }, 1700);
   }
 
@@ -2547,25 +2679,13 @@ init();
     if(e.key === "Enter" && gate.style.display !== "none") enter();
   });
 
-  // parallax leve (não pesa)
-  let mx=0, my=0;
-  function onMove(e){
-    const w = window.innerWidth || 1;
-    const h = window.innerHeight || 1;
-    mx = (e.clientX / w - 0.5);
-    my = (e.clientY / h - 0.5);
-    if(bg) bg.style.transform = `scale(1.05) translate3d(${mx*18}px, ${my*14}px, 0)`;
-    if(torii) torii.style.transform = `translate(-50%,-54%) translate3d(${mx*10}px, ${my*8}px, 0)`;
-  }
-  window.addEventListener("mousemove", onMove);
-
   let t=null;
   window.addEventListener("resize", ()=>{
     clearTimeout(t);
     t=setTimeout(()=>{
-      spawnPetals(28);
-      spawnKanjiRain(18);
-    }, 250);
+      spawnPetals(30);
+      resizeRain();
+    }, 180);
   });
 })();
 </script>
