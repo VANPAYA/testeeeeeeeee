@@ -42,11 +42,40 @@ body{
   font-family:"Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
   line-height:1.9;
   background:
-    radial-gradient(1100px 650px at 12% 10%, hsla(calc(var(--themeHue) - 25), 90%, 60%, .20), transparent 55%),
-    radial-gradient(900px 600px at 92% 15%, hsla(var(--themeHue), 90%, 58%, .16), transparent 55%),
+    radial-gradient(1100px 650px at 12% 10%, hsla(calc(var(--themeHue) - 25), 90%, 60%, .18), transparent 55%),
+    radial-gradient(900px 600px at 92% 15%, hsla(var(--themeHue), 90%, 58%, .14), transparent 55%),
     radial-gradient(900px 650px at 20% 92%, hsla(calc(var(--themeHue) + 55), 90%, 62%, .12), transparent 55%),
     var(--bg);
   transition: background .65s ease, filter .65s ease;
+  overflow-x:hidden;
+}
+
+/* =========================
+   BACKGROUND: TORII + KANJI RAIN (bem leve)
+========================= */
+#kanjiRain{
+  position:fixed;
+  inset:0;
+  z-index:-3;
+  opacity:.18;              /* bem mais leve */
+  pointer-events:none;
+  filter: blur(.15px);
+}
+
+.toriiBG{
+  position:fixed;
+  left:50%;
+  top:-10px;
+  transform: translateX(-50%);
+  width:min(1100px, 108vw);
+  height:auto;
+  z-index:-2;
+  pointer-events:none;
+  opacity:.78;
+  filter: drop-shadow(0 30px 85px rgba(0,0,0,.55));
+}
+@media (max-width: 700px){
+  .toriiBG{ top:-40px; opacity:.70; width:min(980px, 130vw); }
 }
 
 header{
@@ -77,7 +106,7 @@ header{
 
 nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
 
-.container{ max-width:1180px; margin:auto; padding:20px 18px 90px; }
+.container{ max-width:1180px; margin:auto; padding:34px 18px 90px; }
 
 .section{ display:none; }
 .section.active{ display:block; }
@@ -332,145 +361,129 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   accent-color: hsl(var(--themeHue) 90% 60%);
 }
 
-/* =========================
-   HERO (TORII REALISTA + chuva leve)
-========================= */
-.hero{
-  position:relative;
-  max-width:1180px;
-  margin: 18px auto 14px;
-  padding: 18px;
-  border-radius: 26px;
-  border:1px solid rgba(255,255,255,.14);
-  background:
-    radial-gradient(900px 520px at 20% 30%, hsla(var(--themeHue), 90%, 58%, .12), transparent 60%),
-    radial-gradient(900px 520px at 90% 15%, hsla(calc(var(--themeHue) + 55), 90%, 62%, .10), transparent 58%),
-    rgba(255,255,255,.04);
-  box-shadow: 0 24px 90px rgba(0,0,0,.58);
-  overflow:hidden;
-}
-.heroInner{
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  flex-wrap:wrap;
-  z-index:2;
-}
-.heroTitle{
-  font-size:18px;
-  font-weight:1000;
-  letter-spacing:1.2px;
-}
-.heroSub{
-  margin-top:6px;
-  color: rgba(238,242,255,.78);
-  font-size: 13px;
-}
-.heroSub b{ color: rgba(255,255,255,.95); }
-
-.heroMujo{
-  position:absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-56%);
-  font-weight: 1000;
-  letter-spacing: 10px;
-  font-size: clamp(86px, 12vw, 170px);
-  line-height: 1;
-  opacity: .14;
-  pointer-events:none;
-  z-index:1;
-  background: linear-gradient(90deg,
-    rgba(255,255,255,.92),
-    rgba(210,170,255,.75),
-    rgba(0,255,200,.60),
-    rgba(255,90,130,.52)
-  );
-  -webkit-background-clip:text;
-  background-clip:text;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255,255,255,.14);
-  filter: drop-shadow(0 0 26px rgba(0,0,0,.55));
-}
-
-.heroTorii{
-  position:absolute;
-  right:-50px;
-  bottom:-120px;
-  width:min(720px, 85vw);
-  height:auto;
-  opacity:.92;
-  pointer-events:none;
-  z-index:1;
-  transform: rotate(-2deg);
-  filter: drop-shadow(0 0 38px rgba(0,0,0,.68));
-}
-@media (max-width: 760px){
-  .heroTorii{ right:-90px; bottom:-160px; opacity:.82; }
-}
-
-#bgRain{
-  position:absolute;
-  inset:0;
-  z-index:0;
-  opacity:.26;             /* MUITO mais leve */
-  pointer-events:none;
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 0 8px rgba(0,0,0,.25));
-}
-
-/* vocabulário no feedback */
-.vocabBox{
-  margin-top:12px;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:16px;
-  padding:12px;
-  background: rgba(255,255,255,.06);
-}
-.vocabTitle{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-.vocabTitle .mean{ margin:0; }
+/* vocab list */
 .vocabList{
-  margin-top:10px;
   display:grid;
-  gap:10px;
+  gap:8px;
+  margin-top:10px;
 }
 .vocabItem{
   padding:10px 12px;
   border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.16);
   background: rgba(255,255,255,.06);
 }
 .vocabItem .w{
   font-weight:1000;
-  letter-spacing:.2px;
   color: rgba(255,255,255,.96);
+  letter-spacing:.2px;
 }
 .vocabItem .r{
   margin-top:4px;
   font-size:12px;
-  color: rgba(238,242,255,.70);
+  color: var(--muted);
 }
 .vocabItem .m{
-  margin-top:6px;
+  margin-top:4px;
   font-size:12px;
   color: rgba(238,242,255,.84);
-}
-.vocabMeta{
-  font-size:11px;
-  color: rgba(238,242,255,.62);
 }
 </style>
 </head>
 
 <body>
 <div id="flash" class="flash"></div>
+
+<!-- chuva de kanji (bem leve) -->
+<canvas id="kanjiRain" aria-hidden="true"></canvas>
+
+<!-- torii realista (shinto) -->
+<div class="toriiBG" aria-hidden="true">
+  <svg viewBox="0 0 1400 520" role="presentation">
+    <defs>
+      <linearGradient id="woodRed" x1="0" x2="1">
+        <stop offset="0%" stop-color="rgba(230,68,45,.92)"/>
+        <stop offset="45%" stop-color="rgba(210,55,40,.92)"/>
+        <stop offset="80%" stop-color="rgba(165,40,35,.88)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,.10)"/>
+      </linearGradient>
+      <linearGradient id="shadowRed" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="rgba(0,0,0,.06)"/>
+        <stop offset="100%" stop-color="rgba(0,0,0,.22)"/>
+      </linearGradient>
+      <filter id="softGlow" x="-25%" y="-35%" width="150%" height="170%">
+        <feGaussianBlur stdDeviation="10" result="b"/>
+        <feColorMatrix in="b" type="matrix"
+          values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 .32 0" result="g"/>
+        <feMerge>
+          <feMergeNode in="g"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+      <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="7" result="n"/>
+        <feColorMatrix in="n" type="matrix"
+          values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 .08 0" result="a"/>
+        <feComposite in="a" in2="SourceGraphic" operator="in" result="m"/>
+        <feMerge>
+          <feMergeNode in="m"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+
+    <!-- kasagi (top) - leve curva -->
+    <path d="M120 130
+             C 380 35, 1020 35, 1280 130
+             C 1010 110, 390 110, 120 130 Z"
+          fill="url(#woodRed)" filter="url(#softGlow)"/>
+    <!-- shimaki (under kasagi) -->
+    <path d="M170 170
+             C 410 105, 990 105, 1230 170
+             C 990 158, 410 158, 170 170 Z"
+          fill="rgba(255,255,255,.10)"/>
+
+    <!-- nuki (beam) -->
+    <path d="M280 250
+             C 480 215, 920 215, 1120 250
+             C 920 280, 480 280, 280 250 Z"
+          fill="rgba(0,255,200,.08)"/>
+
+    <!-- plaque (gakuzuka) -->
+    <rect x="650" y="190" width="100" height="68" rx="12"
+          fill="rgba(20,24,34,.55)" stroke="rgba(255,255,255,.16)"/>
+    <text x="700" y="235" text-anchor="middle" font-size="26" font-weight="900"
+          fill="rgba(238,242,255,.78)">⛩</text>
+
+    <!-- left pillar (hashira) with taper -->
+    <path d="M420 210
+             C 394 318, 380 410, 392 500
+             C 398 520, 430 520, 440 500
+             C 458 408, 448 318, 472 210 Z"
+          fill="url(#woodRed)" filter="url(#grain)"/>
+    <!-- right pillar -->
+    <path d="M928 210
+             C 904 318, 892 410, 900 500
+             C 906 520, 938 520, 948 500
+             C 966 408, 958 318, 980 210 Z"
+          fill="url(#woodRed)" filter="url(#grain)"/>
+
+    <!-- dais (bases stones) -->
+    <path d="M360 500 C 420 468, 500 468, 560 500 C 500 532, 420 532, 360 500 Z"
+          fill="rgba(255,255,255,.09)"/>
+    <path d="M820 500 C 880 468, 960 468, 1020 500 C 960 532, 880 532, 820 500 Z"
+          fill="rgba(255,255,255,.09)"/>
+
+    <!-- subtle shadow -->
+    <rect x="0" y="0" width="1400" height="520" fill="url(#shadowRed)"/>
+  </svg>
+</div>
 
 <header>
   <div class="topbar">
@@ -486,136 +499,15 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   </div>
 </header>
 
-<!-- HERO (sem tela de entrada) -->
-<section class="hero" aria-label="Hero">
-  <canvas id="bgRain" aria-hidden="true"></canvas>
-  <div class="heroMujo" aria-hidden="true">無常</div>
-
-  <!-- Torii (mais realista / shinto) -->
-  <div class="heroTorii" aria-hidden="true">
-    <svg viewBox="0 0 1400 900" role="presentation">
-      <defs>
-        <linearGradient id="verm2" x1="0" x2="1">
-          <stop offset="0%"  stop-color="rgba(255,120,110,.98)"/>
-          <stop offset="22%" stop-color="rgba(255,70,95,.96)"/>
-          <stop offset="55%" stop-color="rgba(230,55,70,.92)"/>
-          <stop offset="82%" stop-color="rgba(210,45,60,.88)"/>
-          <stop offset="100%" stop-color="rgba(255,255,255,.10)"/>
-        </linearGradient>
-
-        <linearGradient id="shade" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="rgba(0,0,0,.00)"/>
-          <stop offset="100%" stop-color="rgba(0,0,0,.22)"/>
-        </linearGradient>
-
-        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="10" result="b"/>
-          <feColorMatrix in="b" type="matrix"
-            values="1 0 0 0 0
-                    0 1 0 0 0
-                    0 0 1 0 0
-                    0 0 0 .38 0" result="g"/>
-          <feMerge>
-            <feMergeNode in="g"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-
-        <filter id="wood" x="-30%" y="-30%" width="160%" height="160%">
-          <feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="2" seed="7" result="n"/>
-          <feColorMatrix in="n" type="matrix"
-            values="1 0 0 0 0
-                    0 1 0 0 0
-                    0 0 1 0 0
-                    0 0 0 .08 0" result="a"/>
-          <feComposite in="a" in2="SourceGraphic" operator="in" result="m"/>
-          <feMerge>
-            <feMergeNode in="m"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
-
-      <!-- kasagi (top beam, slight curve) -->
-      <path d="M140 210
-               C 360 110, 1040 110, 1260 210
-               C 1040 185, 360 185, 140 210 Z"
-            fill="url(#verm2)" filter="url(#softGlow)"/>
-
-      <!-- shimaki (second beam) -->
-      <path d="M210 280
-               C 420 218, 980 218, 1190 280
-               C 980 260, 420 260, 210 280 Z"
-            fill="rgba(255,255,255,.10)"/>
-
-      <!-- nuki (tie beam) -->
-      <path d="M355 390
-               C 520 350, 880 350, 1045 390
-               C 880 414, 520 414, 355 390 Z"
-            fill="rgba(0,255,200,.08)"/>
-
-      <!-- gakuzuka (plaque) -->
-      <path d="M660 305
-               C 706 278, 736 278, 780 305
-               C 742 330, 702 330, 660 305 Z"
-            fill="rgba(255,255,255,.08)"/>
-
-      <rect x="684" y="307" width="70" height="72" rx="10"
-            fill="rgba(10,14,20,.38)" stroke="rgba(255,255,255,.14)"/>
-
-      <!-- hashira (pillars) -->
-      <path d="M418 314
-               C 400 450, 392 662, 404 796
-               C 410 838, 468 840, 486 796
-               C 502 662, 496 450, 478 314 Z"
-            fill="url(#verm2)" filter="url(#wood)"/>
-      <path d="M928 314
-               C 910 450, 902 662, 914 796
-               C 920 838, 978 840, 996 796
-               C 1012 662, 1006 450, 988 314 Z"
-            fill="url(#verm2)" filter="url(#wood)"/>
-
-      <!-- center post (rare but aesthetic) -->
-      <path d="M686 360
-               C 676 478, 670 668, 678 796
-               C 684 830, 716 830, 724 796
-               C 734 668, 728 478, 718 360 Z"
-            fill="rgba(255,255,255,.06)"/>
-
-      <!-- bases (stone) -->
-      <path d="M362 796 C 420 752, 500 752, 552 796 C 498 840, 420 840, 362 796 Z"
-            fill="rgba(255,255,255,.10)"/>
-      <path d="M862 796 C 920 752, 1000 752, 1052 796 C 998 840, 920 840, 862 796 Z"
-            fill="rgba(255,255,255,.10)"/>
-
-      <!-- shading pass -->
-      <rect x="0" y="0" width="1400" height="900" fill="url(#shade)"/>
-    </svg>
-  </div>
-
-  <div class="heroInner">
-    <div>
-      <div class="heroTitle">Treino de Kanji (N5 + N4)</div>
-      <div class="heroSub">
-        Lista + detalhes + jogo com <b>revisão de erros</b> e <b>vocabulário (3)</b> por kanji.
-      </div>
-    </div>
-
-    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end;">
-      <div class="btn primary" id="heroGoGame">🎮 Ir pro Jogo</div>
-      <div class="btn ghost" id="heroGoKanji">🈶 Ir pro Kanji</div>
-    </div>
-  </div>
-</section>
-
 <div class="container">
+
   <!-- ====================== KANJI ====================== -->
   <section id="kanji" class="section active">
     <div class="grid">
       <div class="panel">
         <div class="row">
           <div>
-            <h2>Kanji — Lista (N5 + N4)</h2>
+            <h2>Kanji — N5 + N4</h2>
             <p class="hint" id="kanjiCountHint">—</p>
           </div>
 
@@ -663,6 +555,11 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
             <div class="strokeBody" id="kdStroke"></div>
             <div class="strokeNote">Fonte: KanjiVG (SVG).</div>
           </div>
+
+          <hr class="sep">
+          <div class="mean">Vocabulário (3)</div>
+          <div class="small" id="kdVocabHint">Carregando…</div>
+          <div id="kdVocab" class="vocabList"></div>
 
           <hr class="sep">
           <div class="row">
@@ -757,14 +654,10 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
             <div class="mean" id="quizFeedbackTitle"></div>
             <div class="hira" id="quizFeedbackDetail"></div>
 
-            <!-- VOCAB (3) -->
-            <div class="vocabBox" id="quizVocabBox" style="display:none;">
-              <div class="vocabTitle">
-                <div class="mean">📚 Vocabulário (3)</div>
-                <div class="vocabMeta" id="quizVocabMeta">—</div>
-              </div>
-              <div class="vocabList" id="quizVocabList"></div>
-            </div>
+            <hr class="sep">
+            <div class="mean">Vocabulário (3)</div>
+            <div class="small" id="quizVocabHint">Carregando…</div>
+            <div id="quizVocab" class="vocabList"></div>
 
             <div class="strokeBox" style="margin-top:12px;">
               <div class="strokeHead">
@@ -987,12 +880,6 @@ function safeInfo(k){
 }
 
 /* =========================
-   HERO buttons
-========================= */
-$("heroGoGame").addEventListener("click", ()=>openTab("quiz"));
-$("heroGoKanji").addEventListener("click", ()=>openTab("kanji"));
-
-/* =========================
    TABS
 ========================= */
 const sections = { kanji:$("kanji"), quiz:$("quiz") };
@@ -1102,6 +989,132 @@ async function loadKanjiSVGInto(kanji, targetEl){
 }
 
 /* =========================
+   VOCAB (3) — Mazii API (PT-BR dict: japt)
+   - cache + fallback pra sempre tentar entregar 3
+========================= */
+const vocabCache = new Map(); // key: `${kanji}|${lvl}` => array
+const VOCAB_API = "https://mazii.net/api/search";
+
+function pickJLPTRank(lvl){
+  return lvl === "N5" ? ["N5","N4","N3","N2","N1"] : ["N4","N5","N3","N2","N1"];
+}
+function normalizeJLPT(x){
+  if(!x) return "";
+  const s = String(x).toUpperCase();
+  const m = s.match(/N[1-5]/);
+  return m ? m[0] : "";
+}
+
+function parseMaziiItems(json){
+  const data = json?.data || json?.results || json?.items || [];
+  const arr = Array.isArray(data) ? data : [];
+  return arr.map(it=>{
+    const w = it.word || it.text || it.phrase || it.kanji || it.title || "";
+    const r = it.phonetic || it.reading || it.kana || it.pronunciation || "";
+    const m = it.mean || it.meaning || it.translate || it.definition || it.desc || "";
+    const jlpt = normalizeJLPT(it.jlpt || it.level || it.jlpt_level || (Array.isArray(it.jlptList) ? it.jlptList.join(",") : ""));
+    return { word: String(w||"").trim(), reading: String(r||"").trim(), meaning: String(m||"").trim(), jlpt };
+  }).filter(x=>x.word && x.meaning);
+}
+
+async function fetchVocabFromMazii(kanji){
+  const payload = { dict:"japt", type:"word", query: kanji, limit: 30 };
+  const res = await fetch(VOCAB_API, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(payload),
+  });
+  if(!res.ok) throw new Error("VOCAB_HTTP_" + res.status);
+  const json = await res.json();
+  return parseMaziiItems(json);
+}
+
+function uniqByWord(items){
+  const seen = new Set();
+  const out = [];
+  for(const it of items){
+    const key = it.word;
+    if(seen.has(key)) continue;
+    seen.add(key);
+    out.push(it);
+  }
+  return out;
+}
+
+function selectVocab3(items, kanji, lvl){
+  const withKanji = items.filter(x => (x.word || "").includes(kanji));
+  const rank = pickJLPTRank(lvl);
+
+  // primeiro: com JLPT exato (se existir)
+  let best = [];
+  for(const L of rank){
+    const bucket = withKanji.filter(x => x.jlpt === L);
+    if(bucket.length){
+      best = bucket;
+      break;
+    }
+  }
+  // se não tiver JLPT no retorno, usa os mais curtos (geralmente mais comuns)
+  const base = best.length ? best : withKanji;
+
+  // ordenação leve: preferir palavras curtas e leitura presente
+  const sorted = [...base].sort((a,b)=>{
+    const ar = a.reading ? 0 : 1;
+    const br = b.reading ? 0 : 1;
+    if(ar !== br) return ar - br;
+    return (a.word.length - b.word.length);
+  });
+
+  const picked = uniqByWord(sorted).slice(0, 3);
+
+  // se ainda faltar, relaxa completamente (pega qualquer resultado)
+  if(picked.length < 3){
+    const relaxed = uniqByWord(items).filter(x=>x.word.includes(kanji));
+    for(const it of relaxed){
+      if(picked.length >= 3) break;
+      if(picked.some(p=>p.word===it.word)) continue;
+      picked.push(it);
+    }
+  }
+  return picked.slice(0,3);
+}
+
+async function getVocab3(kanji, lvl){
+  const key = `${kanji}|${lvl}`;
+  if(vocabCache.has(key)) return vocabCache.get(key);
+
+  // garante cache mesmo se der erro (pra não floodar)
+  let out = [];
+  try{
+    const items = await fetchVocabFromMazii(kanji);
+    out = selectVocab3(items, kanji, lvl);
+  }catch{
+    out = []; // se a rede falhar, fica vazio (UI mostra aviso)
+  }
+  vocabCache.set(key, out);
+  return out;
+}
+
+function renderVocabList(targetListEl, hintEl, items){
+  targetListEl.innerHTML = "";
+  if(!items || !items.length){
+    hintEl.textContent = "Sem vocabulário (falha de rede/API).";
+    return;
+  }
+  hintEl.textContent = "";
+  for(const it of items){
+    const div = document.createElement("div");
+    div.className = "vocabItem";
+    div.innerHTML = `
+      <div class="w">${it.word}</div>
+      <div class="r">Leitura: <b>${it.reading || "—"}</b></div>
+      <div class="m">Significado: <b>${it.meaning}</b></div>
+    `;
+    targetListEl.appendChild(div);
+  }
+}
+
+/* =========================
    KANJI TAB + SEARCH
 ========================= */
 const kanjigrid = $("kanjigrid");
@@ -1119,8 +1132,12 @@ const kdBadges = $("kdBadges");
 const kdStroke = $("kdStroke");
 const kdSpeed = $("kdSpeed");
 
+const kdVocab = $("kdVocab");
+const kdVocabHint = $("kdVocabHint");
+
 let selectedKanji = null;
 let kdSvgEl = null;
+let kdVocabToken = 0;
 
 function matchesSearch(kanji, info, query){
   if(!query) return true;
@@ -1198,6 +1215,14 @@ async function showKanjiDetail(k, autoScroll){
 
   kdSvgEl = await loadKanjiSVGInto(k, kdStroke);
   animateStrokeOrder(kdSvgEl, Number(kdSpeed.value));
+
+  // vocab (com token pra não misturar respostas)
+  const t = ++kdVocabToken;
+  kdVocabHint.textContent = "Carregando…";
+  kdVocab.innerHTML = "";
+  const v = await getVocab3(k, lvl);
+  if(t !== kdVocabToken) return;
+  renderVocabList(kdVocab, kdVocabHint, v);
 }
 
 $("kdReplay").addEventListener("click", ()=>{
@@ -1217,7 +1242,7 @@ $("kdTrain").addEventListener("click", ()=>{
 /* =========================
    QUIZ STATS + REVIEW QUEUE
 ========================= */
-const LS_KEY = "vampire_kanji_ptbr_v2";
+const LS_KEY = "vampire_kanji_quiz_ptbr_v2";
 const LS_REVIEW = "vampire_kanji_review_queue_v3";
 
 function defaultStats(){
@@ -1274,84 +1299,6 @@ function bumpReviewToEnd(k){
 }
 
 /* =========================
-   VOCAB (3) — JLPT API (CORS ok)
-   - pega 3 palavras "comuns" por kanji no nível (N5 -> 5 / N4 -> 4)
-   - otimizado: pagina por 120 itens e para quando acha 3
-========================= */
-const VOCAB_API_BASE = "https://jlpt-vocab-api.vercel.app/api/words";
-const vocabCache = new Map(); // key: `${levelNum}:${kanji}` -> {items, meta}
-const vocabInFlight = new Map();
-
-function levelNumForKanjiLevel(lvl){
-  // API usa 5= N5, 4= N4, ...
-  return (lvl === "N5") ? 5 : 4;
-}
-
-async function fetchVocabPage(levelNum, offset, limit){
-  const url = `${VOCAB_API_BASE}?level=${levelNum}&offset=${offset}&limit=${limit}`;
-  const res = await fetch(url, { cache:"no-store" });
-  if(!res.ok) throw new Error("HTTP "+res.status);
-  return await res.json(); // {total, offset, limit, words:[{word, meaning, furigana, romaji, level}]}
-}
-
-function containsKanji(word, kanji){
-  return typeof word === "string" && word.includes(kanji);
-}
-
-async function getVocab3ForKanji(kanji, jlptLevelStr){
-  const levelNum = levelNumForKanjiLevel(jlptLevelStr);
-  const key = `${levelNum}:${kanji}`;
-  if(vocabCache.has(key)) return vocabCache.get(key);
-  if(vocabInFlight.has(key)) return await vocabInFlight.get(key);
-
-  const p = (async ()=>{
-    const limit = 120;
-    let offset = 0;
-    let total = 999999;
-    const found = [];
-    const seen = new Set();
-
-    // hard cap pra não travar: no máximo ~1200 itens (10 páginas)
-    const maxPages = 10;
-    let pages = 0;
-
-    while(offset < total && pages < maxPages && found.length < 3){
-      pages++;
-      const data = await fetchVocabPage(levelNum, offset, limit);
-      total = Number(data.total || total);
-
-      const words = Array.isArray(data.words) ? data.words : [];
-      for(const w of words){
-        if(found.length >= 3) break;
-        if(!w || !w.word) continue;
-        if(!containsKanji(w.word, kanji)) continue;
-
-        // evita duplicado por "word"
-        if(seen.has(w.word)) continue;
-        seen.add(w.word);
-
-        found.push({
-          word: w.word,
-          furigana: (w.furigana || "").trim() || "—",
-          meaning: (w.meaning || "").trim() || "—"
-        });
-      }
-      offset += limit;
-    }
-
-    const result = {
-      items: found,
-      meta: (found.length ? `Fonte: jlpt-vocab-api · N${levelNum}` : `Sem resultado rápido · N${levelNum}`)
-    };
-    vocabCache.set(key, result);
-    return result;
-  })().finally(()=>vocabInFlight.delete(key));
-
-  vocabInFlight.set(key, p);
-  return await p;
-}
-
-/* =========================
    QUIZ ENGINE
 ========================= */
 const quizSmart = $("quizSmart");
@@ -1372,9 +1319,8 @@ const quizFeedbackDetail = $("quizFeedbackDetail");
 const quizStroke = $("quizStroke");
 const quizSpeed = $("quizSpeed");
 
-const quizVocabBox = $("quizVocabBox");
-const quizVocabList = $("quizVocabList");
-const quizVocabMeta = $("quizVocabMeta");
+const quizVocab = $("quizVocab");
+const quizVocabHint = $("quizVocabHint");
 
 const bestStatsEl = $("bestStats");
 const worstKanjisEl = $("worstKanjis");
@@ -1388,7 +1334,7 @@ $("goKanji").addEventListener("click", ()=> openTab("kanji"));
 $("resetHistory").addEventListener("click", ()=>{
   stats = defaultStats();
   saveStats();
-  scheduleRightPanel();
+  updateRightPanel();
   applyMood();
   flash("bad");
 });
@@ -1423,13 +1369,6 @@ function setMode(mode){
 function updateScoreUI(){
   quizScoreEl.textContent =
     `Acertos: ${quizState.sessionCorrect} · Erros: ${quizState.sessionWrong} · Streak: ${quizState.sessionStreak}`;
-}
-
-/* ===== otimização: debounce do painel direito (evita “travada”) ===== */
-let __rpT = null;
-function scheduleRightPanel(){
-  if(__rpT) cancelAnimationFrame(__rpT);
-  __rpT = requestAnimationFrame(()=>updateRightPanel());
 }
 
 function updateRightPanel(){
@@ -1510,9 +1449,6 @@ function resetQuestionState(){
   quizState.okMeaning = false;
   quizState.lockedAfterResult = false;
   quizFeedback.style.display = "none";
-  quizVocabBox.style.display = "none";
-  quizVocabList.innerHTML = "";
-  quizVocabMeta.textContent = "—";
 }
 
 function disableAllChoices(){
@@ -1622,7 +1558,7 @@ function startTimer(reset){
 }
 
 /* =========================
-   QUESTÃO (sem travar)
+   QUESTÃO
 ========================= */
 let quizSvgEl = null;
 
@@ -1667,40 +1603,8 @@ function nextQuestion(){
 }
 
 /* =========================
-   FEEDBACK + RESULT COMMIT + VOCAB 3
+   FEEDBACK + RESULT COMMIT (com VOCAB 3)
 ========================= */
-function renderVocabLoading(levelStr){
-  quizVocabBox.style.display = "block";
-  quizVocabMeta.textContent = `Carregando… (N${levelNumForKanjiLevel(levelStr)})`;
-  quizVocabList.innerHTML = `
-    <div class="vocabItem"><div class="w">…</div><div class="r">…</div><div class="m">…</div></div>
-    <div class="vocabItem"><div class="w">…</div><div class="r">…</div><div class="m">…</div></div>
-    <div class="vocabItem"><div class="w">…</div><div class="r">…</div><div class="m">…</div></div>
-  `;
-}
-
-function renderVocabEmpty(msg){
-  quizVocabBox.style.display = "block";
-  quizVocabMeta.textContent = msg || "—";
-  quizVocabList.innerHTML = `<div class="small">—</div>`;
-}
-
-function renderVocabItems(items, meta){
-  quizVocabBox.style.display = "block";
-  quizVocabMeta.textContent = meta || "—";
-  if(!items || !items.length){
-    quizVocabList.innerHTML = `<div class="small">—</div>`;
-    return;
-  }
-  quizVocabList.innerHTML = items.map(v=>`
-    <div class="vocabItem">
-      <div class="w">${v.word}</div>
-      <div class="r">Leitura: <b>${v.furigana}</b></div>
-      <div class="m">Significado: <b>${v.meaning}</b></div>
-    </div>
-  `).join("");
-}
-
 async function showFeedback(okAll, reason){
   const k = quizState.current;
   const info = safeInfo(k);
@@ -1717,18 +1621,11 @@ async function showFeedback(okAll, reason){
     Significado: <b>${info.meaning}</b>
   `;
 
-  // VOCAB 3 (nível conforme o kanji)
-  renderVocabLoading(lvl);
-  try{
-    const {items, meta} = await getVocab3ForKanji(k, lvl);
-    if(items && items.length){
-      renderVocabItems(items, meta);
-    }else{
-      renderVocabEmpty(meta || "Sem vocabulário encontrado.");
-    }
-  }catch{
-    renderVocabEmpty("Falha ao buscar vocabulário (API).");
-  }
+  // vocab
+  quizVocabHint.textContent = "Carregando…";
+  quizVocab.innerHTML = "";
+  const v = await getVocab3(k, lvl);
+  renderVocabList(quizVocab, quizVocabHint, v);
 
   quizSvgEl = await loadKanjiSVGInto(k, quizStroke);
   animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
@@ -1770,7 +1667,7 @@ function commitResult(okAll, reason){
   updateScoreUI();
   updateBests();
   applyMood();
-  scheduleRightPanel();
+  updateRightPanel();
   saveStats();
 
   stopTimer();
@@ -1787,8 +1684,10 @@ function evaluateIfComplete(){
 }
 
 /* =========================
-   REVISÃO (anti-trava)
+   REVISÃO (hardening anti-travamento)
 ========================= */
+let reviewToggleLock = false;
+
 function updateReviewUI(){
   const c = reviewCount();
   quizReviewCountEl.textContent = String(c);
@@ -1796,22 +1695,22 @@ function updateReviewUI(){
   quizReviewBtn.style.display = c > 0 ? "inline-flex" : "none";
   if(c === 0 && quizState.mode === "review"){
     setMode("normal");
+    quizReviewBtn.textContent = "Revisar erros";
   }
 }
 
-let reviewToggleLock = false;
 function toggleReview(){
+  const c = reviewCount();
+  if(c <= 0){
+    setMode("normal");
+    updateReviewUI();
+    return;
+  }
+
   if(reviewToggleLock) return;
   reviewToggleLock = true;
 
   try{
-    const c = reviewCount();
-    if(c <= 0){
-      setMode("normal");
-      updateReviewUI();
-      return;
-    }
-
     stopTimer();
     quizState.lockedAfterResult = false;
 
@@ -1824,16 +1723,20 @@ function toggleReview(){
     }
 
     updateReviewUI();
-    requestAnimationFrame(()=>nextQuestion());
+    nextQuestion();
+  }catch{
+    setMode("normal");
+    quizReviewBtn.textContent = "Revisar erros";
+    updateReviewUI();
   }finally{
+    // pequena folga pra evitar duplo clique em frame
     setTimeout(()=>{ reviewToggleLock = false; }, 120);
   }
 }
 
-quizReviewBtn.addEventListener("click", ()=>{
-  try{ toggleReview(); }catch{ setMode("normal"); updateReviewUI(); }
-});
+quizReviewBtn.addEventListener("click", ()=> toggleReview());
 
+// atalho P: ignora auto-repeat + debounce forte
 let lastP = 0;
 window.addEventListener("keydown", (e)=>{
   if(!e.key) return;
@@ -1842,12 +1745,12 @@ window.addEventListener("keydown", (e)=>{
 
   if(e.repeat) return;
   const now = Date.now();
-  if(now - lastP < 320) return;
+  if(now - lastP < 420) return;
   lastP = now;
 
   e.preventDefault();
-  try{ toggleReview(); }catch{ setMode("normal"); updateReviewUI(); }
-}, {passive:false});
+  toggleReview();
+});
 
 /* =========================
    CONTROLES JOGO
@@ -1863,7 +1766,7 @@ $("quizPause").addEventListener("click", ()=>{
 });
 $("quizNext").addEventListener("click", ()=>{
   nextQuestion();
-  scheduleRightPanel();
+  updateRightPanel();
   saveStats();
 });
 $("quizReset").addEventListener("click", ()=>{
@@ -1872,7 +1775,7 @@ $("quizReset").addEventListener("click", ()=>{
   quizState.sessionWrong = 0;
   quizState.sessionStreak = 0;
   updateScoreUI();
-  scheduleRightPanel();
+  updateRightPanel();
   saveStats();
   flash("bad");
   nextQuestion();
@@ -1902,7 +1805,7 @@ quizLevel.addEventListener("change", ()=>{
 ========================= */
 function init(){
   renderKanjiGrid();
-  scheduleRightPanel();
+  updateRightPanel();
   applyMood();
   updateScoreUI();
   updateReviewUI();
@@ -1911,31 +1814,43 @@ function init(){
 init();
 
 /* =========================
-   KANJI RAIN (MUITO LEVE + ECONÔMICO)
-   - moderado (menos colunas / menos spawn)
-   - pausa quando aba invisível
+   KANJI RAIN (BEM LEVE + THROTTLE)
 ========================= */
 (function(){
-  const canvas = document.getElementById("bgRain");
+  const canvas = document.getElementById("kanjiRain");
   if(!canvas) return;
 
-  const ctx = canvas.getContext("2d", { alpha:true });
-  const glyphs = allKanjisUnique().concat(["無","常"]);
-  let W=0,H=0,cols=0,fs=18,drops=[];
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){
+    // se usuário pede menos motion, deixa canvas invisível
+    canvas.style.display = "none";
+    return;
+  }
+
+  const ctx = canvas.getContext("2d", { alpha: true });
+  const glyphs = allKanjisUnique().concat(["無","常","夢","影","夜"]);
+
+  let W=0,H=0,cols=0;
+  let drops = [];
   let last=0;
-  let paused = false;
+  let lastDraw=0;
+  let drawEveryMs = 80; // throttle
 
   function resize(){
     const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-    W = canvas.clientWidth = canvas.parentElement.clientWidth;
-    H = canvas.clientHeight = canvas.parentElement.clientHeight;
+    W = canvas.clientWidth = window.innerWidth;
+    H = canvas.clientHeight = window.innerHeight;
     canvas.width = Math.floor(W * dpr);
     canvas.height = Math.floor(H * dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
 
-    fs = Math.max(14, Math.min(18, Math.floor(W/80)));
-    cols = Math.max(8, Math.floor(W / fs));
+    const fontSize = Math.max(14, Math.min(18, Math.floor(W/84)));
+    cols = Math.floor(W / fontSize);
     drops = Array.from({length: cols}, ()=>Math.random()*H);
+    canvas.__fontSize = fontSize;
+
+    // em telas grandes, menos densidade
+    drawEveryMs = W > 1200 ? 95 : 80;
   }
 
   function rndGlyph(){
@@ -1943,18 +1858,20 @@ init();
   }
 
   function draw(ts){
-    if(paused) return;
-    const dt = Math.min(50, ts - last);
+    const dt = Math.min(40, ts - last);
     last = ts;
 
-    // 30~20 fps target (mais leve)
-    if(dt < 34){
+    // throttle
+    if(ts - lastDraw < drawEveryMs){
       requestAnimationFrame(draw);
       return;
     }
+    lastDraw = ts;
 
-    // limpa mais forte pra não acumular
-    ctx.fillStyle = "rgba(10,14,20,0.22)";
+    const fs = canvas.__fontSize || 16;
+
+    // trail forte (limpa mais) -> bem leve
+    ctx.fillStyle = "rgba(10,14,20,0.28)";
     ctx.fillRect(0,0,W,H);
 
     ctx.font = `900 ${fs}px "Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif`;
@@ -1962,41 +1879,36 @@ init();
     const hue = (Number(getComputedStyle(document.documentElement).getPropertyValue("--themeHue")) || 195);
 
     for(let i=0;i<cols;i++){
-      // pula mais colunas pra ficar leve
+      // bem menos colunas e menos chance
       if(i % 3 !== 0) continue;
-      // chance menor
       if(Math.random() < 0.55) continue;
 
       const x = i*fs + (fs*0.1);
       const y = drops[i];
 
-      ctx.fillStyle = `hsla(${hue}, 90%, 72%, 0.28)`;
+      ctx.fillStyle = `hsla(${hue}, 90%, 76%, 0.28)`;
       ctx.fillText(rndGlyph(), x, y);
 
-      // velocidade mais baixa
       drops[i] += (fs * 0.34) * (dt/16) + (Math.random()*0.35);
 
       if(drops[i] > H + fs*2){
-        drops[i] = -Math.random()*H*0.35;
+        drops[i] = -Math.random()*H*0.22;
       }
     }
 
     requestAnimationFrame(draw);
   }
 
-  function onVis(){
-    paused = document.hidden;
-    if(!paused){
-      last = performance.now();
-      requestAnimationFrame(draw);
-    }
-  }
-
   resize();
-  window.addEventListener("resize", ()=>{ clearTimeout(canvas.__rt); canvas.__rt=setTimeout(resize, 120); }, {passive:true});
-  document.addEventListener("visibilitychange", onVis, {passive:true});
+  window.addEventListener("resize", ()=>{ clearTimeout(canvas.__rt); canvas.__rt=setTimeout(resize, 160); });
+
+  // start “limpo”
+  ctx.fillStyle = "rgba(10,14,20,1)";
+  ctx.fillRect(0,0,window.innerWidth,window.innerHeight);
+
   requestAnimationFrame(draw);
 })();
 </script>
+
 </body>
 </html>
