@@ -125,6 +125,7 @@ nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content
 .badge.n5{ border-color: rgba(52,211,153,.45); color: rgba(52,211,153,.95); }
 .badge.n4{ border-color: rgba(59,130,246,.45); color: rgba(147,197,253,.95); }
 .badge.tag{ border-color: rgba(255,255,255,.22); color: var(--text); }
+.badge.review{ border-color: hsla(var(--themeHue), 90%, 60%, .55); color: rgba(238,242,255,.92); }
 
 .tabbtn{
   cursor:pointer;
@@ -327,8 +328,32 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   accent-color: hsl(var(--themeHue) 90% 60%);
 }
 
+/* vocabulário */
+.vocabList{
+  margin-top:10px;
+  display:grid;
+  gap:8px;
+}
+.vocabItem{
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  border-radius:14px;
+  padding:10px 12px;
+}
+.vocabTop{
+  display:flex;
+  gap:10px;
+  align-items:baseline;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+.vWord{ font-weight:1000; font-size:16px; color: rgba(255,255,255,.96); }
+.vReading{ font-size:12px; color: var(--muted); font-weight:900; }
+.vMean{ font-size:13px; color: rgba(238,242,255,.90); margin-top:4px; }
+.vLoading{ font-size:13px; color: var(--muted); }
+
 /* =========================================================
-   PORTAL / ENTRADA — IMERSIVO
+   PORTAL / ENTRADA — MAIS IMERSIVO (parallax, fog, kanji rain)
 ========================================================= */
 #app.appHidden{ display:none; }
 
@@ -340,18 +365,20 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   align-items:center;
   justify-content:center;
   overflow:hidden;
+  perspective: 900px;
 }
 
 .jp-bg{
   position:absolute;
-  inset:-40px;
+  inset:-60px;
   background:
-    radial-gradient(1100px 700px at 18% 12%, rgba(130,90,255,.26), transparent 58%),
-    radial-gradient(900px 650px at 84% 22%, rgba(0,255,200,.16), transparent 60%),
-    radial-gradient(1000px 700px at 40% 88%, rgba(255,90,130,.16), transparent 58%),
+    radial-gradient(1200px 760px at 18% 12%, rgba(130,90,255,.26), transparent 58%),
+    radial-gradient(980px 720px at 84% 22%, rgba(0,255,200,.16), transparent 60%),
+    radial-gradient(1100px 760px at 40% 88%, rgba(255,90,130,.16), transparent 58%),
     linear-gradient(180deg, rgba(8,10,14,.94), rgba(10,14,20,.98));
   transform: scale(1.05);
-  filter: saturate(1.05);
+  filter: saturate(1.06);
+  will-change: transform;
 }
 
 .jp-pattern{
@@ -366,6 +393,57 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   filter: blur(.2px);
 }
 
+.fog{
+  position:absolute;
+  inset:-20%;
+  background:
+    radial-gradient(900px 600px at 35% 40%, rgba(255,255,255,.10), transparent 60%),
+    radial-gradient(900px 700px at 65% 55%, rgba(0,255,200,.08), transparent 62%),
+    radial-gradient(1000px 760px at 50% 60%, rgba(120,90,255,.10), transparent 62%);
+  opacity:.35;
+  filter: blur(10px);
+  transform: translateZ(0);
+  animation: fog 12s ease-in-out infinite alternate;
+  pointer-events:none;
+  z-index:2;
+}
+@keyframes fog{
+  from{ transform: translate3d(-1.2%, -0.6%, 0) scale(1.02); }
+  to{ transform: translate3d(1.2%, 0.8%, 0) scale(1.06); }
+}
+
+.kanjiRain{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+  opacity:.16;
+  mix-blend-mode: screen;
+  filter: blur(.1px);
+  font-weight:1000;
+}
+.krCol{
+  position:absolute;
+  top:-30%;
+  width: 24px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  animation: fallKr var(--dur) linear var(--delay) infinite;
+}
+.krCol span{
+  display:block;
+  text-align:center;
+  color: rgba(160,240,255,.65);
+  text-shadow: 0 0 12px rgba(0,0,0,.45);
+  transform: rotate(-2deg);
+}
+@keyframes fallKr{
+  0%{ transform: translateY(-20vh); opacity:0; }
+  10%{ opacity:.75; }
+  100%{ transform: translateY(140vh); opacity:0; }
+}
+
 /* ===== 無常 (MAIS VISÍVEL) ===== */
 .mujo{
   position:absolute;
@@ -377,7 +455,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   font-size: clamp(180px, 24vw, 360px);
   line-height: 1;
   opacity: .34;
-  z-index: 1;
+  z-index: 3;
   pointer-events:none;
 
   background: linear-gradient(90deg,
@@ -424,7 +502,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   50%{ transform: translate(-50%,-53%) scale(1.03); opacity:.40; }
 }
 
-/* ===== TORII (mais japonês, mais “jinja”) ===== */
+/* ===== TORII ===== */
 .jp-torii{
   position:absolute;
   left:50%;
@@ -434,8 +512,9 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   transform: translate(-50%,-54%);
   opacity:.78;
   pointer-events:none;
-  z-index:2;
+  z-index:4;
   animation: toriiFloat 5.6s ease-in-out infinite;
+  will-change: transform;
 }
 .jp-torii svg{
   width:100%;
@@ -461,7 +540,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   opacity:.95;
-  z-index:3;
+  z-index:6;
 }
 .shoji.left{ left:0; border-right:1px solid rgba(255,255,255,.16); }
 .shoji.right{ right:0; border-left:1px solid rgba(255,255,255,.16); }
@@ -475,7 +554,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 
 .jp-card{
   position:relative;
-  z-index:5;
+  z-index:7;
   width:min(720px, 92vw);
   border-radius: 26px;
   border: 1px solid rgba(255,255,255,.18);
@@ -617,8 +696,9 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   position:absolute;
   inset:0;
   pointer-events:none;
-  z-index:4;
+  z-index:5;
 }
+
 .petal{
   position:absolute;
   top:-12%;
@@ -652,7 +732,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
     radial-gradient(900px 650px at 50% 55%, rgba(120,90,255,.20), transparent 62%),
     radial-gradient(900px 650px at 55% 50%, rgba(0,255,200,.16), transparent 62%);
   transform: scale(1);
-  z-index:6;
+  z-index:8;
 }
 
 /* saída mais devagar */
@@ -684,14 +764,17 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 
 <!-- ====== PORTAL / TELA DE ENTRADA ====== -->
 <section id="gate" class="jpGate">
-  <div class="jp-bg"></div>
+  <div class="jp-bg" id="gateBg"></div>
   <div class="jp-pattern"></div>
+  <div class="fog"></div>
+
+  <div class="kanjiRain" id="kanjiRain"></div>
 
   <!-- 無常 gigante -->
   <div class="mujo" aria-hidden="true">無常</div>
 
-  <!-- TORII (mais japonês) -->
-  <div class="jp-torii" aria-hidden="true">
+  <!-- TORII -->
+  <div class="jp-torii" id="gateTorii" aria-hidden="true">
     <svg viewBox="0 0 1400 800" role="presentation">
       <defs>
         <linearGradient id="verm" x1="0" x2="1">
@@ -882,6 +965,12 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
           </div>
 
           <hr class="sep">
+
+          <div class="mean">📚 Vocabulário (3 exemplos)</div>
+          <div class="small" id="kdVocabHint">—</div>
+          <div class="vocabList" id="kdVocab"></div>
+
+          <hr class="sep">
           <div class="row">
             <div class="btn good" id="kdTrain">Treinar no Jogo</div>
           </div>
@@ -901,11 +990,11 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
         <div class="row">
           <div>
             <h2>Jogo</h2>
-            <p class="hint"></p>
+            <p class="hint" id="reviewHint">Revisão (erros): —</p>
           </div>
 
           <div class="row">
-            <label class="toggle" title="Repete mais os que você erra (peso no sorteio)">
+            <label class="toggle" title="Repete mais os que você erra">
               <input type="checkbox" id="quizSmart" checked />
               modo inteligente
             </label>
@@ -913,14 +1002,10 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
               <input type="checkbox" id="quizAuto" checked />
               auto-run
             </label>
-
-            <!-- ✅ Só aparece quando EXISTEM erros (fila de revisão) -->
-            <span id="reviewToggleWrap" style="display:none;">
-              <label class="toggle" title="Treino separado: só os kanjis que você errou (fila de revisão). Se não houver erros, essa opção some.">
-                <input type="checkbox" id="quizReviewOnly" />
-                revisar erros
-              </label>
-            </span>
+            <label class="toggle" title="Apenas revisão (só aparece quando tiver erro)">
+              <input type="checkbox" id="reviewOnly" />
+              só errados
+            </label>
           </div>
         </div>
 
@@ -932,7 +1017,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
                 <span class="badge" id="quizScore">Acertos: 0 · Erros: 0 · Streak: 0</span>
                 <span class="badge" id="quizTimerText">⏱️ 12s</span>
                 <span class="badge tag" id="quizMoodText">Mood: —</span>
-                <span class="badge tag" id="quizReviewText">Revisão: 0</span>
+                <span class="badge review" id="reviewBadge" style="display:none;">Review</span>
               </div>
               <div class="timerBarWrap">
                 <div class="timerBar" id="timerBar"></div>
@@ -976,18 +1061,13 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
             </div>
           </div>
 
-          <!-- FEEDBACK + 3 PALAVRAS -->
           <div id="quizFeedback" class="card" style="display:none;">
             <div class="mean" id="quizFeedbackTitle"></div>
             <div class="hira" id="quizFeedbackDetail"></div>
 
-            <hr class="sep">
-
-            <div class="mean">📚 3 palavras com este kanji (Jisho → PT-BR)</div>
-            <div class="small" id="quizExamples">—</div>
-            <div class="small" style="margin-top:6px; opacity:.9;">
-              *Fonte: Jisho (dados) + tradução automática para PT-BR.
-            </div>
+            <div class="mean" style="margin-top:12px;">📚 Vocabulário (3 exemplos)</div>
+            <div class="small" id="quizVocabHint">—</div>
+            <div class="vocabList" id="quizVocab"></div>
 
             <div class="strokeBox" style="margin-top:12px;">
               <div class="strokeHead">
@@ -1021,6 +1101,10 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
           <div class="small" id="worstKanjis">—</div>
 
           <hr class="sep">
+          <div class="mean">🧪 Revisão (fila de erros)</div>
+          <div class="small" id="reviewList">—</div>
+
+          <hr class="sep">
           <div class="row">
             <div class="btn danger" id="resetHistory">Resetar histórico</div>
             <div class="btn good" id="goKanji">Voltar ao Kanji</div>
@@ -1041,7 +1125,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   const hues = [195, 230, 265, 305, 20, 55, 110, 155];
   let i = Math.floor(Math.random() * hues.length);
   document.documentElement.style.setProperty("--themeHue", String(hues[i]));
-
   setInterval(()=>{
     i = (i + 1) % hues.length;
     document.documentElement.style.setProperty("--themeHue", String(hues[i]));
@@ -1061,7 +1144,7 @@ const N5_SET = new Set(N5_LIST);
 const N4_SET = new Set(N4_LIST);
 
 /* =========================
-   KANJI_INFO (PT-BR)
+   KANJI_INFO (PT-BR) — MANTIVE O SEU
 ========================= */
 const KANJI_INFO = {
   "一":{readings:["いち","ひと"], meaning:"um"},
@@ -1331,6 +1414,7 @@ function flash(type){
   f.classList.add("on");
   setTimeout(()=>f.classList.remove("on"), 560);
 }
+
 function shuffle(arr){
   const a = [...arr];
   for(let i=a.length-1;i>0;i--){
@@ -1339,168 +1423,44 @@ function shuffle(arr){
   }
   return a;
 }
+
 function levelOf(k){
   if(N5_SET.has(k)) return "N5";
   if(N4_SET.has(k)) return "N4";
   return "N4";
 }
+
 function allKanjisUnique(){
   const set = new Set([...N5_LIST, ...N4_LIST]);
   return Array.from(set);
 }
+
 function poolByLevel(level){
   const all = allKanjisUnique().filter(isInfoComplete);
   if(level === "N5") return all.filter(k=>N5_SET.has(k));
   if(level === "N4") return all.filter(k=>N4_SET.has(k));
   return all;
 }
+
 function toHiragana(s){
   return (s||"").replace(/[\u30A1-\u30F6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 }
+
 function normalizeSearch(s){
   return toHiragana((s||"").trim().toLowerCase());
 }
+
 function isKana(s){
   return /^[\u3040-\u309F\u30A0-\u30FFー]+$/.test(s);
 }
 function isKanjiLike(s){
   return /[\u4E00-\u9FFF]/.test(s);
 }
+
 function safeInfo(k){
   const info = KANJI_INFO[k] || {readings:["—"], meaning:"—"};
   const r = (info.readings||[]).map(toHiragana).filter(Boolean);
   return { readings: r.length ? r : ["—"], meaning: info.meaning || "—" };
-}
-
-/* =========================
-   VOCAB EXAMPLES (Jisho → PT-BR)
-   - Busca no Jisho (API)
-   - Traduz EN → PT-BR via MyMemory (grátis)
-========================= */
-const exampleCache = new Map();       // kanji -> html pronto
-const translateCache = new Map();     // enText -> ptText
-let examplesReqSeq = 0;               // evita race condition
-
-function escapeHTML(s){
-  return String(s || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-async function fetchJSON(url){
-  // tentativa direta
-  try{
-    const r = await fetch(url, { cache:"no-store" });
-    if(!r.ok) throw new Error("HTTP " + r.status);
-    return await r.json();
-  }catch{
-    // fallback CORS proxy
-    const proxied = "https://cors.isomorphic-git.org/" + url;
-    const r2 = await fetch(proxied, { cache:"no-store" });
-    if(!r2.ok) throw new Error("HTTP " + r2.status);
-    return await r2.json();
-  }
-}
-
-async function translateENtoPT(enText){
-  const key = (enText || "").trim();
-  if(!key) return "—";
-  if(translateCache.has(key)) return translateCache.get(key);
-
-  // MyMemory: EN -> PT
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(key)}&langpair=en|pt`;
-  try{
-    const json = await fetchJSON(url);
-    const pt = json?.responseData?.translatedText ? String(json.responseData.translatedText) : "";
-    const out = pt && pt.toLowerCase() !== key.toLowerCase() ? pt : key;
-    translateCache.set(key, out);
-    return out;
-  }catch{
-    translateCache.set(key, key); // fallback
-    return key;
-  }
-}
-
-function pickThreeVocabFromJisho(data, kanji){
-  const out = [];
-  const seen = new Set();
-  const rows = Array.isArray(data?.data) ? data.data : [];
-
-  for(const row of rows){
-    const ja = Array.isArray(row.japanese) ? row.japanese : [];
-    const senses = Array.isArray(row.senses) ? row.senses : [];
-
-    let chosen = null;
-    for(const form of ja){
-      const w = form.word || "";
-      if(w && w.includes(kanji)){ chosen = form; break; }
-    }
-    if(!chosen || !chosen.word) continue;
-
-    const word = chosen.word;
-    if(seen.has(word)) continue;
-    seen.add(word);
-
-    const reading = chosen.reading || (ja[0]?.reading || "—");
-
-    let meaningEN = "—";
-    if(senses[0]?.english_definitions?.length){
-      meaningEN = senses[0].english_definitions.slice(0, 3).join("; ");
-    }
-
-    out.push({ word, reading, meaningEN });
-    if(out.length === 3) break;
-  }
-  return out;
-}
-
-async function renderQuizExamples(kanji){
-  const el = $("quizExamples");
-  if(!el) return;
-
-  if(exampleCache.has(kanji)){
-    el.innerHTML = exampleCache.get(kanji);
-    return;
-  }
-
-  const mySeq = ++examplesReqSeq;
-  el.textContent = "Carregando exemplos do Jisho…";
-
-  const url = `https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(kanji)}`;
-
-  try{
-    const json = await fetchJSON(url);
-    if(mySeq !== examplesReqSeq) return;
-
-    const vocab = pickThreeVocabFromJisho(json, kanji);
-
-    if(!vocab.length){
-      const html = "— (sem exemplos suficientes no Jisho para este kanji)";
-      exampleCache.set(kanji, html);
-      el.innerHTML = html;
-      return;
-    }
-
-    // traduz 3 significados (EN → PT-BR)
-    const ptMeanings = await Promise.all(
-      vocab.map(v => translateENtoPT(v.meaningEN))
-    );
-    if(mySeq !== examplesReqSeq) return;
-
-    const html = vocab.map((v, idx)=>{
-      const pt = ptMeanings[idx] || v.meaningEN || "—";
-      return `${idx+1}) <b>${escapeHTML(v.word)}</b>【${escapeHTML(v.reading)}】 — <span style="opacity:.92">PT:</span> ${escapeHTML(pt)}`;
-    }).join("<br>");
-
-    exampleCache.set(kanji, html);
-    el.innerHTML = html;
-  }catch{
-    if(mySeq !== examplesReqSeq) return;
-    el.innerHTML = `Falha ao buscar/traduzir (internet/CORS).`;
-  }
 }
 
 /* =========================
@@ -1612,6 +1572,177 @@ async function loadKanjiSVGInto(kanji, targetEl){
   }
 }
 
+/* =========================================================
+   VOCAB (3 palavras) — JP->PT via jmdict_portuguese (Yomichan)
+   Motivo: Jisho no browser tende a CORS, então usamos dataset JP-PT estável em CDN.
+========================================================= */
+const VOCAB = (()=> {
+  const BASE = "https://cdn.jsdelivr.net/gh/elementare/jmdict_portuguese@master/";
+  const BANKS = 29; // repo tem term_bank_1..term_bank_29 (se mudar, só ajuste aqui)
+  const bankCache = new Map(); // LRU simples
+  const bankOrder = [];
+  const bankMax = 3; // segura memória
+  const kanjiCache = new Map(); // kanji -> examples array
+
+  function lruPut(k, v){
+    if(bankCache.has(k)){
+      bankOrder.splice(bankOrder.indexOf(k),1);
+    }
+    bankCache.set(k, v);
+    bankOrder.push(k);
+    while(bankOrder.length > bankMax){
+      const old = bankOrder.shift();
+      bankCache.delete(old);
+    }
+  }
+
+  async function loadBank(i){
+    const key = "term_bank_"+i;
+    if(bankCache.has(key)) return bankCache.get(key);
+    const url = `${BASE}term_bank_${i}.json`;
+    const res = await fetch(url, {cache:"force-cache"});
+    if(!res.ok) throw new Error("Vocab HTTP "+res.status);
+    const data = await res.json();
+    lruPut(key, data);
+    return data;
+  }
+
+  function cleanGloss(g){
+    if(g == null) return "";
+    if(typeof g === "string") return g;
+    if(Array.isArray(g)){
+      // pode ser array de strings/objetos
+      const parts = g.map(x=>{
+        if(typeof x === "string") return x;
+        if(x && typeof x === "object"){
+          if(typeof x.content === "string") return x.content;
+          if(typeof x.text === "string") return x.text;
+          if(typeof x.value === "string") return x.value;
+        }
+        return "";
+      }).filter(Boolean);
+      return parts.join("; ");
+    }
+    if(typeof g === "object"){
+      if(typeof g.content === "string") return g.content;
+      if(typeof g.text === "string") return g.text;
+      if(typeof g.value === "string") return g.value;
+    }
+    return "";
+  }
+
+  function parseEntry(e){
+    // Yomichan term bank typical:
+    // [expression, reading, definitionTags, rules, score, glossary, sequence, termTags]
+    // mas pode variar — então pegamos por posição “provável”
+    const term = (e && e[0]) ? String(e[0]) : "";
+    const reading = (e && e[1]) ? String(e[1]) : "";
+    const score = (e && typeof e[4] === "number") ? e[4] : 0;
+    const gloss = cleanGloss(e ? e[5] : "");
+    const tags = e ? (e[7] || e[2] || "") : "";
+    return {term, reading, gloss, score, tags};
+  }
+
+  function okWord(w, kanji){
+    if(!w.term) return false;
+    if(!w.term.includes(kanji)) return false;
+    if(w.term.length > 10) return false;
+    // evita entradas “estranhas”
+    if(/[A-Za-z0-9]/.test(w.term)) return false;
+    if(!w.gloss) return false;
+    return true;
+  }
+
+  function scoreWord(w){
+    // heurística leve: menor termo + score maior primeiro
+    const lenBonus = Math.max(0, 10 - w.term.length);
+    const s = (w.score || 0) * 0.001 + lenBonus;
+    return s;
+  }
+
+  async function getExamples(kanji, n=3){
+    if(kanjiCache.has(kanji)) return kanjiCache.get(kanji);
+
+    const picks = [];
+    const used = new Set();
+
+    for(let i=1;i<=BANKS;i++){
+      let bank;
+      try{
+        bank = await loadBank(i);
+      }catch{
+        continue;
+      }
+
+      // banco é array de entradas
+      const candidates = [];
+      for(const e of bank){
+        const w = parseEntry(e);
+        if(!okWord(w, kanji)) continue;
+        if(used.has(w.term)) continue;
+        candidates.push(w);
+      }
+
+      // ordena candidatos deste bank por score heurístico
+      candidates.sort((a,b)=> scoreWord(b) - scoreWord(a));
+
+      for(const w of candidates){
+        used.add(w.term);
+        picks.push({
+          term: w.term,
+          reading: toHiragana(w.reading || ""),
+          meaning: w.gloss
+        });
+        if(picks.length >= n) break;
+      }
+      if(picks.length >= n) break;
+    }
+
+    // fallback bem seguro (não quebra UI)
+    while(picks.length < n){
+      picks.push({term:"—", reading:"—", meaning:"Sem entrada (offline/limite do dicionário)."});
+    }
+
+    kanjiCache.set(kanji, picks);
+    return picks;
+  }
+
+  return { getExamples };
+})();
+
+function renderVocab(containerEl, hintEl, items){
+  containerEl.innerHTML = "";
+  if(!items || !items.length){
+    hintEl.textContent = "—";
+    return;
+  }
+  hintEl.textContent = "3 exemplos (JP → PT-BR)";
+  for(const it of items){
+    const div = document.createElement("div");
+    div.className = "vocabItem";
+    div.innerHTML = `
+      <div class="vocabTop">
+        <div class="vWord">${it.term}</div>
+        <div class="vReading">${it.reading ? `(${it.reading})` : ""}</div>
+      </div>
+      <div class="vMean">${it.meaning}</div>
+    `;
+    containerEl.appendChild(div);
+  }
+}
+
+async function loadAndShowVocabForKanji(kanji, containerEl, hintEl){
+  hintEl.textContent = "Carregando do dicionário JP-PT...";
+  containerEl.innerHTML = `<div class="vLoading">Buscando 3 palavras…</div>`;
+  try{
+    const ex = await VOCAB.getExamples(kanji, 3);
+    renderVocab(containerEl, hintEl, ex);
+  }catch{
+    hintEl.textContent = "Falha ao carregar vocabulário.";
+    containerEl.innerHTML = `<div class="vLoading">Sem vocabulário (erro de rede).</div>`;
+  }
+}
+
 /* =========================
    KANJI TAB + SEARCH
 ========================= */
@@ -1629,6 +1760,8 @@ const kdMean = $("kdMean");
 const kdBadges = $("kdBadges");
 const kdStroke = $("kdStroke");
 const kdSpeed = $("kdSpeed");
+const kdVocab = $("kdVocab");
+const kdVocabHint = $("kdVocabHint");
 
 let selectedKanji = null;
 let kdSvgEl = null;
@@ -1716,6 +1849,9 @@ async function showKanjiDetail(k, autoScroll){
 
   kdSvgEl = await loadKanjiSVGInto(k, kdStroke);
   animateStrokeOrder(kdSvgEl, Number(kdSpeed.value));
+
+  // VOCAB
+  loadAndShowVocabForKanji(k, kdVocab, kdVocabHint);
 }
 
 $("kdReplay").addEventListener("click", ()=>{
@@ -1735,17 +1871,17 @@ $("kdTrain").addEventListener("click", ()=>{
 /* =========================
    QUIZ STATS
 ========================= */
-const LS_KEY = "vampire_kanji_quiz_ptbr_v3";
+const LS_KEY = "vampire_kanji_quiz_ptbr_v2";
 
 function defaultStats(){
   return {
     bestStreak:0, bestAccuracy:0, bestScore:0,
     totalCorrect:0, totalWrong:0,
     perKanji:{}, recent:[],
-    reviewQueue:[],      // kanjis pra revisar (persistente)
-    reviewPass:{}        // k -> passes consecutivos no modo revisão
+    review:{ set:[], counts:{} } // set = array (persistência), counts = {kanji: {w,c}}
   };
 }
+
 function loadStats(){
   try{ const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : defaultStats(); }
   catch{ return defaultStats(); }
@@ -1753,7 +1889,22 @@ function loadStats(){
 function saveStats(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(stats)); }catch{} }
 let stats = loadStats();
 
+/* revisão (erros) — runtime */
+let reviewSet = new Set(stats.review?.set || []);
+let reviewCounts = stats.review?.counts || {}; // {k:{w,c}}
+function ensureReviewCounts(k){ if(!reviewCounts[k]) reviewCounts[k] = {w:0,c:0}; }
+
+function persistReview(){
+  stats.review = stats.review || {};
+  stats.review.set = Array.from(reviewSet);
+  stats.review.counts = reviewCounts;
+  saveStats();
+}
+
+function reviewSize(){ return reviewSet.size; }
+
 function ensurePerKanji(k){ if(!stats.perKanji[k]) stats.perKanji[k] = {c:0,w:0}; }
+
 function pushRecent(ok){
   stats.recent.push(ok ? 1 : 0);
   if(stats.recent.length > 12) stats.recent.shift();
@@ -1769,59 +1920,11 @@ function applyMood(){
 }
 
 /* =========================
-   REVIEW MODE (fila de erros)
-   ✅ opção só aparece se houver erros
-   ✅ ao entrar no modo revisão: "resetar" sessão + ordem da revisão
-========================= */
-function reviewCount(){ return Array.isArray(stats.reviewQueue) ? stats.reviewQueue.length : 0; }
-function updateReviewUI(){
-  const el = $("quizReviewText");
-  if(el) el.textContent = `Revisão: ${reviewCount()}`;
-  refreshReviewAvailability();
-}
-function refreshReviewAvailability(){
-  const has = reviewCount() > 0;
-  const wrap = $("reviewToggleWrap");
-  const chk  = $("quizReviewOnly");
-  if(wrap) wrap.style.display = has ? "inline-flex" : "none";
-  if(!has && chk){
-    chk.checked = false; // ✅ se não tem erro, não deixa essa opção ligada
-  }
-}
-
-function addToReview(k){
-  if(!stats.reviewQueue) stats.reviewQueue = [];
-  if(!stats.reviewPass) stats.reviewPass = {};
-  if(!stats.reviewQueue.includes(k)){
-    stats.reviewQueue.push(k);
-  }
-  stats.reviewPass[k] = 0;
-  updateReviewUI();
-  saveStats();
-  rebuildReviewOrder(true);
-}
-
-function passReview(k){
-  if(!stats.reviewPass) stats.reviewPass = {};
-  stats.reviewPass[k] = (stats.reviewPass[k] || 0) + 1;
-
-  // regra: remove da fila depois de 2 acertos seguidos em modo revisão
-  if(stats.reviewPass[k] >= 2){
-    stats.reviewQueue = (stats.reviewQueue || []).filter(x => x !== k);
-    delete stats.reviewPass[k];
-    rebuildReviewOrder(true);
-  }
-  updateReviewUI();
-  saveStats();
-}
-
-/* =========================
    QUIZ ENGINE
 ========================= */
 const quizSmart = $("quizSmart");
 const quizAuto = $("quizAuto");
-const quizReviewOnly = $("quizReviewOnly");
-
+const reviewOnly = $("reviewOnly");
 const quizLevel = $("quizLevel");
 const quizKanji = $("quizKanji");
 const quizScoreEl = $("quizScore");
@@ -1838,19 +1941,27 @@ const quizFeedbackDetail = $("quizFeedbackDetail");
 const quizStroke = $("quizStroke");
 const quizSpeed = $("quizSpeed");
 
+const quizVocab = $("quizVocab");
+const quizVocabHint = $("quizVocabHint");
+
 const bestStatsEl = $("bestStats");
 const worstKanjisEl = $("worstKanjis");
+const reviewHint = $("reviewHint");
+const reviewListEl = $("reviewList");
+const reviewBadge = $("reviewBadge");
 
 let quizSvgEl = null;
 
 $("goKanji").addEventListener("click", ()=> openTab("kanji"));
 $("resetHistory").addEventListener("click", ()=>{
   stats = defaultStats();
+  reviewSet = new Set();
+  reviewCounts = {};
+  persistReview();
   saveStats();
-  rebuildReviewOrder(true);
   updateRightPanel();
-  applyMood();
   updateReviewUI();
+  applyMood();
   flash("bad");
 });
 
@@ -1871,17 +1982,50 @@ const quizState = {
   okMeaning: false,
 
   lockedAfterResult: false,
-  lastPick: null,
-
-  // ✅ revisão: ordem “resetável”
-  reviewOrder: [],
-  reviewIdx: 0
+  lastPick: null
 };
 
 function updateScoreUI(){
   quizScoreEl.textContent =
     `Acertos: ${quizState.sessionCorrect} · Erros: ${quizState.sessionWrong} · Streak: ${quizState.sessionStreak}`;
 }
+
+function updateReviewUI(){
+  const n = reviewSize();
+  if(n > 0){
+    reviewHint.textContent = `Revisão (erros): ${n} kanji na fila`;
+    reviewOnly.disabled = false;
+    reviewOnly.parentElement.style.opacity = "1";
+  }else{
+    reviewHint.textContent = `Revisão (erros): nenhum`;
+    reviewOnly.checked = false;
+    reviewOnly.disabled = true;
+    reviewOnly.parentElement.style.opacity = ".65";
+  }
+
+  reviewBadge.style.display = reviewOnly.checked ? "inline-block" : "none";
+
+  // lista (top 12)
+  const arr = Array.from(reviewSet).map(k=>{
+    ensureReviewCounts(k);
+    return {k, w: reviewCounts[k].w || 0, c: reviewCounts[k].c || 0};
+  });
+  arr.sort((a,b)=> (b.w - a.w) || (a.c - b.c));
+  const top = arr.slice(0,12);
+  reviewListEl.innerHTML = top.length
+    ? top.map(x=>`• <b>${x.k}</b> — erros: ${x.w} · acertos(rev): ${x.c}`).join("<br>")
+    : "—";
+}
+
+reviewOnly.addEventListener("change", ()=>{
+  // só permite ligar se tiver erro
+  if(reviewOnly.checked && reviewSize() === 0){
+    reviewOnly.checked = false;
+    return;
+  }
+  updateReviewUI();
+  nextQuestion(true); // força nova seleção coerente
+});
 
 function updateRightPanel(){
   const totalGlobal = stats.totalCorrect + stats.totalWrong;
@@ -1910,6 +2054,8 @@ function updateRightPanel(){
         return `• <b>${x.k}</b> — erros: ${x.w} / ${x.total} (${pct}%)`;
       }).join("<br>")
     : "—";
+
+  updateReviewUI();
 }
 
 function updateBests(){
@@ -1943,7 +2089,7 @@ function buildChoices(kind, correctKanji, pool){
     if(picks.length === 4) break;
   }
 
-  while(picks.length < 4){
+  while(picks.length < 4 && poolOthers.length){
     const k = poolOthers[Math.floor(Math.random() * poolOthers.length)];
     const t = (kind === "reading") ? readingText(k) : meaningText(k);
     if(!t || used.has(t)) continue;
@@ -1961,13 +2107,8 @@ function resetQuestionState(){
   quizState.okMeaning = false;
   quizState.lockedAfterResult = false;
   quizFeedback.style.display = "none";
-}
-
-function resetSession(){
-  quizState.sessionCorrect = 0;
-  quizState.sessionWrong = 0;
-  quizState.sessionStreak = 0;
-  updateScoreUI();
+  quizVocabHint.textContent = "—";
+  quizVocab.innerHTML = "";
 }
 
 function disableAllChoices(){
@@ -2000,7 +2141,6 @@ function renderChoiceButtons(targetEl, options, onPick){
   }
 }
 
-/* peso por erro (smart) */
 function weightedPick(pool){
   let total = 0;
   const weights = pool.map(k=>{
@@ -2020,58 +2160,30 @@ function weightedPick(pool){
   return pool[pool.length-1];
 }
 
-function getBasePoolByUILevel(){
+function getBasePool(){
   const lvl = quizLevel.value;
   const pool = poolByLevel(lvl);
   return pool.length < 6 ? poolByLevel("ALL") : pool;
 }
 
-function getReviewPoolFiltered(){
-  const base = getBasePoolByUILevel();
-  const setBase = new Set(base);
-  const q = Array.isArray(stats.reviewQueue) ? stats.reviewQueue : [];
-  const filtered = q.filter(k => setBase.has(k) && isInfoComplete(k));
-  return filtered;
-}
+function getActivePool(){
+  // Se reviewOnly ligado, pool = reviewSet intersect basePool
+  const base = getBasePool();
+  if(!reviewOnly.checked) return base;
 
-function getQuizPool(){
-  // se revisar erros ON -> só a fila de revisão
-  if(quizReviewOnly && quizReviewOnly.checked){
-    const rpool = getReviewPoolFiltered();
-    // ✅ se não há erros, desliga e segue normal
-    if(rpool.length < 1){
-      quizReviewOnly.checked = false;
-      refreshReviewAvailability();
-      return getBasePoolByUILevel();
-    }
-    return rpool;
+  if(reviewSize() === 0){
+    // safety (nunca cai)
+    reviewOnly.checked = false;
+    updateReviewUI();
+    return base;
   }
-  return getBasePoolByUILevel();
-}
-
-function rebuildReviewOrder(force){
-  const pool = getReviewPoolFiltered();
-  const keyNow = pool.join("");
-  const keyPrev = (quizState.reviewOrder || []).join("");
-  if(force || keyNow !== keyPrev){
-    quizState.reviewOrder = shuffle(pool);
-    quizState.reviewIdx = 0;
-  }
-}
-
-function pickFromReview(){
-  rebuildReviewOrder(false);
-  if(!quizState.reviewOrder.length) return null;
-  const k = quizState.reviewOrder[quizState.reviewIdx % quizState.reviewOrder.length];
-  quizState.reviewIdx++;
-  return k;
+  const rs = reviewSet;
+  const reviewPool = base.filter(k => rs.has(k));
+  // se filtro de nível zerar o reviewPool, faz fallback só para reviewSet (sem nível)
+  return reviewPool.length ? reviewPool : Array.from(rs);
 }
 
 function pickKanji(pool){
-  if(quizReviewOnly && quizReviewOnly.checked){
-    return pickFromReview() || pool[Math.floor(Math.random()*pool.length)];
-  }
-
   let k = quizSmart.checked ? weightedPick(pool) : pool[Math.floor(Math.random()*pool.length)];
   if(pool.length > 1 && k === quizState.lastPick){
     k = pool[Math.floor(Math.random()*pool.length)];
@@ -2095,16 +2207,41 @@ async function showFeedback(okAll, reason){
     Significado: <b>${info.meaning}</b>
   `;
 
-  // ✅ 3 palavras do Jisho + PT-BR
-  renderQuizExamples(k);
+  // vocab 3 palavras
+  loadAndShowVocabForKanji(k, quizVocab, quizVocabHint);
 
   quizSvgEl = await loadKanjiSVGInto(k, quizStroke);
   animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
 }
 
+function addToReview(k){
+  reviewSet.add(k);
+  ensureReviewCounts(k);
+  reviewCounts[k].w += 1;
+  persistReview();
+  updateReviewUI();
+}
+
+function removeFromReviewIfCleared(k){
+  // regra: em revisão, ao acertar o kanji -> sai da fila
+  if(reviewSet.has(k)){
+    reviewSet.delete(k);
+    ensureReviewCounts(k);
+    reviewCounts[k].c += 1;
+    persistReview();
+  }
+  // se zerou a fila, desliga o modo automaticamente
+  if(reviewSize() === 0){
+    reviewOnly.checked = false;
+  }
+  updateReviewUI();
+}
+
 function commitResult(okAll, reason){
   const k = quizState.current;
   ensurePerKanji(k);
+
+  const inReviewMode = reviewOnly.checked;
 
   if(okAll){
     quizState.sessionCorrect += 1;
@@ -2114,8 +2251,8 @@ function commitResult(okAll, reason){
     pushRecent(true);
     flash("good");
 
-    // ✅ se está em modo revisão, 2 acertos seguidos removem da fila
-    if(quizReviewOnly && quizReviewOnly.checked) passReview(k);
+    // se estava em revisão, remove da fila
+    if(inReviewMode) removeFromReviewIfCleared(k);
   }else{
     quizState.sessionWrong += 1;
     quizState.sessionStreak = 0;
@@ -2124,7 +2261,7 @@ function commitResult(okAll, reason){
     pushRecent(false);
     flash("bad");
 
-    // ✅ qualquer erro/timeout entra na fila de revisão (e a opção aparece)
+    // adiciona na revisão sempre que errar (ou timeout)
     addToReview(k);
   }
 
@@ -2132,7 +2269,6 @@ function commitResult(okAll, reason){
   updateBests();
   applyMood();
   updateRightPanel();
-  updateReviewUI();
   saveStats();
 
   stopTimer();
@@ -2140,6 +2276,13 @@ function commitResult(okAll, reason){
 
   quizState.lockedAfterResult = true;
   showFeedback(okAll, reason);
+
+  // auto-run (se ligado) pega próxima questão com delay — mas SEM quebrar revisão
+  if(quizAuto.checked){
+    setTimeout(()=>{
+      nextQuestion(true);
+    }, 850);
+  }
 }
 
 function evaluateIfComplete(){
@@ -2154,10 +2297,13 @@ function setQuestion(kanji, keepTimerRunning){
 
   resetQuestionState();
 
-  const pool = getQuizPool();
+  const pool = getActivePool();
 
-  const rOpts = buildChoices("reading", kanji, pool);
-  const mOpts = buildChoices("meaning", kanji, pool);
+  // se pool estiver vazio (não deve), fallback seguro
+  const safePool = (pool && pool.length) ? pool : getBasePool();
+
+  const rOpts = buildChoices("reading", kanji, safePool);
+  const mOpts = buildChoices("meaning", kanji, safePool);
 
   renderChoiceButtons(readingChoices, rOpts, (ok)=>{
     quizState.answeredReading = true;
@@ -2170,6 +2316,8 @@ function setQuestion(kanji, keepTimerRunning){
     quizState.okMeaning = ok;
     evaluateIfComplete();
   });
+
+  updateReviewUI();
 
   if(quizState.running){
     startTimer(true);
@@ -2189,10 +2337,15 @@ function setQuestion(kanji, keepTimerRunning){
   }
 }
 
-function nextQuestion(){
-  const pool = getQuizPool();
-  const k = pickKanji(pool);
-  setQuestion(k, true);
+function nextQuestion(keepTimerRunning){
+  const pool = getActivePool();
+  if(reviewOnly.checked && reviewSize() === 0){
+    // nunca cai, só desliga review e segue
+    reviewOnly.checked = false;
+    updateReviewUI();
+  }
+  const p = (pool && pool.length) ? pool : getBasePool();
+  setQuestion(pickKanji(p), keepTimerRunning);
 }
 
 /* =========================
@@ -2245,19 +2398,20 @@ $("quizPause").addEventListener("click", ()=>{
   else startTimer(false);
 });
 $("quizNext").addEventListener("click", ()=>{
-  nextQuestion();
+  nextQuestion(true);
   updateRightPanel();
-  updateReviewUI();
   saveStats();
 });
 $("quizReset").addEventListener("click", ()=>{
   stopTimer();
-  resetSession();
+  quizState.sessionCorrect = 0;
+  quizState.sessionWrong = 0;
+  quizState.sessionStreak = 0;
+  updateScoreUI();
   updateRightPanel();
-  updateReviewUI();
   saveStats();
   flash("bad");
-  nextQuestion();
+  nextQuestion(false);
 });
 
 quizTime.addEventListener("change", ()=>{
@@ -2277,26 +2431,7 @@ quizSpeed.addEventListener("change", ()=>{
   if(!quizSvgEl) return;
   animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
 });
-quizLevel.addEventListener("change", ()=>{
-  rebuildReviewOrder(true);
-  nextQuestion();
-});
-
-if(quizReviewOnly){
-  quizReviewOnly.addEventListener("change", ()=>{
-    // ✅ ao entrar no modo revisão: resetar sessão + resetar ordem da revisão
-    if(quizReviewOnly.checked){
-      rebuildReviewOrder(true);
-      resetSession();
-      stopTimer();
-      nextQuestion();
-    }else{
-      stopTimer();
-      nextQuestion();
-    }
-    updateReviewUI();
-  });
-}
+quizLevel.addEventListener("change", ()=> nextQuestion(false));
 
 /* =========================
    INIT
@@ -2306,20 +2441,22 @@ function init(){
   updateRightPanel();
   applyMood();
   updateScoreUI();
-  rebuildReviewOrder(true);
   updateReviewUI();
   setQuestion("一", false);
 }
 init();
 
 /* =========================
-   PORTAL / ENTRADA
+   PORTAL / ENTRADA (mais imersiva + parallax + kanji rain)
 ========================= */
 (function(){
   const gate = document.getElementById("gate");
   const app  = document.getElementById("app");
   const btn  = document.getElementById("enterBtn");
   const petalsBox = document.getElementById("petals");
+  const rain = document.getElementById("kanjiRain");
+  const bg = document.getElementById("gateBg");
+  const torii = document.getElementById("gateTorii");
 
   if(!gate || !app || !btn || !petalsBox) return;
 
@@ -2347,6 +2484,32 @@ init();
     }
   }
 
+  function spawnKanjiRain(cols=18){
+    if(!rain) return;
+    rain.innerHTML = "";
+    const chars = ["無","常","闇","夜","影","月","血","魔","神","魂","夢","炎","雪","花","心","目","音","風","雨","道","力","光"];
+    for(let i=0;i<cols;i++){
+      const c = document.createElement("div");
+      c.className = "krCol";
+      const left = (i/(cols-1))*100;
+      const dur = 8 + Math.random()*9;
+      const delay = Math.random()*6;
+      c.style.left = `calc(${left}% - 12px)`;
+      c.style.setProperty("--dur", `${dur}s`);
+      c.style.setProperty("--delay", `${delay}s`);
+
+      const rows = 10 + Math.floor(Math.random()*8);
+      for(let r=0;r<rows;r++){
+        const s = document.createElement("span");
+        s.textContent = chars[(Math.random()*chars.length)|0];
+        s.style.opacity = (0.35 + Math.random()*0.55).toFixed(2);
+        s.style.fontSize = `${12 + Math.random()*10}px`;
+        c.appendChild(s);
+      }
+      rain.appendChild(c);
+    }
+  }
+
   function chime(){
     try{
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2366,13 +2529,12 @@ init();
   }
 
   spawnPetals(28);
+  spawnKanjiRain(18);
 
   function enter(){
     gate.classList.add("leaving");
     btn.disabled = true;
-
     chime();
-
     setTimeout(()=>{
       gate.style.display = "none";
       app.classList.remove("appHidden");
@@ -2385,10 +2547,25 @@ init();
     if(e.key === "Enter" && gate.style.display !== "none") enter();
   });
 
+  // parallax leve (não pesa)
+  let mx=0, my=0;
+  function onMove(e){
+    const w = window.innerWidth || 1;
+    const h = window.innerHeight || 1;
+    mx = (e.clientX / w - 0.5);
+    my = (e.clientY / h - 0.5);
+    if(bg) bg.style.transform = `scale(1.05) translate3d(${mx*18}px, ${my*14}px, 0)`;
+    if(torii) torii.style.transform = `translate(-50%,-54%) translate3d(${mx*10}px, ${my*8}px, 0)`;
+  }
+  window.addEventListener("mousemove", onMove);
+
   let t=null;
   window.addEventListener("resize", ()=>{
     clearTimeout(t);
-    t=setTimeout(()=>spawnPetals(28), 200);
+    t=setTimeout(()=>{
+      spawnPetals(28);
+      spawnKanjiRain(18);
+    }, 250);
   });
 })();
 </script>
