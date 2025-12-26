@@ -16,9 +16,6 @@
   /* THEME (muda a cada 5s) */
   --themeHue: 195;
 
-  /* Mood (só indicador do jogo) */
-  --moodHue: 195;
-
   --accent:  hsl(calc(var(--themeHue) - 25) 90% 60%);
   --accent2: hsl(var(--themeHue) 90% 58%);
   --accent3: hsl(calc(var(--themeHue) + 55) 90% 62%);
@@ -52,6 +49,60 @@ body{
   transition: background .65s ease, filter .65s ease;
 }
 
+/* ===== Fundo: Torii + Chuva (LEVE / OTIMIZADO) ===== */
+#bgKanjiRain{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.18;           /* bem mais leve */
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 6px rgba(0,0,0,.22));
+}
+.bgTorii{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.20;           /* sutil */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transform: translateY(-3%);
+}
+.bgTorii svg{
+  width:min(1100px, 96vw);
+  height:auto;
+  display:block;
+  filter: drop-shadow(0 0 28px rgba(0,0,0,.55));
+}
+
+/* (Opcional) “無常” bem sutil no fundo (mantive leve) */
+.mujoBg{
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform: translate(-50%,-52%);
+  font-weight: 1000;
+  letter-spacing: 10px;
+  font-size: clamp(120px, 18vw, 260px);
+  line-height: 1;
+  opacity: .10;          /* bem mais leve */
+  z-index:0;
+  pointer-events:none;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,.90),
+    rgba(160,240,255,.70),
+    rgba(210,170,255,.75),
+    rgba(255,90,130,.55)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,.14);
+  text-shadow: 0 0 22px rgba(255,255,255,.08);
+}
+
 header{
   position:sticky;
   top:0;
@@ -80,7 +131,13 @@ header{
 
 nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
 
-.container{ max-width:1180px; margin:auto; padding:34px 18px 90px; }
+.container{
+  position:relative;
+  z-index:2; /* acima do fundo */
+  max-width:1180px;
+  margin:auto;
+  padding:34px 18px 90px;
+}
 
 .section{ display:none; }
 .section.active{ display:block; }
@@ -334,575 +391,57 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   height:16px;
   accent-color: hsl(var(--themeHue) 90% 60%);
 }
-
-/* =========================
-   VOCAB BOX (FEEDBACK)
-========================= */
-.vocabBox{
-  margin-top:12px;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:16px;
-  padding:12px;
-  background: rgba(255,255,255,.07);
-}
-.vocabBox .vt{ font-size:13px; color: var(--muted); letter-spacing:.6px; font-weight:1000; }
-.vocabList{ margin-top:10px; display:grid; gap:10px; }
-.vocabItem{
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.06);
-  border-radius:14px;
-  padding:10px 10px;
-}
-.vocabItem .w{
-  font-weight:1000;
-  letter-spacing:.3px;
-  color: rgba(255,255,255,.96);
-}
-.vocabItem .r{ color: var(--muted); font-size:12px; margin-top:2px; }
-.vocabItem .m{ color: rgba(238,242,255,.92); font-size:12px; margin-top:4px; font-weight:800; }
-.vocabItem .tag{
-  display:inline-block;
-  margin-left:8px;
-  font-size:10px;
-  padding:2px 8px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.18);
-  color: rgba(238,242,255,.88);
-  background: rgba(255,255,255,.06);
-}
-
-/* =========================================================
-   PORTAL / ENTRADA — IMERSIVO (com chuva de kanji)
-========================================================= */
-#app.appHidden{ display:none; }
-
-.jpGate{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
-
-.jp-bg{
-  position:absolute;
-  inset:-40px;
-  background:
-    radial-gradient(1100px 700px at 18% 12%, rgba(130,90,255,.28), transparent 58%),
-    radial-gradient(900px 650px at 84% 22%, rgba(0,255,200,.18), transparent 60%),
-    radial-gradient(1000px 700px at 40% 88%, rgba(255,90,130,.18), transparent 58%),
-    linear-gradient(180deg, rgba(6,8,12,.96), rgba(10,14,20,.99));
-  transform: scale(1.06);
-  filter: saturate(1.08);
-}
-
-.jp-pattern{
-  position:absolute;
-  inset:0;
-  opacity:.18;
-  mix-blend-mode: screen;
-  background:
-    radial-gradient(circle at 0 0, rgba(255,255,255,.20) 0 2px, transparent 2px 18px) 0 0/38px 38px,
-    radial-gradient(circle at 19px 19px, rgba(255,255,255,.14) 0 2px, transparent 2px 18px) 0 0/38px 38px,
-    radial-gradient(circle at 0 0, rgba(120,90,255,.18) 0 1px, transparent 1px 22px) 0 0/44px 44px;
-  filter: blur(.2px);
-}
-
-/* chuva de kanji (VISÍVEL DESDE O INÍCIO) */
-#kanjiRain{
-  position:absolute;
-  inset:0;
-  z-index:2;
-  opacity:.92;
-  mix-blend-mode: screen;
-  pointer-events:none;
-  filter: drop-shadow(0 0 10px rgba(0,0,0,.35));
-}
-
-/* ===== 無常 (MAIS VISÍVEL) ===== */
-.mujo{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform: translate(-50%,-52%);
-  font-weight: 1000;
-  letter-spacing: 12px;
-  font-size: clamp(180px, 24vw, 360px);
-  line-height: 1;
-  opacity: .32;
-  z-index: 3;
-  pointer-events:none;
-
-  background: linear-gradient(90deg,
-    rgba(255,255,255,.95),
-    rgba(160,240,255,.70),
-    rgba(210,170,255,.78),
-    rgba(255,90,130,.55)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-
-  -webkit-text-stroke: 1.2px rgba(255,255,255,.22);
-
-  text-shadow:
-    0 0 18px rgba(255,255,255,.10),
-    0 0 48px rgba(160,240,255,.16),
-    0 0 110px rgba(0,255,200,.10),
-    0 0 160px rgba(255,90,130,.10);
-
-  filter: drop-shadow(0 0 30px rgba(0,0,0,.60));
-  animation: mujoBreath 6.8s ease-in-out infinite;
-}
-.mujo::before,
-.mujo::after{
-  content: "無常";
-  position:absolute;
-  inset:0;
-  opacity:.55;
-  pointer-events:none;
-}
-.mujo::before{
-  transform: translate(2px, -1px);
-  color: rgba(0,255,200,.18);
-  filter: blur(.3px);
-}
-.mujo::after{
-  transform: translate(-2px, 1px);
-  color: rgba(255,90,130,.18);
-  filter: blur(.3px);
-}
-@keyframes mujoBreath{
-  0%,100%{ transform: translate(-50%,-52%) scale(1.00); opacity:.28; }
-  50%{ transform: translate(-50%,-53%) scale(1.03); opacity:.42; }
-}
-
-/* ===== TORII (mais japonês, mais “jinja”) ===== */
-.jp-torii{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:min(1040px, 98vw);
-  height:min(660px, 82vh);
-  transform: translate(-50%,-54%);
-  opacity:.82;
-  pointer-events:none;
-  z-index:4;
-  animation: toriiFloat 5.6s ease-in-out infinite;
-}
-.jp-torii svg{
-  width:100%;
-  height:100%;
-  display:block;
-  filter: drop-shadow(0 0 34px rgba(0,0,0,.55));
-}
-@keyframes toriiFloat{
-  0%,100%{ transform: translate(-50%,-54%) scale(1.01); opacity:.74; }
-  50%{ transform: translate(-50%,-55.2%) scale(1.02); opacity:.88; }
-}
-
-/* referência cavaleiros do zodíaco (bem sutil, porém presente) */
-.seiyaMark{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform: translate(-50%, calc(-54% - 250px));
-  z-index:5;
-  pointer-events:none;
-  text-align:center;
-  opacity:.92;
-}
-.seiyaMark .a{
-  font-weight:1000;
-  letter-spacing:3px;
-  font-size:12px;
-  color: rgba(238,242,255,.78);
-  text-transform: uppercase;
-}
-.seiyaMark .b{
-  margin-top:4px;
-  font-weight:1000;
-  letter-spacing:2px;
-  font-size:14px;
-  color: rgba(255,255,255,.92);
-  text-shadow: 0 0 18px rgba(160,240,255,.18);
-}
-.seiyaMark .b span{
-  background: linear-gradient(90deg, rgba(255,255,255,.92), rgba(160,240,255,.88), rgba(210,170,255,.90));
-  -webkit-background-clip:text;
-  background-clip:text;
-  color: transparent;
-}
-.seiyaMark .c{
-  margin-top:2px;
-  font-size:11px;
-  color: rgba(238,242,255,.68);
-  letter-spacing: 1px;
-}
-
-.shoji{
-  position:absolute;
-  top:0; bottom:0;
-  width:50%;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06)),
-    repeating-linear-gradient(90deg, rgba(255,255,255,.10) 0 2px, transparent 2px 60px),
-    repeating-linear-gradient(0deg, rgba(255,255,255,.08) 0 2px, transparent 2px 58px);
-  border:1px solid rgba(255,255,255,.14);
-  box-shadow: 0 40px 140px rgba(0,0,0,.65);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  opacity:.95;
-  z-index:6;
-}
-.shoji.left{ left:0; border-right:1px solid rgba(255,255,255,.16); }
-.shoji.right{ right:0; border-left:1px solid rgba(255,255,255,.16); }
-.shoji::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: radial-gradient(900px 700px at 60% 30%, rgba(120,90,255,.14), transparent 55%);
-  opacity:.9;
-}
-
-.jp-card{
-  position:relative;
-  z-index:7;
-  width:min(720px, 92vw);
-  border-radius: 26px;
-  border: 1px solid rgba(255,255,255,.18);
-  background: rgba(255,255,255,.06);
-  box-shadow: 0 24px 90px rgba(0,0,0,.70);
-  padding: 26px 22px;
-  text-align:center;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  animation: jpIn 1.15s ease both;
-}
-@keyframes jpIn{
-  from{ opacity:0; transform: translateY(18px) scale(.975); }
-  to{ opacity:1; transform: translateY(0) scale(1); }
-}
-
-.jp-kicker{
-  font-weight:1000;
-  letter-spacing: 3px;
-  font-size: 12px;
-  color: rgba(238,242,255,.72);
-  text-transform: uppercase;
-}
-
-.jp-title{
-  margin-top: 8px;
-  font-size: 34px;
-  font-weight: 1000;
-  letter-spacing: 2px;
-  background: linear-gradient(90deg, rgba(255,255,255,.92), rgba(160,240,255,.88), rgba(210,170,255,.90));
-  -webkit-background-clip:text;
-  background-clip:text;
-  color: transparent;
-  text-shadow: 0 0 22px rgba(160,240,255,.18);
-}
-
-.jp-glow{
-  display:inline-block;
-  margin-left: 8px;
-  color: rgba(255,255,255,.75);
-  text-shadow: 0 0 20px rgba(0,255,200,.18);
-  animation: star 1.6s ease-in-out infinite;
-}
-@keyframes star{
-  0%,100%{ transform: translateY(0) rotate(0deg); opacity:.8; }
-  50%{ transform: translateY(-3px) rotate(10deg); opacity:1; }
-}
-
-.jp-sub{
-  margin-top: 10px;
-  font-size: 15px;
-  color: rgba(238,242,255,.82);
-}
-.jp-sub b{
-  color: rgba(255,255,255,.96);
-  text-shadow: 0 0 18px rgba(160,240,255,.20);
-}
-
-.jp-line{
-  width: min(520px, 86%);
-  height: 1px;
-  margin: 18px auto 16px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
-}
-
-.jp-glitch{
-  position:relative;
-  display:inline-block;
-  font-weight:1000;
-}
-.jp-glitch::before,
-.jp-glitch::after{
-  content: attr(data-text);
-  position:absolute;
-  left:0;
-  top:0;
-  opacity:.32;
-  pointer-events:none;
-}
-.jp-glitch::before{
-  transform: translate(1px,0);
-  color: rgba(0,255,200,.55);
-  animation: jpGlitch 1.9s infinite linear alternate-reverse;
-}
-.jp-glitch::after{
-  transform: translate(-1px,0);
-  color: rgba(255,90,130,.55);
-  animation: jpGlitch 2.1s infinite linear alternate;
-}
-@keyframes jpGlitch{
-  0%{ clip-path: inset(0 0 90% 0); }
-  20%{ clip-path: inset(10% 0 55% 0); }
-  40%{ clip-path: inset(35% 0 30% 0); }
-  60%{ clip-path: inset(55% 0 15% 0); }
-  80%{ clip-path: inset(75% 0 8% 0); }
-  100%{ clip-path: inset(90% 0 0 0); }
-}
-
-.jp-btn{
-  position:relative;
-  border:none;
-  cursor:pointer;
-  padding: 14px 18px;
-  border-radius: 18px;
-  font-weight: 1000;
-  letter-spacing: .6px;
-  color: rgba(255,255,255,.96);
-  background: linear-gradient(90deg, rgba(120,90,255,.56), rgba(0,255,200,.26), rgba(255,90,130,.34));
-  box-shadow: 0 18px 55px rgba(0,0,0,.60);
-  min-width: 180px;
-}
-.jp-btn:hover{ filter: brightness(1.12); }
-.jp-btn:active{ transform: translateY(1px); }
-.jp-btn:disabled{ opacity:.7; cursor:not-allowed; }
-.jp-btn-main{ display:block; font-size:16px; }
-.jp-btn-sub{ display:block; font-size:11px; opacity:.78; margin-top:2px; }
-
-.jp-btn-glow{
-  position:absolute;
-  inset:-2px;
-  border-radius: 20px;
-  background: radial-gradient(circle at 20% 30%, rgba(255,255,255,.40), transparent 55%);
-  opacity:.35;
-  pointer-events:none;
-  animation: glowPulse 1.8s ease-in-out infinite;
-}
-@keyframes glowPulse{
-  0%,100%{ opacity:.25; }
-  50%{ opacity:.55; }
-}
-
-.jp-note{
-  margin-top: 12px;
-  font-size: 12px;
-  color: rgba(238,242,255,.60);
-}
-
-.petals{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:5;
-}
-.petal{
-  position:absolute;
-  top:-12%;
-  width: 16px;
-  height: 12px;
-  background: radial-gradient(circle at 30% 35%, rgba(255,255,255,.55), rgba(255,150,190,.65) 35%, rgba(255,90,130,.40) 70%, transparent 72%);
-  border-radius: 14px 14px 14px 2px;
-  filter: blur(.2px);
-  opacity:.75;
-  animation: fall var(--dur) linear var(--delay) infinite;
-}
-@keyframes fall{
-  0%{
-    transform: translate3d(var(--x), -12vh, 0) rotate(0deg);
-    opacity: 0;
-  }
-  8%{ opacity: .85; }
-  100%{
-    transform: translate3d(calc(var(--x) + var(--drift)), 112vh, 0) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-.jp-fx{
-  position:absolute;
-  inset:-40px;
-  pointer-events:none;
-  opacity:0;
-  background:
-    radial-gradient(900px 550px at 50% 45%, rgba(255,255,255,.16), transparent 60%),
-    radial-gradient(900px 650px at 50% 55%, rgba(120,90,255,.20), transparent 62%),
-    radial-gradient(900px 650px at 55% 50%, rgba(0,255,200,.16), transparent 62%);
-  transform: scale(1);
-  z-index:8;
-}
-
-/* saída mais devagar */
-.jpGate.leaving .shoji.left{ animation: shojiLeft 1.55s cubic-bezier(.2,.9,.2,1) forwards; }
-.jpGate.leaving .shoji.right{ animation: shojiRight 1.55s cubic-bezier(.2,.9,.2,1) forwards; }
-@keyframes shojiLeft{ to{ transform: translateX(-105%); opacity:.98; } }
-@keyframes shojiRight{ to{ transform: translateX(105%); opacity:.98; } }
-
-.jpGate.leaving .jp-card{ animation: cardOut 1.05s ease forwards; }
-@keyframes cardOut{ to{ opacity:0; transform: translateY(12px) scale(.985); } }
-
-.jpGate.leaving .jp-bg{ animation: bgOut 1.65s ease forwards; }
-@keyframes bgOut{ to{ transform: scale(1.12); opacity:0; } }
-
-.jpGate.leaving .jp-fx{
-  opacity:1;
-  animation: fx 1.65s ease forwards;
-}
-@keyframes fx{
-  0%{ transform: scale(1); opacity:0; }
-  30%{ transform: scale(1.10); opacity:1; }
-  100%{ transform: scale(1.38); opacity:0; }
-}
 </style>
 </head>
 
 <body>
 <div id="flash" class="flash"></div>
 
-<!-- ====== PORTAL / TELA DE ENTRADA ====== -->
-<section id="gate" class="jpGate">
-  <div class="jp-bg"></div>
-  <div class="jp-pattern"></div>
+<!-- ===== FUNDO (torii + chuva) — sem “tela de entrada” ===== -->
+<canvas id="bgKanjiRain" aria-hidden="true"></canvas>
 
-  <!-- chuva de kanji (visível desde o começo) -->
-  <canvas id="kanjiRain" aria-hidden="true"></canvas>
+<div class="bgTorii" aria-hidden="true">
+  <!-- Torii otimizado: sem filtros pesados / sem turbulence -->
+  <svg viewBox="0 0 1400 800" role="presentation">
+    <defs>
+      <linearGradient id="vermLite" x1="0" x2="1">
+        <stop offset="0%" stop-color="rgba(255,90,90,.70)"/>
+        <stop offset="40%" stop-color="rgba(255,70,120,.62)"/>
+        <stop offset="75%" stop-color="rgba(190,90,255,.52)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,.06)"/>
+      </linearGradient>
+    </defs>
 
-  <!-- 無常 gigante -->
-  <div class="mujo" aria-hidden="true">無常</div>
+    <path d="M110 190 C 340 88, 1060 88, 1290 190 C 1060 165, 340 165, 110 190 Z"
+          fill="url(#vermLite)"></path>
 
-  <!-- referência Saint Seiya (Cavaleiros do Zodíaco) -->
-  <div class="seiyaMark" aria-hidden="true">
-    <div class="a">聖闘士星矢</div>
-    <div class="b"><span>ペガサス</span> · 流星拳</div>
-    <div class="c">Cosmo · Kanji · JLPT</div>
-  </div>
+    <path d="M210 270 C 420 200, 980 200, 1190 270 C 980 252, 420 252, 210 270 Z"
+          fill="rgba(255,255,255,.08)"></path>
 
-  <!-- TORII (mais japonês) -->
-  <div class="jp-torii" aria-hidden="true">
-    <svg viewBox="0 0 1400 800" role="presentation">
-      <defs>
-        <linearGradient id="verm" x1="0" x2="1">
-          <stop offset="0%" stop-color="rgba(255,90,90,.92)"/>
-          <stop offset="35%" stop-color="rgba(255,70,120,.88)"/>
-          <stop offset="70%" stop-color="rgba(190,90,255,.70)"/>
-          <stop offset="100%" stop-color="rgba(255,255,255,.10)"/>
-        </linearGradient>
+    <path d="M320 360 C 460 318, 940 318, 1080 360 C 940 382, 460 382, 320 360 Z"
+          fill="rgba(0,255,200,.07)"></path>
 
-        <filter id="patina" x="-30%" y="-30%" width="160%" height="160%">
-          <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="n"/>
-          <feColorMatrix in="n" type="matrix"
-            values="1 0 0 0 0
-                    0 1 0 0 0
-                    0 0 1 0 0
-                    0 0 0 .10 0" result="a"/>
-          <feComposite in="a" in2="SourceGraphic" operator="in" result="m"/>
-          <feMerge>
-            <feMergeNode in="m"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
+    <path d="M410 300 C 395 420, 380 610, 396 728 C 408 760, 470 760, 488 728 C 505 610, 488 420, 474 300 Z"
+          fill="url(#vermLite)"></path>
 
-        <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="8" result="b"/>
-          <feColorMatrix in="b" type="matrix"
-            values="1 0 0 0 0
-                    0 1 0 0 0
-                    0 0 1 0 0
-                    0 0 0 .45 0" result="g"/>
-          <feMerge>
-            <feMergeNode in="g"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
+    <path d="M926 300 C 912 420, 898 610, 914 728 C 926 760, 988 760, 1006 728 C 1022 610, 1006 420, 992 300 Z"
+          fill="url(#vermLite)"></path>
 
-      <!-- kasagi -->
-      <path d="M110 190 C 340 88, 1060 88, 1290 190 C 1060 165, 340 165, 110 190 Z"
-            fill="url(#verm)" filter="url(#glow)"></path>
+    <path d="M684 330 C 675 440, 668 612, 674 728 C 683 754, 717 754, 726 728 C 733 612, 726 440, 716 330 Z"
+          fill="rgba(255,255,255,.06)"></path>
 
-      <!-- shimaki -->
-      <path d="M210 270 C 420 200, 980 200, 1190 270 C 980 252, 420 252, 210 270 Z"
-            fill="rgba(255,255,255,.12)"></path>
+    <path d="M372 728 C 420 696, 496 696, 544 728 C 496 760, 420 760, 372 728 Z"
+          fill="rgba(255,255,255,.08)"></path>
 
-      <!-- nuki -->
-      <path d="M320 360 C 460 318, 940 318, 1080 360 C 940 382, 460 382, 320 360 Z"
-            fill="rgba(0,255,200,.10)"></path>
+    <path d="M870 728 C 918 696, 994 696, 1042 728 C 994 760, 918 760, 870 728 Z"
+          fill="rgba(255,255,255,.08)"></path>
 
-      <!-- left pillar -->
-      <path d="M410 300 C 395 420, 380 610, 396 728 C 408 760, 470 760, 488 728 C 505 610, 488 420, 474 300 Z"
-            fill="url(#verm)" filter="url(#patina)"></path>
+    <path d="M658 275 C 690 255, 720 255, 752 275 C 720 292, 690 292, 658 275 Z"
+          fill="rgba(255,255,255,.06)"></path>
+  </svg>
+</div>
 
-      <!-- right pillar -->
-      <path d="M926 300 C 912 420, 898 610, 914 728 C 926 760, 988 760, 1006 728 C 1022 610, 1006 420, 992 300 Z"
-            fill="url(#verm)" filter="url(#patina)"></path>
-
-      <!-- center pillar -->
-      <path d="M684 330 C 675 440, 668 612, 674 728 C 683 754, 717 754, 726 728 C 733 612, 726 440, 716 330 Z"
-            fill="rgba(255,255,255,.07)"></path>
-
-      <!-- bases -->
-      <path d="M372 728 C 420 696, 496 696, 544 728 C 496 760, 420 760, 372 728 Z"
-            fill="rgba(255,255,255,.10)"></path>
-
-      <path d="M870 728 C 918 696, 994 696, 1042 728 C 994 760, 918 760, 870 728 Z"
-            fill="rgba(255,255,255,.10)"></path>
-
-      <!-- small center cap -->
-      <path d="M658 275 C 690 255, 720 255, 752 275 C 720 292, 690 292, 658 275 Z"
-            fill="rgba(255,255,255,.08)"></path>
-    </svg>
-  </div>
-
-  <div class="shoji left"></div>
-  <div class="shoji right"></div>
-
-  <div id="petals" class="petals"></div>
-
-  <div class="jp-card">
-    <div class="jp-kicker">ようこそ</div>
-
-    <div class="jp-title">
-      yooo <span class="jp-glow">✦</span>
-    </div>
-
-    <div class="jp-sub">
-      Súditos do <b>ヴァンパイア様</b> —
-      <span class="jp-glitch" data-text="タバコ">タバコ</span>
-    </div>
-
-    <div class="jp-line"></div>
-
-    <button id="enterBtn" class="jp-btn">
-      <span class="jp-btn-main">入る</span>
-      <span class="jp-btn-sub">Entrar</span>
-      <span class="jp-btn-glow"></span>
-    </button>
-
-    <div class="jp-note">EnterキーでもOK</div>
-  </div>
-
-  <div id="gateFx" class="jp-fx"></div>
-</section>
-
-<!-- ====== APP (site real) ====== -->
-<div id="app" class="appHidden">
+<div class="mujoBg" aria-hidden="true">無常</div>
 
 <header>
   <div class="topbar">
@@ -1069,12 +608,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
             <div class="mean" id="quizFeedbackTitle"></div>
             <div class="hira" id="quizFeedbackDetail"></div>
 
-            <!-- VOCAB (3 exemplos) -->
-            <div class="vocabBox" id="vocabBox" style="display:none;">
-              <div class="vt">Vocabulário (3 exemplos · PT-BR)</div>
-              <div class="small" id="vocabHint" style="margin-top:6px;">—</div>
-              <div class="vocabList" id="vocabList"></div>
-            </div>
+            <!-- VOCAB REMOVIDO -->
 
             <div class="strokeBox" style="margin-top:12px;">
               <div class="strokeHead">
@@ -1150,7 +684,6 @@ const N4_SET = new Set(N4_LIST);
 
 /* =========================
    KANJI_INFO (PT-BR)
-   (mantido como você mandou)
 ========================= */
 const KANJI_INFO = {
   "一":{readings:["いち","ひと"], meaning:"um"},"七":{readings:["しち","なな"], meaning:"sete"},"万":{readings:["まん"], meaning:"dez mil"},"三":{readings:["さん","みっ"], meaning:"três"},
@@ -1516,14 +1049,14 @@ kdSpeed.addEventListener("change", ()=>{
 $("kdTrain").addEventListener("click", ()=>{
   if(!selectedKanji) return;
   openTab("quiz");
-  setQuestion(selectedKanji, true);
+  setQuestion(selectedKanji);
 });
 
 /* =========================
    QUIZ STATS + REVIEW QUEUE
 ========================= */
 const LS_KEY = "vampire_kanji_quiz_ptbr_v1";
-const LS_REVIEW = "vampire_kanji_review_queue_v1"; // fila só para revisão de erros
+const LS_REVIEW = "vampire_kanji_review_queue_v2";
 
 function defaultStats(){
   return { bestStreak:0, bestAccuracy:0, bestScore:0, totalCorrect:0, totalWrong:0, perKanji:{}, recent:[] };
@@ -1535,7 +1068,7 @@ function loadStats(){
 function saveStats(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(stats)); }catch{} }
 let stats = loadStats();
 
-function defaultReview(){ return { queue:[], wrongHits:0, correctHits:0 }; }
+function defaultReview(){ return { queue:[] }; }
 function loadReview(){
   try{ const raw = localStorage.getItem(LS_REVIEW); return raw ? JSON.parse(raw) : defaultReview(); }
   catch{ return defaultReview(); }
@@ -1557,7 +1090,7 @@ function applyMood(){
   const s = moodScore();
   $("quizMoodText").textContent = `Mood: ${Math.round(s*100)}%`;
 }
-function reviewCount(){ return (review.queue||[]).length; }
+function reviewCount(){ return Array.isArray(review.queue) ? review.queue.length : 0; }
 function addToReviewQueue(k){
   review.queue = Array.isArray(review.queue) ? review.queue : [];
   if(!review.queue.includes(k)) review.queue.push(k);
@@ -1571,7 +1104,6 @@ function removeFromReviewQueue(k){
   updateReviewUI();
 }
 function bumpReviewToEnd(k){
-  // usado quando erra em revisão (pra não travar repetindo o mesmo)
   review.queue = Array.isArray(review.queue) ? review.queue : [];
   review.queue = review.queue.filter(x=>x!==k);
   review.queue.push(k);
@@ -1608,12 +1140,6 @@ const quizReviewBtn = $("quizReviewBtn");
 const quizReviewCountBadge = $("quizReviewCountBadge");
 const quizReviewCountEl = $("quizReviewCount");
 
-const vocabBox = $("vocabBox");
-const vocabHint = $("vocabHint");
-const vocabList = $("vocabList");
-
-let quizSvgEl = null;
-
 $("goKanji").addEventListener("click", ()=> openTab("kanji"));
 $("resetHistory").addEventListener("click", ()=>{
   stats = defaultStats();
@@ -1648,7 +1174,6 @@ const quizState = {
 function setMode(mode){
   quizState.mode = mode;
   quizModeHint.textContent = (mode === "review") ? "Modo: revisão de erros" : "Modo: normal";
-  // quando entra em revisão, não faz sentido mudar filtro de nível na UI (mas deixo, só não quebra)
 }
 
 function updateScoreUI(){
@@ -1704,7 +1229,6 @@ function buildChoices(kind, correctKanji, pool){
     (kind === "reading") ? readingText(correctKanji) : meaningText(correctKanji);
 
   const picks = [{ text: correctText, correct: true }];
-
   const used = new Set([correctText]);
   const shuffled = shuffle(poolOthers);
 
@@ -1734,9 +1258,6 @@ function resetQuestionState(){
   quizState.okMeaning = false;
   quizState.lockedAfterResult = false;
   quizFeedback.style.display = "none";
-  vocabBox.style.display = "none";
-  vocabList.innerHTML = "";
-  vocabHint.textContent = "—";
 }
 
 function disableAllChoices(){
@@ -1788,19 +1309,19 @@ function weightedPick(pool){
   return pool[pool.length-1];
 }
 
+/* ===== revisão segura: nunca trava / nunca retorna pool vazio ===== */
 function getQuizPool(){
   if(quizState.mode === "review"){
-    const q = (review.queue||[]).filter(isInfoComplete);
-    return q.length ? q : [];
+    const q = (Array.isArray(review.queue) ? review.queue : []).filter(isInfoComplete);
+    if(q.length) return q;
+    setMode("normal");
+    return poolByLevel(quizLevel.value);
   }
-  const lvl = quizLevel.value;
-  const pool = poolByLevel(lvl);
-  return pool.length < 6 ? poolByLevel("ALL") : pool;
+  return poolByLevel(quizLevel.value);
 }
 
 function pickKanji(pool){
   if(!pool || !pool.length) return "一";
-
   let k = quizSmart.checked ? weightedPick(pool) : pool[Math.floor(Math.random()*pool.length)];
   if(pool.length > 1 && k === quizState.lastPick){
     k = pool[Math.floor(Math.random()*pool.length)];
@@ -1810,391 +1331,7 @@ function pickKanji(pool){
 }
 
 /* =========================
-   VOCAB: JLPT LIST (N5/N4) + MAZII PT-BR
-   - 3 exemplos
-   - se kanji é N5 -> pegar candidatos do JLPT N5
-   - se kanji é N4 -> JLPT N4
-   - depois buscar leitura/meaning em PT no Mazii (dict: japt)
-========================= */
-
-const JLPT_API_BASE = "https://jlpt-vocab-api.vercel.app/api/words/all?level=";
-// (suposição padrão do ecossistema: level 5 -> N5, level 4 -> N4)
-const JLPT_LEVEL_MAP = { "N5": 5, "N4": 4 };
-
-const jlptCache = new Map(); // "N5" -> array
-const vocabCache = new Map(); // key: `${kanji}|${lvl}` -> array of {word, reading, meaning, src}
-
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-async function fetchWithTimeout(url, opts={}, ms=9000){
-  const ctrl = new AbortController();
-  const t = setTimeout(()=>ctrl.abort(), ms);
-  try{
-    const res = await fetch(url, {...opts, signal: ctrl.signal});
-    return res;
-  } finally {
-    clearTimeout(t);
-  }
-}
-
-async function loadJlptList(levelN){
-  if(jlptCache.has(levelN)) return jlptCache.get(levelN);
-  const apiLevel = JLPT_LEVEL_MAP[levelN];
-  if(!apiLevel) { jlptCache.set(levelN, []); return []; }
-  try{
-    const res = await fetchWithTimeout(JLPT_API_BASE + String(apiLevel), { method:"GET" }, 12000);
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    const data = await res.json();
-    // esperado: { total, words:[{word, meaning, furigana, level}] } ou array direto
-    let words = [];
-    if(Array.isArray(data)) words = data;
-    else if(Array.isArray(data.words)) words = data.words;
-    else if(Array.isArray(data.data)) words = data.data;
-    // normaliza: garantir campo word
-    words = words.filter(x=>x && (x.word || x.kana || x.term));
-    jlptCache.set(levelN, words);
-    return words;
-  }catch{
-    jlptCache.set(levelN, []);
-    return [];
-  }
-}
-
-function uniquePush(arr, val){
-  if(!arr.includes(val)) arr.push(val);
-}
-
-function candidatesFromJlptList(kanji, levelN){
-  // pega "mais comuns" na prática = primeiros encontrados na lista do nível
-  // (como fallback robusto; o Mazii depois resolve leitura/meaning PT)
-  const list = jlptCache.get(levelN) || [];
-  const out = [];
-  for(const it of list){
-    const w = (it.word || it.kana || it.term || "").trim();
-    if(!w) continue;
-    if(w.includes(kanji)){
-      uniquePush(out, w);
-      if(out.length >= 40) break;
-    }
-  }
-  return out;
-}
-
-// Mazii PT-BR: dict code "japt" (aparece nas URLs pt-BR do Mazii)
-async function maziiSearchWordPT(word, limit=6){
-  // alguns clientes usam headers para dict/query/type/limit (endpoint interno)
-  const url = "https://mazii.net/api/search";
-  const headers = {
-    "accept":"application/json",
-    "content-type":"application/json",
-    "dict":"japt",
-    "query": String(word),
-    "type":"word",
-    "limit": String(limit)
-  };
-  try{
-    const res = await fetchWithTimeout(url, { method:"POST", headers }, 9000);
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    const json = await res.json();
-    return json;
-  }catch(e){
-    return { __error: true, __msg: String(e?.message || e) };
-  }
-}
-
-function pickBestMaziiEntry(json, word){
-  // tenta vários formatos sem quebrar
-  const root = json || {};
-  const arr =
-    (Array.isArray(root.data) && root.data) ||
-    (Array.isArray(root.results) && root.results) ||
-    (Array.isArray(root.items) && root.items) ||
-    (Array.isArray(root) && root) ||
-    [];
-
-  // heurística: preferir entry cujo "word" / "kanji" bate mais
-  const norm = (s)=>String(s||"").trim();
-  let best = null;
-  for(const it of arr){
-    const k = norm(it.word || it.kanji || it.term || it.text);
-    const r = norm(it.phonetic || it.reading || it.kana || it.furigana);
-    const m = norm(it.mean || it.meaning || it.translate || it.definition);
-    if(!k && !r && !m) continue;
-    // score
-    let score = 0;
-    if(k === word) score += 6;
-    if(k.includes(word)) score += 3;
-    if(r) score += 1;
-    if(m) score += 1;
-    if(!best || score > best.__score){
-      best = { ...it, __k:k, __r:r, __m:m, __score:score };
-    }
-  }
-  return best;
-}
-
-function extractMeaningPT(entry){
-  if(!entry) return "";
-  // Mazii costuma trazer meanings em arrays/strings dependendo do endpoint
-  if(typeof entry.meaning === "string") return entry.meaning;
-  if(typeof entry.mean === "string") return entry.mean;
-  if(typeof entry.translate === "string") return entry.translate;
-  if(Array.isArray(entry.meaning) && entry.meaning.length) return entry.meaning.join("; ");
-  if(Array.isArray(entry.mean) && entry.mean.length) return entry.mean.join("; ");
-  if(Array.isArray(entry.means) && entry.means.length) return entry.means.join("; ");
-  if(entry.__m) return entry.__m;
-  // tenta estrutura: entry.short_meaning / entry.definition
-  if(typeof entry.short_meaning === "string") return entry.short_meaning;
-  if(typeof entry.definition === "string") return entry.definition;
-  if(Array.isArray(entry.definitions) && entry.definitions.length) return entry.definitions.join("; ");
-  return "";
-}
-
-function extractReading(entry){
-  if(!entry) return "";
-  const r =
-    entry.phonetic || entry.reading || entry.kana || entry.furigana || entry.pronunciation || entry.__r;
-  return toHiragana(String(r||"").trim());
-}
-
-function extractWord(entry, fallback){
-  const w = entry.word || entry.kanji || entry.term || entry.text || entry.__k;
-  return String(w||fallback||"").trim();
-}
-
-async function getVocabExamples(kanji){
-  const lvl = levelOf(kanji); // N5 ou N4
-  const key = `${kanji}|${lvl}`;
-  if(vocabCache.has(key)) return vocabCache.get(key);
-
-  // carrega lista JLPT daquele nível
-  await loadJlptList(lvl);
-
-  // candidatos
-  let candidates = candidatesFromJlptList(kanji, lvl);
-
-  // fallback se API JLPT falhar: usa o próprio kanji como query no Mazii e tenta pegar 3 palavras
-  if(!candidates.length){
-    const mj = await maziiSearchWordPT(kanji, 12);
-    if(!mj.__error){
-      const root = mj || {};
-      const arr =
-        (Array.isArray(root.data) && root.data) ||
-        (Array.isArray(root.results) && root.results) ||
-        (Array.isArray(root.items) && root.items) ||
-        [];
-      for(const it of arr){
-        const w = String(it.word || it.kanji || it.term || "").trim();
-        if(w && w !== kanji && w.includes(kanji)) uniquePush(candidates, w);
-        if(candidates.length >= 20) break;
-      }
-    }
-  }
-
-  // pega top 3 e enriquece via Mazii (PT)
-  const out = [];
-  const take = candidates.slice(0, 12); // tenta até 12 p/ conseguir 3 bons
-  for(const w of take){
-    const mj = await maziiSearchWordPT(w, 6);
-    if(mj.__error) continue;
-    const entry = pickBestMaziiEntry(mj, w);
-    if(!entry) continue;
-
-    const word = extractWord(entry, w);
-    const reading = extractReading(entry);
-    const meaning = extractMeaningPT(entry);
-
-    if(!word || !reading || !meaning) continue;
-    out.push({ word, reading, meaning, jlpt:lvl, src:"Mazii" });
-    if(out.length >= 3) break;
-
-    // pequena pausa pra não espancar endpoint (evita “cair”/rate-limit)
-    await sleep(120);
-  }
-
-  vocabCache.set(key, out);
-  return out;
-}
-
-function renderVocab(examples, kanji){
-  vocabBox.style.display = "block";
-  vocabList.innerHTML = "";
-
-  if(!examples || !examples.length){
-    vocabHint.textContent = "Sem exemplos disponíveis agora (tente novamente mais tarde).";
-    return;
-  }
-
-  vocabHint.textContent = `Kanji: ${kanji} · ${levelOf(kanji)} · 3 palavras comuns do nível + PT-BR.`;
-
-  for(const ex of examples){
-    const div = document.createElement("div");
-    div.className = "vocabItem";
-    div.innerHTML = `
-      <div class="w">${ex.word}<span class="tag">${ex.jlpt}</span></div>
-      <div class="r">Leitura: <b>${ex.reading}</b></div>
-      <div class="m">Significado: <b>${ex.meaning}</b></div>
-    `;
-    vocabList.appendChild(div);
-  }
-}
-
-/* =========================
-   FEEDBACK + RESULT COMMIT
-========================= */
-async function showFeedback(okAll, reason){
-  const k = quizState.current;
-  const info = safeInfo(k);
-
-  quizFeedback.style.display = "block";
-  quizFeedbackTitle.innerHTML = okAll
-    ? `✅ <b>Acertou</b>`
-    : (reason === "timeout" ? `⏱️ <b>Tempo esgotado</b>` : `❌ <b>Errou</b>`);
-
-  quizFeedbackDetail.innerHTML = `
-    Kanji: <b>${k}</b> · <b>${levelOf(k)}</b><br>
-    Leituras: <b>${info.readings.join(" / ")}</b><br>
-    Significado: <b>${info.meaning}</b>
-  `;
-
-  // vocab (3 palavras)
-  vocabBox.style.display = "block";
-  vocabHint.textContent = "Carregando 3 exemplos (PT-BR)...";
-  vocabList.innerHTML = "";
-  try{
-    const examples = await getVocabExamples(k);
-    renderVocab(examples, k);
-  }catch{
-    vocabHint.textContent = "Falha ao carregar exemplos agora (rede/CORS).";
-    vocabList.innerHTML = "";
-  }
-
-  quizSvgEl = await loadKanjiSVGInto(k, quizStroke);
-  animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
-}
-
-function commitResult(okAll, reason){
-  const k = quizState.current;
-  ensurePerKanji(k);
-
-  if(okAll){
-    quizState.sessionCorrect += 1;
-    quizState.sessionStreak += 1;
-    stats.totalCorrect += 1;
-    stats.perKanji[k].c += 1;
-    pushRecent(true);
-    flash("good");
-
-    // se está em revisão e acertou: remove da fila (reset do erro)
-    if(quizState.mode === "review"){
-      review.correctHits = (review.correctHits||0) + 1;
-      removeFromReviewQueue(k);
-      saveReview();
-      updateReviewUI();
-      // se acabou, volta normal sem “cair”
-      if(reviewCount() === 0){
-        setMode("normal");
-      }
-    }
-  }else{
-    quizState.sessionWrong += 1;
-    quizState.sessionStreak = 0;
-    stats.totalWrong += 1;
-    stats.perKanji[k].w += 1;
-    pushRecent(false);
-    flash("bad");
-
-    // em modo normal: adiciona para revisão
-    if(quizState.mode === "normal"){
-      review.wrongHits = (review.wrongHits||0) + 1;
-      addToReviewQueue(k);
-    }else{
-      // em revisão: manda pro fim pra não “travar” repetindo
-      bumpReviewToEnd(k);
-    }
-  }
-
-  updateScoreUI();
-  updateBests();
-  applyMood();
-  updateRightPanel();
-  saveStats();
-
-  stopTimer();
-  disableAllChoices();
-
-  quizState.lockedAfterResult = true;
-  showFeedback(okAll, reason);
-}
-
-function evaluateIfComplete(){
-  if(!(quizState.answeredReading && quizState.answeredMeaning)) return;
-  const okAll = quizState.okReading && quizState.okMeaning;
-  commitResult(okAll, "answered");
-}
-
-function setQuestion(kanji, keepTimerRunning){
-  // proteção extra pra não “cair” se pool estiver vazio
-  if(!kanji || typeof kanji !== "string") kanji = "一";
-
-  quizState.current = kanji;
-  quizKanji.textContent = kanji;
-
-  resetQuestionState();
-
-  const pool = getQuizPool();
-  if(!pool.length){
-    // sem pool de revisão -> normal
-    setMode("normal");
-  }
-
-  const actualPool = getQuizPool();
-  const rOpts = buildChoices("reading", kanji, actualPool.length ? actualPool : poolByLevel("ALL"));
-  const mOpts = buildChoices("meaning", kanji, actualPool.length ? actualPool : poolByLevel("ALL"));
-
-  renderChoiceButtons(readingChoices, rOpts, (ok)=>{
-    quizState.answeredReading = true;
-    quizState.okReading = ok;
-    evaluateIfComplete();
-  });
-
-  renderChoiceButtons(meaningChoices, mOpts, (ok)=>{
-    quizState.answeredMeaning = true;
-    quizState.okMeaning = ok;
-    evaluateIfComplete();
-  });
-
-  if(quizState.running){
-    startTimer(true);
-  }else if(!keepTimerRunning){
-    const seconds = Number(quizTime.value);
-    quizState.timeTotalMs = seconds * 1000;
-    quizState.timeLeftMs = quizState.timeTotalMs;
-    updateTimerUI();
-  }else{
-    if(quizAuto.checked) startTimer(true);
-    else{
-      const seconds = Number(quizTime.value);
-      quizState.timeTotalMs = seconds * 1000;
-      quizState.timeLeftMs = quizState.timeTotalMs;
-      updateTimerUI();
-    }
-  }
-}
-
-function nextQuestion(){
-  const pool = getQuizPool();
-  if(!pool.length){
-    // se tentou revisão sem erros -> mantém normal
-    setMode("normal");
-    setQuestion(pickKanji(poolByLevel(quizLevel.value)), true);
-    return;
-  }
-  setQuestion(pickKanji(pool), true);
-}
-
-/* =========================
-   TIMER
+   TIMER (estável)
 ========================= */
 function updateTimerUI(){
   const leftSec = Math.max(0, Math.ceil(quizState.timeLeftMs/1000));
@@ -2231,49 +1368,193 @@ function startTimer(reset){
 }
 
 /* =========================
-   REVISÃO (não cai + só aparece se tiver erro)
+   QUESTÃO (otimizado)
+========================= */
+let quizSvgEl = null;
+
+/* token pra cancelar feedback antigo (evita “travadas” por updates atrasados) */
+let feedbackToken = 0;
+
+function setQuestion(kanji){
+  feedbackToken++; // invalida qualquer feedback pendente
+
+  if(!kanji || typeof kanji !== "string") kanji = "一";
+  quizState.current = kanji;
+  quizKanji.textContent = kanji;
+
+  resetQuestionState();
+
+  const pool = getQuizPool();
+  const safePool = (pool && pool.length >= 6) ? pool : poolByLevel("ALL");
+
+  const rOpts = buildChoices("reading", kanji, safePool);
+  const mOpts = buildChoices("meaning", kanji, safePool);
+
+  renderChoiceButtons(readingChoices, rOpts, (ok)=>{
+    quizState.answeredReading = true;
+    quizState.okReading = ok;
+    evaluateIfComplete();
+  });
+
+  renderChoiceButtons(meaningChoices, mOpts, (ok)=>{
+    quizState.answeredMeaning = true;
+    quizState.okMeaning = ok;
+    evaluateIfComplete();
+  });
+
+  const seconds = Number(quizTime.value);
+  quizState.timeTotalMs = seconds * 1000;
+  quizState.timeLeftMs = quizState.timeTotalMs;
+  updateTimerUI();
+
+  if(quizState.running) startTimer(true);
+  else if(quizAuto.checked) startTimer(true);
+}
+
+function nextQuestion(){
+  const pool = getQuizPool();
+  const k = pickKanji(pool && pool.length ? pool : poolByLevel("ALL"));
+  setQuestion(k);
+}
+
+/* =========================
+   FEEDBACK + RESULT COMMIT
+========================= */
+async function showFeedback(okAll, reason, token){
+  const k = quizState.current;
+  const info = safeInfo(k);
+
+  quizFeedback.style.display = "block";
+  quizFeedbackTitle.innerHTML = okAll
+    ? `✅ <b>Acertou</b>`
+    : (reason === "timeout" ? `⏱️ <b>Tempo esgotado</b>` : `❌ <b>Errou</b>`);
+
+  quizFeedbackDetail.innerHTML = `
+    Kanji: <b>${k}</b> · <b>${levelOf(k)}</b><br>
+    Leituras: <b>${info.readings.join(" / ")}</b><br>
+    Significado: <b>${info.meaning}</b>
+  `;
+
+  const svg = await loadKanjiSVGInto(k, quizStroke);
+  if(token !== feedbackToken) return; // se mudou a questão/modo, ignora
+  quizSvgEl = svg;
+  animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
+}
+
+function commitResult(okAll, reason){
+  const k = quizState.current;
+  ensurePerKanji(k);
+
+  if(okAll){
+    quizState.sessionCorrect += 1;
+    quizState.sessionStreak += 1;
+    stats.totalCorrect += 1;
+    stats.perKanji[k].c += 1;
+    pushRecent(true);
+    flash("good");
+
+    if(quizState.mode === "review"){
+      removeFromReviewQueue(k);
+      if(reviewCount() === 0) setMode("normal");
+    }
+  }else{
+    quizState.sessionWrong += 1;
+    quizState.sessionStreak = 0;
+    stats.totalWrong += 1;
+    stats.perKanji[k].w += 1;
+    pushRecent(false);
+    flash("bad");
+
+    if(quizState.mode === "normal") addToReviewQueue(k);
+    else bumpReviewToEnd(k);
+  }
+
+  updateScoreUI();
+  updateBests();
+  applyMood();
+  updateRightPanel();
+  saveStats();
+
+  stopTimer();
+  disableAllChoices();
+
+  quizState.lockedAfterResult = true;
+
+  const token = feedbackToken; // token atual
+  showFeedback(okAll, reason, token);
+}
+
+function evaluateIfComplete(){
+  if(!(quizState.answeredReading && quizState.answeredMeaning)) return;
+  const okAll = quizState.okReading && quizState.okMeaning;
+  commitResult(okAll, "answered");
+}
+
+/* =========================
+   REVISÃO (blindado contra travar)
 ========================= */
 function updateReviewUI(){
   const c = reviewCount();
   quizReviewCountEl.textContent = String(c);
   quizReviewCountBadge.style.display = c > 0 ? "inline-flex" : "none";
   quizReviewBtn.style.display = c > 0 ? "inline-flex" : "none";
-  if(c === 0 && quizState.mode === "review"){
-    setMode("normal");
-  }
+  if(c === 0 && quizState.mode === "review") setMode("normal");
 }
 
+/* trava reentrada */
+let reviewBusy = false;
+
 function toggleReview(){
-  const c = reviewCount();
-  if(c <= 0){
-    // nada para revisar
-    setMode("normal");
+  if(reviewBusy) return;
+  reviewBusy = true;
+
+  try{
+    const c = reviewCount();
+    if(c <= 0){
+      setMode("normal");
+      updateReviewUI();
+      return;
+    }
+
+    // mata timer e destrava com segurança
+    stopTimer();
+    quizState.lockedAfterResult = false;
+
+    if(quizState.mode === "review"){
+      setMode("normal");
+      quizReviewBtn.textContent = "Revisar erros";
+    }else{
+      setMode("review");
+      quizReviewBtn.textContent = "Sair da revisão";
+    }
+
     updateReviewUI();
-    return;
-  }
-  if(quizState.mode === "review"){
-    setMode("normal");
-    quizReviewBtn.textContent = "Revisar erros";
-    nextQuestion();
-  }else{
-    setMode("review");
-    quizReviewBtn.textContent = "Sair da revisão";
-    nextQuestion();
+
+    // joga o próximo frame pra evitar “congelada” por layout+render juntos
+    requestAnimationFrame(()=> nextQuestion());
+  }finally{
+    setTimeout(()=>{ reviewBusy = false; }, 120);
   }
 }
 
 quizReviewBtn.addEventListener("click", ()=>{
-  try{ toggleReview(); }catch{ setMode("normal"); updateReviewUI(); }
+  try{ toggleReview(); }catch{ setMode("normal"); updateReviewUI(); reviewBusy=false; }
 });
 
-// atalho P (corrige o “cai quando aperta P”)
+// atalho P: ignora auto-repeat + debounce + trava reentrada
+let lastP = 0;
 window.addEventListener("keydown", (e)=>{
-  if(e.key && (e.key === "p" || e.key === "P")){
-    // só no tab quiz
-    if(!sections.quiz.classList.contains("active")) return;
-    e.preventDefault();
-    try{ toggleReview(); }catch{ setMode("normal"); updateReviewUI(); }
-  }
+  if(!e.key) return;
+  if(e.key !== "p" && e.key !== "P") return;
+  if(!sections.quiz.classList.contains("active")) return;
+
+  if(e.repeat) return;
+  const now = Date.now();
+  if(now - lastP < 320) return;
+  lastP = now;
+
+  e.preventDefault();
+  try{ toggleReview(); }catch{ setMode("normal"); updateReviewUI(); reviewBusy=false; }
 });
 
 /* =========================
@@ -2307,12 +1588,10 @@ $("quizReset").addEventListener("click", ()=>{
 
 quizTime.addEventListener("change", ()=>{
   if(quizState.lockedAfterResult) return;
+  quizState.timeTotalMs = Number(quizTime.value)*1000;
+  quizState.timeLeftMs = quizState.timeTotalMs;
+  updateTimerUI();
   if(quizState.running) startTimer(true);
-  else{
-    quizState.timeTotalMs = Number(quizTime.value)*1000;
-    quizState.timeLeftMs = quizState.timeTotalMs;
-    updateTimerUI();
-  }
 });
 $("quizReplay").addEventListener("click", ()=>{
   if(!quizSvgEl) return;
@@ -2323,7 +1602,6 @@ quizSpeed.addEventListener("change", ()=>{
   animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
 });
 quizLevel.addEventListener("change", ()=>{
-  // em revisão, ignorar mudança de nível (não quebra)
   nextQuestion();
 });
 
@@ -2336,37 +1614,42 @@ function init(){
   applyMood();
   updateScoreUI();
   updateReviewUI();
-  setQuestion("一", false);
+  setQuestion("一");
 }
 init();
 
 /* =========================
-   KANJI RAIN (ENTRADA IMERSIVA)
+   KANJI RAIN (AGORA BEM MAIS LEVE + FPS LIMIT)
 ========================= */
 (function(){
-  const canvas = document.getElementById("kanjiRain");
-  const gate = document.getElementById("gate");
-  if(!canvas || !gate) return;
+  const canvas = document.getElementById("bgKanjiRain");
+  if(!canvas) return;
 
   const ctx = canvas.getContext("2d", { alpha: true });
-  const glyphs = allKanjisUnique().concat(["星","矢","聖","闘","士","天","龍","神","無","常"]);
 
-  let W=0,H=0,cols=0;
+  // lista curta (menor custo) + alguns extras
+  const base = allKanjisUnique();
+  const glyphs = base.slice(0, Math.min(90, base.length)).concat(["無","常","学","心","光","影"]);
+
+  let W=0,H=0,cols=0,fs=18;
   let drops = [];
   let last=0;
+  let acc=0;
 
   function resize(){
     const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-    W = canvas.clientWidth = window.innerWidth;
-    H = canvas.clientHeight = window.innerHeight;
+    W = window.innerWidth;
+    H = window.innerHeight;
+
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
     canvas.width = Math.floor(W * dpr);
     canvas.height = Math.floor(H * dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
 
-    const fontSize = Math.max(16, Math.min(24, Math.floor(W/55)));
-    cols = Math.floor(W / fontSize);
+    fs = Math.max(18, Math.min(26, Math.floor(W/58)));
+    cols = Math.floor(W / fs);
     drops = Array.from({length: cols}, ()=>Math.random()*H);
-    canvas.__fontSize = fontSize;
   }
 
   function rndGlyph(){
@@ -2374,128 +1657,58 @@ init();
   }
 
   function draw(ts){
-    if(!gate || gate.style.display === "none") return; // para quando sair
-    const dt = Math.min(40, ts - last);
+    const dt = Math.min(50, ts - last);
     last = ts;
 
-    const fs = canvas.__fontSize || 20;
-    // trail
-    ctx.fillStyle = "rgba(10,14,20,0.10)";
+    // Limite ~24 FPS
+    acc += dt;
+    if(acc < 42){
+      requestAnimationFrame(draw);
+      return;
+    }
+    acc = 0;
+
+    // limpa forte (menos rastro)
+    ctx.fillStyle = "rgba(10,14,20,0.26)";
     ctx.fillRect(0,0,W,H);
 
     ctx.font = `900 ${fs}px "Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif`;
 
+    const hue = (Number(getComputedStyle(document.documentElement).getPropertyValue("--themeHue")) || 195);
+
+    // bem menos colunas + bem menos probabilidade
+    const skipMod = (W > 1200) ? 5 : 4;
+
     for(let i=0;i<cols;i++){
-      const x = i*fs + (fs*0.1);
+      if(i % skipMod !== 0) continue;
+      if(Math.random() < 0.72) continue;   // corta MUITO
+
+      const x = i*fs + (fs*0.12);
       const y = drops[i];
 
-      // brilho por coluna
-      const hue = (Number(getComputedStyle(document.documentElement).getPropertyValue("--themeHue")) || 195);
-      ctx.fillStyle = `hsla(${hue}, 90%, 70%, 0.85)`;
+      ctx.fillStyle = `hsla(${hue}, 90%, 74%, 0.35)`;
       ctx.fillText(rndGlyph(), x, y);
 
-      // ocasional: segundo glyph mais claro
-      if(Math.random() < 0.035){
-        ctx.fillStyle = `rgba(255,255,255,0.55)`;
-        ctx.fillText(rndGlyph(), x, y - fs*1.2);
-      }
-
-      // velocidade
-      drops[i] += (fs * 0.75) * (dt/16) + (Math.random()*0.9);
+      // velocidade bem menor
+      drops[i] += (fs * 0.32) + (Math.random()*0.32);
 
       if(drops[i] > H + fs*2){
-        drops[i] = -Math.random()*H*0.3;
+        drops[i] = -Math.random()*H*0.18;
       }
     }
+
     requestAnimationFrame(draw);
   }
 
   resize();
-  window.addEventListener("resize", ()=>{ clearTimeout(canvas.__rt); canvas.__rt=setTimeout(resize, 120); });
-  requestAnimationFrame(draw);
-})();
-
-/* =========================
-   PORTAL / ENTRADA
-========================= */
-(function(){
-  const gate = document.getElementById("gate");
-  const app  = document.getElementById("app");
-  const btn  = document.getElementById("enterBtn");
-  const petalsBox = document.getElementById("petals");
-
-  if(!gate || !app || !btn || !petalsBox) return;
-
-  function spawnPetals(n=28){
-    petalsBox.innerHTML = "";
-    for(let i=0;i<n;i++){
-      const p = document.createElement("span");
-      p.className = "petal";
-
-      const x = Math.random()*100;
-      const drift = (Math.random()*40 - 20);
-      const dur = 11 + Math.random()*9;
-      const delay = Math.random()*4;
-
-      p.style.setProperty("--x", `${x}vw`);
-      p.style.setProperty("--drift", `${drift}vw`);
-      p.style.setProperty("--dur", `${dur}s`);
-      p.style.setProperty("--delay", `${delay}s`);
-
-      const scale = 0.75 + Math.random()*1.1;
-      p.style.width  = `${16*scale}px`;
-      p.style.height = `${12*scale}px`;
-
-      petalsBox.appendChild(p);
-    }
-  }
-
-  function chime(){
-    try{
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = "sine";
-      o.frequency.setValueAtTime(740, ctx.currentTime);
-      o.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.12);
-      g.gain.setValueAtTime(0.0001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.13, ctx.currentTime + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.28);
-      o.connect(g); g.connect(ctx.destination);
-      o.start();
-      o.stop(ctx.currentTime + 0.30);
-      setTimeout(()=>ctx.close?.(), 420);
-    }catch{}
-  }
-
-  spawnPetals(34);
-
-  function enter(){
-    gate.classList.add("leaving");
-    btn.disabled = true;
-
-    chime();
-
-    setTimeout(()=>{
-      gate.style.display = "none";
-      app.classList.remove("appHidden");
-      window.scrollTo(0,0);
-    }, 1700);
-  }
-
-  btn.addEventListener("click", enter);
-  window.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter" && gate.style.display !== "none") enter();
-  });
-
-  let t=null;
   window.addEventListener("resize", ()=>{
-    clearTimeout(t);
-    t=setTimeout(()=>spawnPetals(34), 200);
+    clearTimeout(canvas.__rt);
+    canvas.__rt = setTimeout(resize, 140);
   });
+
+  requestAnimationFrame(draw);
 })();
 </script>
 
-</div><!-- fecha #app -->
 </body>
 </html>
