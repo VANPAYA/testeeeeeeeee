@@ -913,10 +913,14 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
               <input type="checkbox" id="quizAuto" checked />
               auto-run
             </label>
-            <label class="toggle" title="Treino separado: só os kanjis que você errou (fila de revisão)">
-              <input type="checkbox" id="quizReviewOnly" />
-              revisar erros
-            </label>
+
+            <!-- ✅ Só aparece quando EXISTEM erros (fila de revisão) -->
+            <span id="reviewToggleWrap" style="display:none;">
+              <label class="toggle" title="Treino separado: só os kanjis que você errou (fila de revisão). Se não houver erros, essa opção some.">
+                <input type="checkbox" id="quizReviewOnly" />
+                revisar erros
+              </label>
+            </span>
           </div>
         </div>
 
@@ -979,10 +983,10 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 
             <hr class="sep">
 
-            <div class="mean">📚 3 palavras com este kanji</div>
+            <div class="mean">📚 3 palavras com este kanji (Jisho → PT-BR)</div>
             <div class="small" id="quizExamples">—</div>
             <div class="small" style="margin-top:6px; opacity:.9;">
-              *Fonte: Jisho (significados em EN).
+              *Fonte: Jisho (dados) + tradução automática para PT-BR.
             </div>
 
             <div class="strokeBox" style="margin-top:12px;">
@@ -1369,10 +1373,13 @@ function safeInfo(k){
 }
 
 /* =========================
-   VOCAB EXAMPLES (Jisho)
+   VOCAB EXAMPLES (Jisho → PT-BR)
+   - Busca no Jisho (API)
+   - Traduz EN → PT-BR via MyMemory (grátis)
 ========================= */
-const exampleCache = new Map();   // kanji -> html pronto
-let examplesReqSeq = 0;           // evita race condition
+const exampleCache = new Map();       // kanji -> html pronto
+const translateCache = new Map();     // enText -> ptText
+let examplesReqSeq = 0;               // evita race condition
 
 function escapeHTML(s){
   return String(s || "")
@@ -1382,18 +1389,41 @@ function escapeHTML(s){
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
 }
-async function fetchJishoJSON(url){
+
+async function fetchJSON(url){
+  // tentativa direta
   try{
-    const r = await fetch(url, { cache:"force-cache" });
+    const r = await fetch(url, { cache:"no-store" });
     if(!r.ok) throw new Error("HTTP " + r.status);
     return await r.json();
   }catch{
+    // fallback CORS proxy
     const proxied = "https://cors.isomorphic-git.org/" + url;
     const r2 = await fetch(proxied, { cache:"no-store" });
     if(!r2.ok) throw new Error("HTTP " + r2.status);
     return await r2.json();
   }
 }
+
+async function translateENtoPT(enText){
+  const key = (enText || "").trim();
+  if(!key) return "—";
+  if(translateCache.has(key)) return translateCache.get(key);
+
+  // MyMemory: EN -> PT
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(key)}&langpair=en|pt`;
+  try{
+    const json = await fetchJSON(url);
+    const pt = json?.responseData?.translatedText ? String(json.responseData.translatedText) : "";
+    const out = pt && pt.toLowerCase() !== key.toLowerCase() ? pt : key;
+    translateCache.set(key, out);
+    return out;
+  }catch{
+    translateCache.set(key, key); // fallback
+    return key;
+  }
+}
+
 function pickThreeVocabFromJisho(data, kanji){
   const out = [];
   const seen = new Set();
@@ -1426,6 +1456,7 @@ function pickThreeVocabFromJisho(data, kanji){
   }
   return out;
 }
+
 async function renderQuizExamples(kanji){
   const el = $("quizExamples");
   if(!el) return;
@@ -1436,27 +1467,39 @@ async function renderQuizExamples(kanji){
   }
 
   const mySeq = ++examplesReqSeq;
-  el.textContent = "Carregando exemplos…";
+  el.textContent = "Carregando exemplos do Jisho…";
 
   const url = `https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(kanji)}`;
 
   try{
-    const json = await fetchJishoJSON(url);
+    const json = await fetchJSON(url);
     if(mySeq !== examplesReqSeq) return;
 
     const vocab = pickThreeVocabFromJisho(json, kanji);
 
-    const html = vocab.length
-      ? vocab.map((v, idx)=>(
-          `${idx+1}) <b>${escapeHTML(v.word)}</b>【${escapeHTML(v.reading)}】 — <span style="opacity:.92">EN:</span> ${escapeHTML(v.meaningEN)}`
-        )).join("<br>")
-      : "— (sem exemplos suficientes encontrados)";
+    if(!vocab.length){
+      const html = "— (sem exemplos suficientes no Jisho para este kanji)";
+      exampleCache.set(kanji, html);
+      el.innerHTML = html;
+      return;
+    }
+
+    // traduz 3 significados (EN → PT-BR)
+    const ptMeanings = await Promise.all(
+      vocab.map(v => translateENtoPT(v.meaningEN))
+    );
+    if(mySeq !== examplesReqSeq) return;
+
+    const html = vocab.map((v, idx)=>{
+      const pt = ptMeanings[idx] || v.meaningEN || "—";
+      return `${idx+1}) <b>${escapeHTML(v.word)}</b>【${escapeHTML(v.reading)}】 — <span style="opacity:.92">PT:</span> ${escapeHTML(pt)}`;
+    }).join("<br>");
 
     exampleCache.set(kanji, html);
     el.innerHTML = html;
   }catch{
     if(mySeq !== examplesReqSeq) return;
-    el.innerHTML = `Falha ao buscar exemplos (sem internet/CORS).`;
+    el.innerHTML = `Falha ao buscar/traduzir (internet/CORS).`;
   }
 }
 
@@ -1692,7 +1735,7 @@ $("kdTrain").addEventListener("click", ()=>{
 /* =========================
    QUIZ STATS
 ========================= */
-const LS_KEY = "vampire_kanji_quiz_ptbr_v2";
+const LS_KEY = "vampire_kanji_quiz_ptbr_v3";
 
 function defaultStats(){
   return {
@@ -1727,12 +1770,25 @@ function applyMood(){
 
 /* =========================
    REVIEW MODE (fila de erros)
+   ✅ opção só aparece se houver erros
+   ✅ ao entrar no modo revisão: "resetar" sessão + ordem da revisão
 ========================= */
 function reviewCount(){ return Array.isArray(stats.reviewQueue) ? stats.reviewQueue.length : 0; }
 function updateReviewUI(){
   const el = $("quizReviewText");
   if(el) el.textContent = `Revisão: ${reviewCount()}`;
+  refreshReviewAvailability();
 }
+function refreshReviewAvailability(){
+  const has = reviewCount() > 0;
+  const wrap = $("reviewToggleWrap");
+  const chk  = $("quizReviewOnly");
+  if(wrap) wrap.style.display = has ? "inline-flex" : "none";
+  if(!has && chk){
+    chk.checked = false; // ✅ se não tem erro, não deixa essa opção ligada
+  }
+}
+
 function addToReview(k){
   if(!stats.reviewQueue) stats.reviewQueue = [];
   if(!stats.reviewPass) stats.reviewPass = {};
@@ -1741,7 +1797,10 @@ function addToReview(k){
   }
   stats.reviewPass[k] = 0;
   updateReviewUI();
+  saveStats();
+  rebuildReviewOrder(true);
 }
+
 function passReview(k){
   if(!stats.reviewPass) stats.reviewPass = {};
   stats.reviewPass[k] = (stats.reviewPass[k] || 0) + 1;
@@ -1750,8 +1809,10 @@ function passReview(k){
   if(stats.reviewPass[k] >= 2){
     stats.reviewQueue = (stats.reviewQueue || []).filter(x => x !== k);
     delete stats.reviewPass[k];
+    rebuildReviewOrder(true);
   }
   updateReviewUI();
+  saveStats();
 }
 
 /* =========================
@@ -1786,6 +1847,7 @@ $("goKanji").addEventListener("click", ()=> openTab("kanji"));
 $("resetHistory").addEventListener("click", ()=>{
   stats = defaultStats();
   saveStats();
+  rebuildReviewOrder(true);
   updateRightPanel();
   applyMood();
   updateReviewUI();
@@ -1809,7 +1871,11 @@ const quizState = {
   okMeaning: false,
 
   lockedAfterResult: false,
-  lastPick: null
+  lastPick: null,
+
+  // ✅ revisão: ordem “resetável”
+  reviewOrder: [],
+  reviewIdx: 0
 };
 
 function updateScoreUI(){
@@ -1897,6 +1963,13 @@ function resetQuestionState(){
   quizFeedback.style.display = "none";
 }
 
+function resetSession(){
+  quizState.sessionCorrect = 0;
+  quizState.sessionWrong = 0;
+  quizState.sessionStreak = 0;
+  updateScoreUI();
+}
+
 function disableAllChoices(){
   document.querySelectorAll(".choiceBtn").forEach(b=> b.disabled = true);
 }
@@ -1962,17 +2035,43 @@ function getReviewPoolFiltered(){
 }
 
 function getQuizPool(){
-  // se revisar erros ON -> usa fila de revisão
-  if(quizReviewOnly.checked){
+  // se revisar erros ON -> só a fila de revisão
+  if(quizReviewOnly && quizReviewOnly.checked){
     const rpool = getReviewPoolFiltered();
-    if(rpool.length >= 2) return rpool;
-    // se fila vazia, cai no normal (não trava o jogo)
-    return getBasePoolByUILevel();
+    // ✅ se não há erros, desliga e segue normal
+    if(rpool.length < 1){
+      quizReviewOnly.checked = false;
+      refreshReviewAvailability();
+      return getBasePoolByUILevel();
+    }
+    return rpool;
   }
   return getBasePoolByUILevel();
 }
 
+function rebuildReviewOrder(force){
+  const pool = getReviewPoolFiltered();
+  const keyNow = pool.join("");
+  const keyPrev = (quizState.reviewOrder || []).join("");
+  if(force || keyNow !== keyPrev){
+    quizState.reviewOrder = shuffle(pool);
+    quizState.reviewIdx = 0;
+  }
+}
+
+function pickFromReview(){
+  rebuildReviewOrder(false);
+  if(!quizState.reviewOrder.length) return null;
+  const k = quizState.reviewOrder[quizState.reviewIdx % quizState.reviewOrder.length];
+  quizState.reviewIdx++;
+  return k;
+}
+
 function pickKanji(pool){
+  if(quizReviewOnly && quizReviewOnly.checked){
+    return pickFromReview() || pool[Math.floor(Math.random()*pool.length)];
+  }
+
   let k = quizSmart.checked ? weightedPick(pool) : pool[Math.floor(Math.random()*pool.length)];
   if(pool.length > 1 && k === quizState.lastPick){
     k = pool[Math.floor(Math.random()*pool.length)];
@@ -1996,7 +2095,7 @@ async function showFeedback(okAll, reason){
     Significado: <b>${info.meaning}</b>
   `;
 
-  // ✅ NOVO: 3 palavras com leitura + significado
+  // ✅ 3 palavras do Jisho + PT-BR
   renderQuizExamples(k);
 
   quizSvgEl = await loadKanjiSVGInto(k, quizStroke);
@@ -2015,8 +2114,8 @@ function commitResult(okAll, reason){
     pushRecent(true);
     flash("good");
 
-    // se está em modo revisão, 2 acertos seguidos removem da fila
-    if(quizReviewOnly.checked) passReview(k);
+    // ✅ se está em modo revisão, 2 acertos seguidos removem da fila
+    if(quizReviewOnly && quizReviewOnly.checked) passReview(k);
   }else{
     quizState.sessionWrong += 1;
     quizState.sessionStreak = 0;
@@ -2025,7 +2124,7 @@ function commitResult(okAll, reason){
     pushRecent(false);
     flash("bad");
 
-    // qualquer erro/timeout entra na fila de revisão
+    // ✅ qualquer erro/timeout entra na fila de revisão (e a opção aparece)
     addToReview(k);
   }
 
@@ -2092,7 +2191,8 @@ function setQuestion(kanji, keepTimerRunning){
 
 function nextQuestion(){
   const pool = getQuizPool();
-  setQuestion(pickKanji(pool), true);
+  const k = pickKanji(pool);
+  setQuestion(k, true);
 }
 
 /* =========================
@@ -2152,10 +2252,7 @@ $("quizNext").addEventListener("click", ()=>{
 });
 $("quizReset").addEventListener("click", ()=>{
   stopTimer();
-  quizState.sessionCorrect = 0;
-  quizState.sessionWrong = 0;
-  quizState.sessionStreak = 0;
-  updateScoreUI();
+  resetSession();
   updateRightPanel();
   updateReviewUI();
   saveStats();
@@ -2180,12 +2277,26 @@ quizSpeed.addEventListener("change", ()=>{
   if(!quizSvgEl) return;
   animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
 });
-quizLevel.addEventListener("change", ()=> nextQuestion());
-quizReviewOnly.addEventListener("change", ()=>{
-  // quando liga/desliga, troca a questão pra refletir a pool
+quizLevel.addEventListener("change", ()=>{
+  rebuildReviewOrder(true);
   nextQuestion();
-  updateReviewUI();
 });
+
+if(quizReviewOnly){
+  quizReviewOnly.addEventListener("change", ()=>{
+    // ✅ ao entrar no modo revisão: resetar sessão + resetar ordem da revisão
+    if(quizReviewOnly.checked){
+      rebuildReviewOrder(true);
+      resetSession();
+      stopTimer();
+      nextQuestion();
+    }else{
+      stopTimer();
+      nextQuestion();
+    }
+    updateReviewUI();
+  });
+}
 
 /* =========================
    INIT
@@ -2195,6 +2306,7 @@ function init(){
   updateRightPanel();
   applyMood();
   updateScoreUI();
+  rebuildReviewOrder(true);
   updateReviewUI();
   setQuestion("一", false);
 }
