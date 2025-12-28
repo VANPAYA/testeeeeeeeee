@@ -121,7 +121,7 @@ nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content
 }
 .badge.n5{ border-color: rgba(52,211,153,.45); color: rgba(52,211,153,.95); }
 .badge.n4{ border-color: rgba(59,130,246,.45); color: rgba(147,197,253,.95); }
-.badge.n3{ border-color: rgba(251,191,36,.55); color: rgba(253,230,138,.98); }
+.badge.n3{ border-color: rgba(168,85,247,.45); color: rgba(233,213,255,.95); }
 .badge.tag{ border-color: rgba(255,255,255,.22); color: var(--text); }
 
 .tabbtn{
@@ -175,7 +175,7 @@ nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content
 }
 
 /* =========================
-   BOTÃO — ANÁLISE DE TEXTO
+   (NOVO) BOTÃO — ANÁLISE DE TEXTO
 ========================= */
 .btn.linkout{
   border-color: hsla(var(--themeHue), 90%, 60%, .55);
@@ -385,7 +385,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 }
 
 /* =========================================================
-   PERGUNTA FILOSÓFICA — centralizada acima
+   (NOVO) PERGUNTA FILOSÓFICA — centralizada acima
 ========================================================= */
 .hero-question{
   position:absolute;
@@ -454,6 +454,43 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 @keyframes mujoBreath{
   0%,100%{ transform: translate(-50%,-52%) scale(1.00); opacity:.18; }
   50%{ transform: translate(-50%,-53%) scale(1.02); opacity:.28; }
+}
+
+/* =========================================================
+   (NOVO) TEXTOS LADO TORII — destaque sem estragar visual
+========================================================= */
+.hero-side{
+  position:absolute;
+  top:56%;
+  transform: translateY(-50%);
+  z-index:6;
+  padding:10px 14px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  max-width:min(46vw, 420px);
+}
+.hero-side.left{ left:18px; text-align:left; }
+.hero-side.right{ right:18px; text-align:right; }
+.hero-side .k{
+  font-weight:1000;
+  letter-spacing:.6px;
+  font-size:13px;
+  color: rgba(238,242,255,.92);
+}
+.hero-side .k b{
+  color: rgba(255,255,255,.98);
+}
+.hero-side .mujo{
+  display:inline-block;
+  margin-left:6px;
+  font-weight:1000;
+  letter-spacing:2px;
+  color: rgba(160,240,255,.95);
+  text-shadow: 0 0 18px rgba(160,240,255,.16);
 }
 
 .hero-torii{
@@ -551,12 +588,22 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   <div class="hero-pattern"></div>
   <canvas id="heroRain"></canvas>
 
+  <!-- PERGUNTA -->
   <div class="hero-question">
     <span>どんな哲学者や哲学が好きですか？</span>
   </div>
 
+  <!-- TEXTOS LATERAIS -->
+  <div class="hero-side left">
+    <div class="k">Colab. <b>Kazulipe Sou Eu</b> <span class="mujo">無常</span></div>
+  </div>
+  <div class="hero-side right">
+    <div class="k">Dev: <b>大学で勉強中</b></div>
+  </div>
+
   <div class="hero-mujo">無常</div>
 
+  <!-- TORII xintoísta (vermelho + detalhes) -->
   <div class="hero-torii">
     <svg viewBox="0 0 1400 800" role="presentation" aria-hidden="true">
       <defs>
@@ -716,6 +763,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 
 <div class="container">
 
+  <!-- ====================== KANJI ====================== -->
   <section id="kanji" class="section active">
     <div class="grid">
       <div class="panel">
@@ -784,6 +832,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
     </div>
   </section>
 
+  <!-- ====================== JOGO ====================== -->
   <section id="quiz" class="section">
     <div class="grid">
       <div class="panel">
@@ -944,18 +993,23 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 ========================= */
 const N5_LIST = ["一","七","万","三","上","下","中","九","二","五","人","今","休","何","先","入","八","六","円","出","分","前","北","十","千","午","半","南","友","右","名","四","国","土","外","大","天","女","子","学","小","山","川","左","年","後","日","時","書","月","木","本","来","東","校","母","毎","気","水","火","父","生","男","白","百","聞","行","西","見","話","語","読","車","金","長","間","雨","電","食","高"];
 const N4_LIST = ["不","世","主","事","京","仕","代","以","会","住","体","作","使","借","元","兄","公","写","冬","切","別","力","勉","動","医","去","口","古","台","同","味","品","員","問","図","地","堂","場","売","夏","夕","多","夜","妹","姉","始","字","安","室","家","少","屋","工","帰","広","店","度","建","弟","強","待","心","思","急","悪","意","手","持","教","文","料","新","方","旅","族","早","明","映","春","昼","曜","有","服","朝","業","楽","歌","止","正","歩","死","注","洋","海","漢","牛","物","特","犬","理","用","田","町","画","界","病","発","的","目","真","着","知","研","社","私","秋","究","空","立","答","紙","終","習","考","者","肉","自","色","花","英","茶","親","言","計","試","買","貸","質","赤","走","起","足","転","近","送","通","週","運","道","重","野","銀","開","院","集","青","音","題","風","飯","飲","館","駅","験","魚","鳥","黒"];
+
 /* N3 (adicionado) */
-const N3_LIST = ["与","両","乗","予","争","互","亡","交","他","付","件","任","伝","似","位","余","例","供","便","係","信","倒","候","値","偉","側","偶","備","働","優","光","全","共","具","内","冷","処","列","初","判","利","到","制","刻","割","加","助","努","労","務","勝","勤","化","単","危","原","参","反","収","取","受","可","号","合","向","君","否","吸","吹","告","呼","命","和","商","喜","回","因","困","園","在","報","増","声","変","夢","太","夫","失","好","妻","娘","婚","婦","存","宅","守","完","官","定","実","客","害","容","宿","寄","富","寒","寝","察","対","局","居","差","市","師","席","常","平","幸","幾","座","庭","式","引","当","形","役","彼","徒","得","御","必","忘","忙","念","怒","怖","性","恐","恥","息","悲","情","想","愛","感","慣","成","戦","戻","所","才","打","払","投","折","抜","抱","押","招","指","捕","掛","探","支","放","政","敗","散","数","断","易","昔","昨","晩","景","晴","暗","暮","曲","更","最","望","期","未","末","束","杯","果","格","構","様","権","横","機","欠","次","欲","歯","歳","残","段","殺","民","求","決","治","法","泳","洗","活","流","浮","消","深","済","渡","港","満","演","点","然","煙","熱","犯","状","猫","王","現","球","産","由","申","留","番","疑","疲","痛","登","皆","盗","直","相","眠","石","破","確","示","礼","祖","神","福","科","程","種","積","突","窓","笑","等","箱","米","精","約","組","経","給","絵","絶","続","緒","罪","置","美","老","耳","職","育","背","能","腹","舞","船","良","若","苦","草","落","葉","薬","術","表","要","規","覚","観","解","記","訪","許","認","誤","説","調","談","論","識","警","議","負","財","貧","責","費","資","賛","越","路","身","辞","込","迎","返","迷","追","退","逃","途","速","連","進","遅","遊","過","達","違","遠","適","選","部","都","配","酒","閉","関","阪","降","限","除","険","陽","際","雑","難","雪","静","非","面","靴","頂","頭","頼","顔","願","類","飛","首","馬","髪","鳴"];
+const N3_LIST = [
+"与","両","乗","予","争","互","亡","交","他","付","件","任","伝","似","位","余","例","供","便","係","信","倒","候","値","偉","側","偶","備","働","優","光","全","共","具","内","冷","処","列","初","判","利","到","制","刻","割","加","助","努","労","務","勝","勤","化","単","危","原","参","反","収","取","受","可","号","合","向","君","否","吸","吹","告","呼","命","和","商","喜","回","因","困","園","在","報","増","声","変","夢","太","夫","失","好","妻","娘","婚","婦","存","宅","守","完","官","定","実","客","害","容","宿","寄","富","寒","寝","察","対","局","居","差","市","師","席","常","平","幸","幾","座","庭","式","引","当","形","役","彼","徒","得","御","必","忘","忙","念","怒","怖","性","恐","恥","息","悲","情","想","愛","感","慣","成","戦","戻","所","才","打","払","投","折","抜","抱","押","招","指","捕","掛","探","支","放","政","敗","散","数","断","易","昔","昨","晩","景","晴","暗","暮","曲","更","最","望","期","未","末","束","杯","果","格","構","様","権","横","機","欠","次","欲","歯","歳","残","段","殺","民","求","決","治","法","泳","洗","活","流","浮","消","深","済","渡","港","満","演","点","然","煙","熱","犯","状","猫","王","現","球","産","由","申","留","番","疑","疲","痛","登","皆","盗","直","相","眠","石","破","確","示","礼","祖","神","福","科","程","種","積","突","窓","笑","等","箱","米","精","約","組","経","給","絵","絶","続","緒","罪","置","美","老","耳","職","育","背","能","腹","舞","船","良","若","苦","草","落","葉","薬","術","表","要","規","覚","観","解","記","訪","許","認","誤","説","調","談","論","識","警","議","負","財","貧","責","費","資","賛","越","路","身","辞","込","迎","返","迷","追","退","逃","途","速","連","進","遅","遊","過","達","違","遠","適","選","部","都","配","酒","閉","関","阪","降","限","除","険","陽","際","雑","難","雪","静","非","面","靴","頂","頭","頼","顔","願","類","飛","首","馬","髪","鳴"
+];
 
 const N5_SET = new Set(N5_LIST);
 const N4_SET = new Set(N4_LIST);
 const N3_SET = new Set(N3_LIST);
 
 /* =========================
-   KANJI_INFO (PT-BR) — N5+N4+N3
+   KANJI_INFO (PT-BR)
+   N5/N4 completos (leitura + significado)
+   N3: significado PT + leituras carregadas por API (KanjiAPI.dev)
 ========================= */
 const KANJI_INFO = {
-  /* ===== N5 ===== */
+  /* N5 */
   "一":{readings:["いち","ひと"], meaning:"um"},"七":{readings:["しち","なな"], meaning:"sete"},"万":{readings:["まん"], meaning:"dez mil"},"三":{readings:["さん","みっ"], meaning:"três"},
   "上":{readings:["うえ","じょう"], meaning:"cima / sobre"},"下":{readings:["した","か"], meaning:"baixo / descer"},"中":{readings:["なか","ちゅう"], meaning:"meio / dentro"},
   "九":{readings:["きゅう","ここの"], meaning:"nove"},"二":{readings:["に","ふた"], meaning:"dois"},"五":{readings:["ご","いつ"], meaning:"cinco"},
@@ -964,7 +1018,7 @@ const KANJI_INFO = {
   "八":{readings:["はち","や"], meaning:"oito"},"六":{readings:["ろく","む"], meaning:"seis"},"円":{readings:["えん"], meaning:"iene / círculo"},
   "出":{readings:["で","しゅつ"], meaning:"sair / aparecer"},"分":{readings:["ふん","ぶん","わ"], meaning:"minuto / parte"},"前":{readings:["まえ","ぜん"], meaning:"antes / frente"},
   "北":{readings:["きた","ほく"], meaning:"norte"},"十":{readings:["じゅう","とお"], meaning:"dez"},"千":{readings:["せん"], meaning:"mil"},
-  "午":{readings:["ご"], meaning:"meio-dia (午)"},"半":{readings:["はん"], meaning:"metade"},"南":{readings:["みなみ","なん"], meaning:"sul"},
+  "午":{readings:["ご"], meaning:"meio-dia"},"半":{readings:["はん"], meaning:"metade"},"南":{readings:["みなみ","なん"], meaning:"sul"},
   "友":{readings:["とも","ゆう"], meaning:"amigo"},"右":{readings:["みぎ","う"], meaning:"direita"},"名":{readings:["な","めい"], meaning:"nome"},
   "四":{readings:["よん","し"], meaning:"quatro"},"国":{readings:["くに","こく"], meaning:"país"},"土":{readings:["つち","ど"], meaning:"terra / solo"},
   "外":{readings:["そと","がい"], meaning:"fora"},"大":{readings:["おお","だい"], meaning:"grande"},"天":{readings:["てん","あま"], meaning:"céu"},
@@ -984,7 +1038,7 @@ const KANJI_INFO = {
   "雨":{readings:["あめ","う"], meaning:"chuva"},"電":{readings:["でん"], meaning:"eletricidade"},"食":{readings:["た","しょく"], meaning:"comer / comida"},
   "高":{readings:["たか","こう"], meaning:"alto / caro"},
 
-  /* ===== N4 ===== */
+  /* N4 (mesmo modelo do N5) */
   "不":{readings:["ふ","ない"], meaning:"não / negativo"},"世":{readings:["せい","よ"], meaning:"mundo / sociedade"},"主":{readings:["しゅ","ぬし"], meaning:"principal / dono"},
   "事":{readings:["こと","じ"], meaning:"coisa / assunto"},"京":{readings:["きょう","けい"], meaning:"capital"},"仕":{readings:["し"], meaning:"servir / trabalho"},
   "代":{readings:["だい","たい","か"], meaning:"substituir / era"},"以":{readings:["い"], meaning:"a partir de / por"},"会":{readings:["かい","あ"], meaning:"encontro / reunião"},
@@ -1040,389 +1094,90 @@ const KANJI_INFO = {
   "音":{readings:["おと","おん"], meaning:"som"},"題":{readings:["だい"], meaning:"título / tema"},"風":{readings:["かぜ","ふう"], meaning:"vento"},
   "飯":{readings:["めし","はん"], meaning:"refeição / arroz"},"飲":{readings:["の","いん"], meaning:"beber"},"館":{readings:["かん"], meaning:"prédio / estabelecimento"},
   "駅":{readings:["えき"], meaning:"estação"},"験":{readings:["けん"], meaning:"experiência / teste"},"魚":{readings:["さかな","ぎょ"], meaning:"peixe"},
-  "鳥":{readings:["とり","ちょう"], meaning:"pássaro"},"黒":{readings:["くろ","こく"], meaning:"preto"},
-
-  /* ===== N3 ===== (significados PT + leituras) */
-  "与":{readings:["あた","よ"], meaning:"dar / conceder"},
-  "両":{readings:["りょう"], meaning:"ambos / dois"},
-  "乗":{readings:["の","じょう"], meaning:"subir (veículo) / montar"},
-  "予":{readings:["よ"], meaning:"antecipação / prever"},
-  "争":{readings:["あらそ","そう"], meaning:"disputa / brigar"},
-  "互":{readings:["たが"], meaning:"mútuo / um ao outro"},
-  "亡":{readings:["な","ぼう"], meaning:"morrer / falecer / perder"},
-  "交":{readings:["まじ","こう"], meaning:"misturar / cruzar / intercâmbio"},
-  "他":{readings:["ほか","た"], meaning:"outro"},
-  "付":{readings:["つ","ふ"], meaning:"anexar / adicionar / acompanhar"},
-  "件":{readings:["けん"], meaning:"assunto / caso (contador)"},
-  "任":{readings:["まか","にん"], meaning:"confiar / responsabilidade"},
-  "伝":{readings:["つた","でん"], meaning:"transmitir / contar"},
-  "似":{readings:["に","にる"], meaning:"parecer / semelhante"},
-  "位":{readings:["くらい","い"], meaning:"posição / grau"},
-  "余":{readings:["あま","よ"], meaning:"sobrar / restante"},
-  "例":{readings:["たと","れい"], meaning:"exemplo"},
-  "供":{readings:["とも","きょう"], meaning:"oferecer / acompanhar"},
-  "便":{readings:["べん","たよ"], meaning:"conveniência / correio /便"},
-  "係":{readings:["かか","けい"], meaning:"encarregado / relação"},
-  "信":{readings:["しん"], meaning:"confiança / fé"},
-  "倒":{readings:["たお","とう"], meaning:"cair / derrubar"},
-  "候":{readings:["そうろう","こう"], meaning:"clima / sinais /候"},
-  "値":{readings:["ね","ち"], meaning:"valor / preço"},
-  "偉":{readings:["えら","い"], meaning:"grande (pessoa) / admirável"},
-  "側":{readings:["がわ","そく"], meaning:"lado"},
-  "偶":{readings:["ぐう"], meaning:"acaso / par /偶"},
-  "備":{readings:["そな","び"], meaning:"preparar / equipamento"},
-  "働":{readings:["はたら"], meaning:"trabalhar"},
-  "優":{readings:["やさ","ゆう"], meaning:"gentil / superior"},
-  "光":{readings:["ひかり","こう"], meaning:"luz / brilho"},
-  "全":{readings:["ぜん","まった"], meaning:"todo / inteiro"},
-  "共":{readings:["とも","きょう"], meaning:"junto / comum"},
-  "具":{readings:["ぐ"], meaning:"ferramenta / ingrediente"},
-  "内":{readings:["うち","ない"], meaning:"dentro / interno"},
-  "冷":{readings:["つめ","れい"], meaning:"frio / esfriar"},
-  "処":{readings:["ところ","しょ"], meaning:"lugar / lidar / tratar"},
-  "列":{readings:["れつ"], meaning:"fila / alinhamento"},
-  "初":{readings:["はじ","しょ"], meaning:"primeiro / início"},
-  "判":{readings:["はん"], meaning:"julgar / selo /判"},
-  "利":{readings:["り"], meaning:"benefício / vantagem"},
-  "到":{readings:["とう"], meaning:"chegar (até)"},
-  "制":{readings:["せい"], meaning:"controle / sistema"},
-  "刻":{readings:["きざ","こく"], meaning:"entalhar / momento"},
-  "割":{readings:["わ","かつ"], meaning:"dividir / porcentagem"},
-  "加":{readings:["くわ","か"], meaning:"adicionar"},
-  "助":{readings:["たす","じょ"], meaning:"ajudar"},
-  "努":{readings:["つと"], meaning:"esforçar-se"},
-  "労":{readings:["ろう"], meaning:"trabalho / esforço / fadiga"},
-  "務":{readings:["つと","む"], meaning:"dever / função / trabalho"},
-  "勝":{readings:["か","しょう"], meaning:"vencer"},
-  "勤":{readings:["つと","きん"], meaning:"trabalhar / diligência"},
-  "化":{readings:["ば","か"], meaning:"mudança / transformar"},
-  "単":{readings:["たん"], meaning:"simples / sozinho"},
-  "危":{readings:["あぶ","き"], meaning:"perigoso"},
-  "原":{readings:["はら","げん"], meaning:"origem / campo / original"},
-  "参":{readings:["さん","まい"], meaning:"participar / ir (humilde)"},
-  "反":{readings:["はん","そ"], meaning:"oposição / anti / virar"},
-  "収":{readings:["おさ","しゅう"], meaning:"receber / guardar / arrecadar"},
-  "取":{readings:["と","しゅ"], meaning:"pegar / tirar"},
-  "受":{readings:["う","うける"], meaning:"receber / aceitar"},
-  "可":{readings:["か"], meaning:"possível / permitido"},
-  "号":{readings:["ごう"], meaning:"número / apelido /号"},
-  "合":{readings:["あ","ごう"], meaning:"juntar / combinar / encaixar"},
-  "向":{readings:["む","こう"], meaning:"virado para / direção"},
-  "君":{readings:["きみ","くん"], meaning:"você (informal) / senhor /君"},
-  "否":{readings:["いな","ひ"], meaning:"negação / não"},
-  "吸":{readings:["す","きゅう"], meaning:"sugar / respirar"},
-  "吹":{readings:["ふ","すい"], meaning:"soprar"},
-  "告":{readings:["つ","こく"], meaning:"avisar / anunciar"},
-  "呼":{readings:["よ","こ"], meaning:"chamar"},
-  "命":{readings:["いのち","めい"], meaning:"vida / destino / ordem"},
-  "和":{readings:["わ","なご"], meaning:"harmonia / Japão (Wa)"},
-  "商":{readings:["しょう","あきな"], meaning:"comércio / negociar"},
-  "喜":{readings:["よろこ"], meaning:"alegria / ficar feliz"},
-  "回":{readings:["まわ","かい"], meaning:"girar / vezes"},
-  "因":{readings:["いん","よ"], meaning:"causa / fator"},
-  "困":{readings:["こま","こん"], meaning:"dificuldade / estar em apuros"},
-  "園":{readings:["えん","その"], meaning:"jardim / parque"},
-  "在":{readings:["ざい","あ"], meaning:"existir / estar (em)"},
-  "報":{readings:["ほう","むく"], meaning:"informar / retribuir"},
-  "増":{readings:["ふ","ぞう"], meaning:"aumentar"},
-  "声":{readings:["こえ","せい"], meaning:"voz"},
-  "変":{readings:["か","へん"], meaning:"mudança / estranho"},
-  "夢":{readings:["ゆめ","む"], meaning:"sonho"},
-  "太":{readings:["ふと","たい"], meaning:"grosso / grande"},
-  "夫":{readings:["おっと","ふ"], meaning:"marido / homem"},
-  "失":{readings:["うしな","しつ"], meaning:"perder / falhar"},
-  "好":{readings:["す","こう"], meaning:"gostar / preferência"},
-  "妻":{readings:["つま","さい"], meaning:"esposa"},
-  "娘":{readings:["むすめ"], meaning:"filha / garota"},
-  "婚":{readings:["こん"], meaning:"casamento"},
-  "婦":{readings:["ふ"], meaning:"mulher (formal) / esposa"},
-  "存":{readings:["そん","ぞん"], meaning:"existir / estar vivo / consideração"},
-  "宅":{readings:["たく"], meaning:"casa (residência)"},
-  "守":{readings:["まも","しゅ"], meaning:"proteger / guardar"},
-  "完":{readings:["かん"], meaning:"completo / finalizar"},
-  "官":{readings:["かん"], meaning:"governo / oficial"},
-  "定":{readings:["さだ","てい"], meaning:"decidir / fixo"},
-  "実":{readings:["じつ","み"], meaning:"real / verdade / fruto"},
-  "客":{readings:["きゃく"], meaning:"cliente / convidado"},
-  "害":{readings:["がい"], meaning:"dano / prejuízo"},
-  "容":{readings:["よう"], meaning:"conteúdo / aceitar /容"},
-  "宿":{readings:["やど","しゅく"], meaning:"hospedaria / alojar / dever (宿題)"},
-  "寄":{readings:["よ","き"], meaning:"aproximar / parar (em) /寄"},
-  "富":{readings:["と","とみ"], meaning:"riqueza / rico"},
-  "寒":{readings:["さむ","かん"], meaning:"frio"},
-  "寝":{readings:["ね","しん"], meaning:"dormir / deitar"},
-  "察":{readings:["さつ"], meaning:"perceber / inferir"},
-  "対":{readings:["たい","つい"], meaning:"contra / par / oposição"},
-  "局":{readings:["きょく"], meaning:"departamento / situação"},
-  "居":{readings:["い","いる"], meaning:"estar / residir"},
-  "差":{readings:["さ"], meaning:"diferença / variar"},
-  "市":{readings:["し","いち"], meaning:"cidade / mercado"},
-  "師":{readings:["し"], meaning:"mestre / professor / especialista"},
-  "席":{readings:["せき"], meaning:"assento / lugar"},
-  "常":{readings:["つね","じょう"], meaning:"sempre / normal"},
-  "平":{readings:["たいら","へい"], meaning:"plano / paz / comum"},
-  "幸":{readings:["しあわ","こう"], meaning:"felicidade / sorte"},
-  "幾":{readings:["いく"], meaning:"quantos / vários"},
-  "座":{readings:["すわ","ざ"], meaning:"sentar / assento /座"},
-  "庭":{readings:["にわ","てい"], meaning:"jardim / pátio"},
-  "式":{readings:["しき"], meaning:"cerimônia / fórmula"},
-  "引":{readings:["ひ","いん"], meaning:"puxar / tirar"},
-  "当":{readings:["あ","とう"], meaning:"acertar / corresponder / este"},
-  "形":{readings:["かたち","けい"], meaning:"forma / formato"},
-  "役":{readings:["やく"], meaning:"papel / dever / serviço"},
-  "彼":{readings:["かれ","ひ"], meaning:"ele / aquele"},
-  "徒":{readings:["と"], meaning:"discípulo / em vão / a pé"},
-  "得":{readings:["え","とく"], meaning:"obter / ganhar"},
-  "御":{readings:["ご","お"], meaning:"honorífico (御〜) / governar"},
-  "必":{readings:["かなら","ひつ"], meaning:"certamente /必"},
-  "忘":{readings:["わす","ぼう"], meaning:"esquecer"},
-  "忙":{readings:["いそが","ぼう"], meaning:"ocupado / corrido"},
-  "念":{readings:["ねん"], meaning:"ideia / pensamento / preocupação"},
-  "怒":{readings:["おこ","ど"], meaning:"raiva / ficar bravo"},
-  "怖":{readings:["こわ"], meaning:"assustador / ter medo"},
-  "性":{readings:["せい","しょう"], meaning:"natureza / caráter / sexo"},
-  "恐":{readings:["おそ","きょう"], meaning:"medo / temer"},
-  "恥":{readings:["は","ち"], meaning:"vergonha"},
-  "息":{readings:["いき","そく"], meaning:"respiração / filho"},
-  "悲":{readings:["かな","ひ"], meaning:"triste / tristeza"},
-  "情":{readings:["じょう","なさ"], meaning:"sentimento / situação"},
-  "想":{readings:["そう","おも"], meaning:"imaginar / pensar"},
-  "愛":{readings:["あい"], meaning:"amor"},
-  "感":{readings:["かん"], meaning:"sentir / sensação"},
-  "慣":{readings:["な","かん"], meaning:"acostumar"},
-  "成":{readings:["な","せい"], meaning:"virar / realizar /成"},
-  "戦":{readings:["たたか","せん"], meaning:"guerra / lutar"},
-  "戻":{readings:["もど"], meaning:"voltar / retornar"},
-  "所":{readings:["ところ","しょ"], meaning:"lugar"},
-  "才":{readings:["さい"], meaning:"talento / idade (contador)"},
-  "打":{readings:["う","だ"], meaning:"bater / digitar"},
-  "払":{readings:["はら"], meaning:"pagar / remover"},
-  "投":{readings:["な","とう"], meaning:"jogar / arremessar"},
-  "折":{readings:["お","せつ"], meaning:"dobrar / quebrar"},
-  "抜":{readings:["ぬ"], meaning:"tirar / extrair"},
-  "抱":{readings:["だ","ほう"], meaning:"abraçar / segurar /抱"},
-  "押":{readings:["お"], meaning:"empurrar / pressionar"},
-  "招":{readings:["まね","しょう"], meaning:"convidar / causar"},
-  "指":{readings:["ゆび","さ"], meaning:"dedo / apontar"},
-  "捕":{readings:["つか","ほ"], meaning:"capturar / pegar"},
-  "掛":{readings:["か"], meaning:"pendurar / ligar / gastar"},
-  "探":{readings:["さが","たん"], meaning:"procurar"},
-  "支":{readings:["ささ","し"], meaning:"suportar / pagar /支"},
-  "放":{readings:["はな","ほう"], meaning:"soltar / libertar /放"},
-  "政":{readings:["せい","まつりごと"], meaning:"política / governo"},
-  "敗":{readings:["やぶ","はい"], meaning:"derrota / perder"},
-  "散":{readings:["ち","さん"], meaning:"espalhar / dispersar"},
-  "数":{readings:["かず","すう"], meaning:"número / contar"},
-  "断":{readings:["ことわ","だん"], meaning:"recusar / cortar / decidir"},
-  "易":{readings:["やさ","えき"], meaning:"fácil / troca"},
-  "昔":{readings:["むかし","せき"], meaning:"antigamente"},
-  "昨":{readings:["さく"], meaning:"ontem (昨日) / último"},
-  "晩":{readings:["ばん"], meaning:"noite (tarde)"},
-  "景":{readings:["けい"], meaning:"paisagem / cena"},
-  "晴":{readings:["は","せい"], meaning:"ensolarado / clarear"},
-  "暗":{readings:["くら","あん"], meaning:"escuro"},
-  "暮":{readings:["く","ぼ"], meaning:"viver / anoitecer"},
-  "曲":{readings:["ま","きょく"], meaning:"música / curva"},
-  "更":{readings:["さら","こう"], meaning:"mais / novamente / mudar"},
-  "最":{readings:["もっと","さい"], meaning:"mais / o máximo"},
-  "望":{readings:["のぞ","ぼう"], meaning:"desejar / esperar"},
-  "期":{readings:["き"], meaning:"período / prazo"},
-  "未":{readings:["み"], meaning:"ainda não / futuro"},
-  "末":{readings:["すえ","まつ"], meaning:"fim / ponta"},
-  "束":{readings:["たば","そく"], meaning:"feixe / amarrar"},
-  "杯":{readings:["はい"], meaning:"copo / taça (contador)"},
-  "果":{readings:["は","か"], meaning:"fruta / resultado"},
-  "格":{readings:["かく"], meaning:"nível / padrão"},
-  "構":{readings:["かま","こう"], meaning:"construir / estrutura"},
-  "様":{readings:["さま","よう"], meaning:"modo / senhor(a)"},
-  "権":{readings:["けん"], meaning:"direito / poder / autoridade"},
-  "横":{readings:["よこ","おう"], meaning:"lado / horizontal"},
-  "機":{readings:["き","はた"], meaning:"máquina / oportunidade"},
-  "欠":{readings:["か","けつ"], meaning:"faltar / faltar peça"},
-  "次":{readings:["つぎ","じ"], meaning:"próximo"},
-  "欲":{readings:["ほ","よく"], meaning:"desejo / querer"},
-  "歯":{readings:["は","し"], meaning:"dente"},
-  "歳":{readings:["さい"], meaning:"idade / anos"},
-  "残":{readings:["のこ","ざん"], meaning:"restar"},
-  "段":{readings:["だん"], meaning:"degrau / nível"},
-  "殺":{readings:["ころ","さつ"], meaning:"matar"},
-  "民":{readings:["たみ","みん"], meaning:"povo"},
-  "求":{readings:["もと","きゅう"], meaning:"procurar / pedir"},
-  "決":{readings:["き","けつ"], meaning:"decidir"},
-  "治":{readings:["なお","ち"], meaning:"curar / governar"},
-  "法":{readings:["ほう"], meaning:"lei / método"},
-  "泳":{readings:["およ"], meaning:"nadar"},
-  "洗":{readings:["あら","せん"], meaning:"lavar"},
-  "活":{readings:["かつ"], meaning:"atividade / vivo"},
-  "流":{readings:["なが","りゅう"], meaning:"fluir"},
-  "浮":{readings:["う","ふ"], meaning:"flutuar"},
-  "消":{readings:["け","しょう"], meaning:"apagar / desaparecer"},
-  "深":{readings:["ふか","しん"], meaning:"profundo"},
-  "済":{readings:["す","さい"], meaning:"terminar / resolver"},
-  "渡":{readings:["わた"], meaning:"atravessar / passar"},
-  "港":{readings:["みなと","こう"], meaning:"porto"},
-  "満":{readings:["み","まん"], meaning:"cheio / satisfazer"},
-  "演":{readings:["えん"], meaning:"atuar / apresentar /演"},
-  "点":{readings:["てん"], meaning:"ponto / nota"},
-  "然":{readings:["ぜん","ねん"], meaning:"natural / assim"},
-  "煙":{readings:["けむり","えん"], meaning:"fumaça"},
-  "熱":{readings:["あつ","ねつ"], meaning:"calor / febre"},
-  "犯":{readings:["おか","はん"], meaning:"cometer (crime) / infrator"},
-  "状":{readings:["じょう"], meaning:"estado / condição / forma"},
-  "猫":{readings:["ねこ","びょう"], meaning:"gato"},
-  "王":{readings:["おう"], meaning:"rei"},
-  "現":{readings:["あらわ","げん"], meaning:"aparecer / atual"},
-  "球":{readings:["きゅう","たま"], meaning:"bola / esfera"},
-  "産":{readings:["う","さん"], meaning:"produzir / dar à luz / produto"},
-  "由":{readings:["よし","ゆ"], meaning:"razão / origem"},
-  "申":{readings:["もう","しん"], meaning:"dizer (humilde) /申"},
-  "留":{readings:["と","りゅう"], meaning:"ficar / parar /留"},
-  "番":{readings:["ばん"], meaning:"vez / ordem / número"},
-  "疑":{readings:["うたが","ぎ"], meaning:"duvidar"},
-  "疲":{readings:["つか","ひ"], meaning:"cansar / fadiga"},
-  "痛":{readings:["いた","つう"], meaning:"dor / doer"},
-  "登":{readings:["のぼ","とう"], meaning:"subir / registrar"},
-  "皆":{readings:["みな","かい"], meaning:"todos"},
-  "盗":{readings:["ぬす","とう"], meaning:"roubar"},
-  "直":{readings:["なお","ちょく"], meaning:"consertar / direto"},
-  "相":{readings:["あい","そう"], meaning:"mútuo / ministro / aparência"},
-  "眠":{readings:["ねむ"], meaning:"dormir / sono"},
-  "石":{readings:["いし","せき"], meaning:"pedra"},
-  "破":{readings:["やぶ","は"], meaning:"rasgar / quebrar"},
-  "確":{readings:["たし","かく"], meaning:"certo / confirmar"},
-  "示":{readings:["しめ","じ"], meaning:"mostrar / indicar"},
-  "礼":{readings:["れい"], meaning:"agradecimento / etiqueta /礼"},
-  "祖":{readings:["そ"], meaning:"ancestral"},
-  "神":{readings:["かみ","しん"], meaning:"deus / espírito"},
-  "福":{readings:["ふく"], meaning:"sorte / bênção"},
-  "科":{readings:["か"], meaning:"disciplina / departamento"},
-  "程":{readings:["ほど","てい"], meaning:"grau / medida"},
-  "種":{readings:["たね","しゅ"], meaning:"tipo / semente"},
-  "積":{readings:["つ","せき"], meaning:"acumular"},
-  "突":{readings:["つ"], meaning:"atacar / bater /突"},
-  "窓":{readings:["まど","そう"], meaning:"janela"},
-  "笑":{readings:["わら","しょう"], meaning:"rir / sorriso"},
-  "等":{readings:["など","とう"], meaning:"etc. / igual"},
-  "箱":{readings:["はこ"], meaning:"caixa"},
-  "米":{readings:["こめ","べい"], meaning:"arroz / EUA (米)"},
-  "精":{readings:["せい"], meaning:"essência / energia / refinado"},
-  "約":{readings:["やく"], meaning:"aproximadamente / promessa"},
-  "組":{readings:["く","そ"], meaning:"grupo / montar"},
-  "経":{readings:["へ","けい"], meaning:"passar por / economia"},
-  "給":{readings:["きゅう"], meaning:"fornecer / salário"},
-  "絵":{readings:["え"], meaning:"desenho / pintura"},
-  "絶":{readings:["た","ぜつ"], meaning:"cortar / absoluto"},
-  "続":{readings:["つづ","ぞく"], meaning:"continuar"},
-  "緒":{readings:["しょ","お"], meaning:"início / fio /緒"},
-  "罪":{readings:["つみ","ざい"], meaning:"crime / culpa"},
-  "置":{readings:["お","ち"], meaning:"colocar / deixar"},
-  "美":{readings:["うつく","び"], meaning:"beleza"},
-  "老":{readings:["お","ろう"], meaning:"velho / envelhecer"},
-  "耳":{readings:["みみ","じ"], meaning:"orelha"},
-  "職":{readings:["しょく"], meaning:"trabalho / profissão"},
-  "育":{readings:["そだ","いく"], meaning:"criar / educar"},
-  "背":{readings:["せ","はい"], meaning:"costas / altura / trair"},
-  "能":{readings:["のう"], meaning:"capacidade / habilidade"},
-  "腹":{readings:["はら","ふく"], meaning:"barriga / abdômen"},
-  "舞":{readings:["まい","まう"], meaning:"dança / dançar"},
-  "船":{readings:["ふね","せん"], meaning:"navio / barco"},
-  "良":{readings:["よ","りょう"], meaning:"bom"},
-  "若":{readings:["わか","じゃく"], meaning:"jovem / se (若し)"},
-  "苦":{readings:["くる","く"], meaning:"sofrer / amargo"},
-  "草":{readings:["くさ","そう"], meaning:"grama"},
-  "落":{readings:["お","らく"], meaning:"cair / cair (preço)"},
-  "葉":{readings:["は","よう"], meaning:"folha"},
-  "薬":{readings:["くすり","やく"], meaning:"remédio"},
-  "術":{readings:["じゅつ"], meaning:"técnica / arte"},
-  "表":{readings:["おもて","ひょう"], meaning:"superfície / apresentar"},
-  "要":{readings:["かなめ","よう"], meaning:"necessário / ponto-chave"},
-  "規":{readings:["き"], meaning:"regra / padrão"},
-  "覚":{readings:["おぼ","かく"], meaning:"lembrar / despertar"},
-  "観":{readings:["み","かん"], meaning:"ver / observar / visão"},
-  "解":{readings:["と","かい"], meaning:"resolver / desfazer"},
-  "記":{readings:["しる","き"], meaning:"registrar / memória"},
-  "訪":{readings:["たず","ほう"], meaning:"visitar"},
-  "許":{readings:["ゆる","きょ"], meaning:"permitir / perdoar"},
-  "認":{readings:["みと","にん"], meaning:"reconhecer"},
-  "誤":{readings:["あやま","ご"], meaning:"erro / enganar"},
-  "説":{readings:["と","せつ"], meaning:"explicação / teoria"},
-  "調":{readings:["しら","ちょう"], meaning:"investigar / ajustar / tom"},
-  "談":{readings:["だん"], meaning:"conversa / discussão"},
-  "論":{readings:["ろん"], meaning:"teoria / argumentar"},
-  "識":{readings:["しき"], meaning:"conhecimento / discernir"},
-  "警":{readings:["けい"], meaning:"alerta / polícia"},
-  "議":{readings:["ぎ"], meaning:"debate / discussão"},
-  "負":{readings:["ま","ふ"], meaning:"perder / carregar"},
-  "財":{readings:["ざい"], meaning:"riqueza / bens"},
-  "貧":{readings:["まず","ひん"], meaning:"pobre / pobreza"},
-  "責":{readings:["せ","せき"], meaning:"culpar / responsabilidade"},
-  "費":{readings:["つい","ひ"], meaning:"gastar / custo"},
-  "資":{readings:["し"], meaning:"recurso / capital"},
-  "賛":{readings:["さん"], meaning:"aprovar / apoiar"},
-  "越":{readings:["こ","えつ"], meaning:"atravessar / exceder"},
-  "路":{readings:["みち","ろ"], meaning:"caminho / rota"},
-  "身":{readings:["み","しん"], meaning:"corpo / si mesmo"},
-  "辞":{readings:["や","じ"], meaning:"palavras / renunciar"},
-  "込":{readings:["こ"], meaning:"entrar (misturar) / lotado"},
-  "迎":{readings:["むか","げい"], meaning:"receber /迎"},
-  "返":{readings:["かえ","へん"], meaning:"devolver / retornar"},
-  "迷":{readings:["まよ","めい"], meaning:"perder-se / confuso"},
-  "追":{readings:["お","つい"], meaning:"perseguir"},
-  "退":{readings:["しりぞ","たい"], meaning:"recuar / sair"},
-  "逃":{readings:["に","とう"], meaning:"fugir"},
-  "途":{readings:["と"], meaning:"caminho / meio"},
-  "速":{readings:["はや","そく"], meaning:"rápido"},
-  "連":{readings:["つ","れん"], meaning:"ligar / levar junto"},
-  "進":{readings:["すす","しん"], meaning:"avançar"},
-  "遅":{readings:["おそ","ち"], meaning:"atrasar / lento"},
-  "遊":{readings:["あそ","ゆう"], meaning:"brincar / passear"},
-  "過":{readings:["す","か"], meaning:"passar / excesso"},
-  "達":{readings:["たつ"], meaning:"alcançar / (plural)"},
-  "違":{readings:["ちが","い"], meaning:"diferente / errado"},
-  "遠":{readings:["とお","えん"], meaning:"longe"},
-  "適":{readings:["てき"], meaning:"adequado / apropriado"},
-  "選":{readings:["えら","せん"], meaning:"escolher"},
-  "部":{readings:["ぶ"], meaning:"departamento / parte"},
-  "都":{readings:["と","みやこ"], meaning:"capital / metrópole"},
-  "配":{readings:["くば","はい"], meaning:"distribuir"},
-  "酒":{readings:["さけ","しゅ"], meaning:"álcool / sake"},
-  "閉":{readings:["し","へい"], meaning:"fechar"},
-  "関":{readings:["せき","かん","かか"], meaning:"relacionar / conexão"},
-  "阪":{readings:["はん"], meaning:"declive / Osaka (〜阪)"},
-  "降":{readings:["ふ","こう"], meaning:"cair (chuva/neve) / descer"},
-  "限":{readings:["かぎ","げん"], meaning:"limite"},
-  "除":{readings:["のぞ","じょ"], meaning:"remover / excluir"},
-  "険":{readings:["けわ","けん"], meaning:"perigoso / íngreme"},
-  "陽":{readings:["よう"], meaning:"sol / positivo"},
-  "際":{readings:["さい","きわ"], meaning:"ocasião / fronteira"},
-  "雑":{readings:["ざつ","ぞう"], meaning:"diverso / bagunçado"},
-  "難":{readings:["むずか","なん"], meaning:"difícil"},
-  "雪":{readings:["ゆき","せつ"], meaning:"neve"},
-  "静":{readings:["しず","せい"], meaning:"silencioso / calmo"},
-  "非":{readings:["ひ"], meaning:"negação / injusto"},
-  "面":{readings:["おも","めん"], meaning:"rosto / superfície"},
-  "靴":{readings:["くつ"], meaning:"sapato"},
-  "頂":{readings:["いただ","ちょう"], meaning:"topo / receber (humilde)"},
-  "頭":{readings:["あたま","とう"], meaning:"cabeça"},
-  "頼":{readings:["たよ","らい"], meaning:"confiar / pedir"},
-  "顔":{readings:["かお","がん"], meaning:"rosto"},
-  "願":{readings:["ねが","がん"], meaning:"pedido / desejar"},
-  "類":{readings:["るい"], meaning:"tipo / espécie"},
-  "飛":{readings:["と","ひ"], meaning:"voar"},
-  "首":{readings:["くび","しゅ"], meaning:"pescoço / chefe"},
-  "馬":{readings:["うま","ば"], meaning:"cavalo"},
-  "髪":{readings:["かみ"], meaning:"cabelo"},
-  "鳴":{readings:["な","めい"], meaning:"som / cantar (pássaro)"}
+  "鳥":{readings:["とり","ちょう"], meaning:"pássaro"},"黒":{readings:["くろ","こく"], meaning:"preto"}
 };
 
-function isInfoComplete(k){
-  const i = KANJI_INFO[k];
-  return !!(i && i.meaning && Array.isArray(i.readings) && i.readings.length && i.readings[0] !== "—");
+/* N3: significado PT (leituras carregam via API automaticamente) */
+const N3_MEANING_PT = {
+"与":"dar / conceder","両":"ambos","乗":"montar / embarcar","予":"prévio / antecipado","争":"disputa / brigar","互":"mútuo / um ao outro","亡":"morrer / perder","交":"trocar / cruzar","他":"outro","付":"anexar / adicionar","件":"assunto / item","任":"responsabilidade / encarregar","伝":"transmitir / contar","似":"parecer / semelhante","位":"posição / grau","余":"sobra / restante","例":"exemplo","供":"oferecer / fornecer","便":"conveniência /便","係":"encarregado / relação","信":"confiança / fé","倒":"cair / derrubar","候":"estado / clima","値":"valor / preço","偉":"grandioso / notável","側":"lado","偶":"acaso / par","備":"preparar / equipar","働":"trabalhar","優":"gentil / superior","光":"luz","全":"todo / inteiro","共":"junto / comum","具":"ferramenta","内":"dentro","冷":"frio","処":"lidar / tratar","列":"fila / coluna","初":"primeiro / início","判":"julgar / decidir","利":"benefício / vantagem","到":"chegar","制":"controle / sistema","刻":"entalhar / momento","割":"dividir / proporção","加":"adicionar","助":"ajudar","努":"esforçar-se","労":"trabalho / esforço","務":"dever / tarefa","勝":"vencer","勤":"diligência / trabalhar","化":"transformar / mudança","単":"simples","危":"perigo","原":"origem / campo","参":"participar","反":"oposto / anti-","収":"receber / guardar","取":"pegar","受":"receber / aceitar","可":"possível","号":"número / sinal","合":"combinar / juntar","向":"virar-se / direção","君":"você / senhor","否":"negação","吸":"inspirar / sugar","吹":"soprar","告":"avisar / anunciar","呼":"chamar","命":"vida / ordem","和":"harmonia / Japão","商":"comércio","喜":"alegrar-se","回":"volta / vezes","因":"causa","困":"dificuldade","園":"jardim / parque","在":"existir (em)","報":"relatar / notícia","増":"aumentar","声":"voz","変":"mudar","夢":"sonho","太":"grosso / grande","夫":"marido","失":"perder / falhar","好":"gostar","妻":"esposa","娘":"filha / garota","婚":"casamento","婦":"esposa / senhora","存":"existir / preservar","宅":"casa (resid.)","守":"proteger / guardar","完":"completo","官":"oficial / governo","定":"fixar / decidir","実":"real / verdade","客":"cliente / visita","害":"dano","容":"conteúdo / permitir","宿":"hospedagem / pousada","寄":"aproximar / parar (lugar)","富":"riqueza","寒":"frio","寝":"dormir","察":"perceber / deduzir","対":"contra / par","局":"departamento / situação","居":"residir / estar","差":"diferença","市":"cidade / mercado","師":"mestre / especialista","席":"assento","常":"sempre / normal","平":"plano / paz","幸":"felicidade / sorte","幾":"quantos","座":"assento / sentar","庭":"jardim","式":"cerimônia / fórmula","引":"puxar","当":"acertar / apropriado","形":"forma","役":"papel / serviço","彼":"ele","徒":"discípulo / apenas","得":"obter","御":"honorífico / seu","必":"necessário","忘":"esquecer","忙":"ocupado","念":"pensamento / ideia","怒":"raiva","怖":"medo","性":"natureza / sexo","恐":"temer","恥":"vergonha","息":"respiração / fôlego","悲":"tristeza","情":"sentimento / emoção","想":"imaginar / ideia","愛":"amor","感":"sentir / sensação","慣":"hábito / acostumar","成":"tornar-se / realizar","戦":"guerra / batalha","戻":"voltar","所":"lugar","才":"talento","打":"bater","払":"pagar / varrer","投":"arremessar","折":"dobrar / quebrar","抜":"tirar / arrancar","抱":"abraçar / segurar","押":"empurrar / apertar","招":"convidar","指":"dedo / apontar","捕":"capturar","掛":"pendurar / aplicar","探":"procurar","支":"apoio / pagar","放":"soltar / liberar","政":"política","敗":"derrota","散":"espalhar","数":"número / contar","断":"cortar / decidir","易":"fácil","昔":"antigamente","昨":"ontem (prefixo)","晩":"noite","景":"paisagem / cenário","晴":"ensolarado","暗":"escuro","暮":"anoitecer / viver","曲":"curva / música","更":"mais uma vez / renovar","最":"o mais","望":"desejo / esperança","期":"período / prazo","未":"ainda não","末":"fim","束":"feixe / amarrar","杯":"copo / taça","果":"fruta / resultado","格":"status / padrão","構":"estrutura / montar","様":"modo / senhor","権":"direito / poder","横":"lado / horizontal","機":"máquina / oportunidade","欠":"faltar / defeito","次":"próximo","欲":"desejo","歯":"dente","歳":"idade","残":"restar","段":"degrau / nível","殺":"matar","民":"povo","求":"buscar","決":"decidir","治":"governar / cura","法":"lei / método","泳":"nadar","洗":"lavar","活":"atividade / vida","流":"fluxo","浮":"flutuar","消":"apagar / sumir","深":"profundo","済":"terminar / resolver","渡":"atravessar","港":"porto","満":"cheio","演":"atuar / apresentar","点":"ponto","然":"assim / natural","煙":"fumaça","熱":"calor / febre","犯":"crime / violar","状":"estado / condição","猫":"gato","王":"rei","現":"atual / aparecer","球":"bola / esfera","産":"produzir","由":"razão / origem","申":"dizer (humilde)","留":"ficar / reter","番":"número / vez","疑":"duvidar","疲":"cansar","痛":"dor","登":"subir / registrar","皆":"todos","盗":"roubar","直":"direto / consertar","相":"mútuo / ministro","眠":"sono / dormir","石":"pedra","破":"romper / quebrar","確":"certo / confirmar","示":"mostrar","礼":"agradecer / etiqueta","祖":"ancestral","神":"deus","福":"sorte / bênção","科":"departamento / ciência","程":"grau / medida","種":"tipo / semente","積":"acumular","突":"colidir / súbito","窓":"janela","笑":"rir","等":"etc.","箱":"caixa","米":"arroz / EUA","精":"espírito / refinado","約":"promessa / aproximadamente","組":"grupo / montar","経":"passar / experiência","給":"salário / fornecer","絵":"desenho","絶":"extinguir / absoluto","続":"continuar","緒":"início / estado","罪":"crime / culpa","置":"colocar","美":"beleza","老":"idoso / envelhecer","耳":"orelha","職":"profissão","育":"criar / educar","背":"costas / altura","能":"habilidade","腹":"barriga","舞":"dançar","船":"navio","良":"bom","若":"jovem","苦":"amargo / difícil","草":"grama","落":"cair / cair (queda)","葉":"folha","薬":"remédio","術":"técnica","表":"mostrar / superfície","要":"necessário / ponto-chave","規":"regra / padrão","覚":"lembrar / perceber","観":"observar / visão","解":"resolver / explicar","記":"registrar","訪":"visitar","許":"permitir","認":"reconhecer","誤":"erro / engano","説":"explicar / teoria","調":"investigar / ajustar","談":"conversa","論":"teoria / discutir","識":"conhecimento","警":"polícia / alerta","議":"discutir","負":"perder / carga","財":"riqueza","貧":"pobre","責":"responsabilidade","費":"custo / gasto","資":"recursos","賛":"aprovar","越":"ultrapassar","路":"caminho / rua","身":"corpo","辞":"renunciar / palavra","込":"entrar lotado / incluir","迎":"receber / buscar","返":"devolver","迷":"perder-se","追":"perseguir","退":"retirar-se","逃":"fugir","途":"caminho / meio","速":"rápido","連":"levar junto / conectar","進":"avançar","遅":"atrasar","遊":"brincar","過":"excesso / passar","達":"alcançar","違":"diferente / errado","遠":"longe","適":"adequado","選":"escolher","部":"departamento","都":"capital / metrópole","配":"distribuir","酒":"álcool / bebida","閉":"fechar","関":"relacionar / barreira","阪":"Osaka (阪)","降":"cair (chuva) / descer","限":"limite","除":"remover / excluir","険":"perigoso","陽":"sol / positivo","際":"ocasião / fronteira","雑":"mistura /杂","難":"difícil","雪":"neve","静":"silencioso","非":"não / negativo","面":"rosto / superfície","靴":"sapato","頂":"topo / receber","頭":"cabeça","頼":"contar com / pedir","顔":"rosto","願":"pedido / desejar","類":"tipo / categoria","飛":"voar","首":"pescoço","馬":"cavalo","髪":"cabelo","鳴":"som / cantar"
+};
+
+/* injeta N3 no KANJI_INFO com meaning PT */
+for(const k of N3_LIST){
+  if(!KANJI_INFO[k]){
+    KANJI_INFO[k] = { readings: [], meaning: N3_MEANING_PT[k] || "—" };
+  }
 }
 
 /* =========================
-   VOCAB DB (3 por kanji) — N5+N4 (N3 NÃO PRECISA)
-   formato: ["palavra","leitura","significado"]
+   CARREGAR LEITURAS (N3) via KanjiAPI.dev
+   cache localStorage para não ficar lento
+========================= */
+const KANJI_CACHE_KEY = "vampire_kanjiapi_cache_v1";
+let kanjiCache = {};
+(function(){
+  try{
+    const raw = localStorage.getItem(KANJI_CACHE_KEY);
+    kanjiCache = raw ? JSON.parse(raw) : {};
+  }catch{ kanjiCache = {}; }
+})();
+
+function saveKanjiCache(){
+  try{ localStorage.setItem(KANJI_CACHE_KEY, JSON.stringify(kanjiCache)); }catch{}
+}
+
+function toHiragana(s){
+  return (s||"").replace(/[\u30A1-\u30F6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+}
+
+async function ensureKanjiReadingsLoaded(kanji){
+  const info = KANJI_INFO[kanji];
+  if(!info) return;
+
+  if(Array.isArray(info.readings) && info.readings.length && info.readings[0] !== "—") return;
+
+  if(kanjiCache[kanji]?.readings?.length){
+    info.readings = kanjiCache[kanji].readings;
+    if(!info.meaning || info.meaning==="—") info.meaning = kanjiCache[kanji].meaning || info.meaning;
+    return;
+  }
+
+  try{
+    const url = `https://kanjiapi.dev/v1/kanji/${encodeURIComponent(kanji)}`;
+    const res = await fetch(url, { cache:"force-cache" });
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+
+    const on = (data.on_readings||[]).map(toHiragana);
+    const kun = (data.kun_readings||[]).map(toHiragana);
+    const readings = [...new Set([...kun, ...on])].filter(Boolean);
+    const fallbackMeaning = (data.meanings||[])[0] || "";
+
+    if(readings.length) info.readings = readings;
+    else info.readings = ["—"];
+
+    // meaning PT já está no objeto N3_MEANING_PT; se não existir, usa fallback EN
+    if((!info.meaning || info.meaning==="—") && fallbackMeaning) info.meaning = fallbackMeaning;
+
+    kanjiCache[kanji] = { readings: info.readings, meaning: info.meaning };
+    saveKanjiCache();
+  }catch{
+    // não quebra o site
+    info.readings = info.readings && info.readings.length ? info.readings : ["—"];
+  }
+}
+
+function isInfoComplete(k){
+  const i = KANJI_INFO[k];
+  if(!i || !i.meaning) return false;
+  // N3 pode ter leituras carregando, então não bloqueia
+  if(levelOf(k) === "N3") return true;
+  return Array.isArray(i.readings) && i.readings.length && i.readings[0] !== "—";
+}
+
+/* =========================
+   VOCAB DB (3 por kanji) — N5 + N4 (no jogo)
+   N3: sem vocabulário
 ========================= */
 const VOCAB_DB = {
   /* N5 */
@@ -1507,13 +1262,174 @@ const VOCAB_DB = {
   "食":[["食べる","たべる","comer"],["食事","しょくじ","refeição"],["朝食","ちょうしょく","café da manhã"]],
   "高":[["高い","たかい","alto / caro"],["高校","こうこう","ensino médio"],["最高","さいこう","o melhor"]],
 
-  /* N4+ (mantido como estava) ... */
-  /* (O VOCAB_DB é longo e foi mantido como seu arquivo já tinha.
-     Para não quebrar nada, ele continua igual — com N5+N4.
-     (A correção: 知識 = ちしき foi aplicada abaixo.) */
-
-  /* ==== CORREÇÃO (sem erro): leitura de 知識 ==== */
-  "知":[["知る","しる","saber"],["知らせる","しらせる","avisar"],["知識","ちしき","conhecimento"]]
+  /* N4 (já no modelo do N5: 3 itens por kanji) */
+  "不":[["不安","ふあん","ansiedade / insegurança"],["不便","ふべん","inconveniente"],["不思議","ふしぎ","estranho / misterioso"]],
+  "世":[["世界","せかい","mundo"],["世話","せわ","cuidado / ajuda"],["世の中","よのなか","a sociedade"]],
+  "主":[["主人","しゅじん","marido / dono"],["主に","おもに","principalmente"],["主役","しゅやく","protagonista"]],
+  "事":[["仕事","しごと","trabalho"],["用事","ようじ","assunto a resolver"],["大事","だいじ","importante"]],
+  "京":[["東京","とうきょう","Tóquio"],["京都","きょうと","Kyoto"],["上京","じょうきょう","ir para a capital"]],
+  "仕":[["仕事","しごと","trabalho"],["仕方","しかた","jeito / modo"],["仕上げる","しあげる","finalizar (um trabalho)"]],
+  "代":[["時代","じだい","era"],["代わり","かわり","substituto / em vez de"],["代表","だいひょう","representante"]],
+  "以":[["以上","いじょう","acima / mais que"],["以内","いない","dentro de"],["以外","いがい","exceto"]],
+  "会":[["会社","かいしゃ","empresa"],["会う","あう","encontrar"],["会議","かいぎ","reunião"]],
+  "住":[["住む","すむ","morar"],["住所","じゅうしょ","endereço"],["住民","じゅうみん","moradores"]],
+  "体":[["体","からだ","corpo"],["体重","たいじゅう","peso corporal"],["全体","ぜんたい","o todo / geral"]],
+  "作":[["作る","つくる","fazer / criar"],["作文","さくぶん","redação"],["作品","さくひん","obra / trabalho"]],
+  "使":[["使う","つかう","usar"],["使える","つかえる","poder usar / ser utilizável"],["使い方","つかいかた","modo de usar"]],
+  "借":[["借りる","かりる","pegar emprestado"],["借金","しゃっきん","dívida"],["借りる","かりる","alugar / pegar emprestado"]],
+  "元":[["元気","げんき","bem / saudável"],["元々","もともと","originalmente"],["元の","もとの","de antes"]],
+  "兄":[["兄","あに","irmão mais velho"],["お兄さん","おにいさん","irmão (educado)"],["兄弟","きょうだい","irmãos"]],
+  "公":[["公園","こうえん","parque"],["公共","こうきょう","público (serviço)"],["公平","こうへい","justo / imparcial"]],
+  "写":[["写真","しゃしん","foto"],["写す","うつす","copiar / fotografar"],["写る","うつる","aparecer na foto"]],
+  "冬":[["冬","ふゆ","inverno"],["冬休み","ふゆやすみ","férias de inverno"],["冬服","ふゆふく","roupa de inverno"]],
+  "切":[["切る","きる","cortar"],["切手","きって","selo"],["大切","たいせつ","importante"]],
+  "別":[["別れる","わかれる","se separar"],["別々","べつべつ","separadamente"],["特別","とくべつ","especial"]],
+  "力":[["力","ちから","força"],["努力","どりょく","esforço"],["体力","たいりょく","condicionamento"]],
+  "勉":[["勉強","べんきょう","estudo"],["勉強する","べんきょうする","estudar"],["勉強中","べんきょうちゅう","estudando"]],
+  "動":[["動く","うごく","mover"],["動物","どうぶつ","animal"],["運動","うんどう","exercício"]],
+  "医":[["医者","いしゃ","médico"],["医学","いがく","medicina (área)"],["医院","いいん","clínica"]],
+  "去":[["去年","きょねん","ano passado"],["過去","かこ","passado"],["去る","さる","ir embora / passar"]],
+  "口":[["入口","いりぐち","entrada"],["出口","でぐち","saída"],["人口","じんこう","população"]],
+  "古":[["古い","ふるい","antigo"],["中古","ちゅうこ","usado (produto)"],["古本","ふるほん","livro usado"]],
+  "台":[["台所","だいどころ","cozinha"],["台風","たいふう","tufão"],["一台","いちだい","1 unidade (máquina/veículo)"]],
+  "同":[["同じ","おなじ","igual"],["同時","どうじ","ao mesmo tempo"],["同意","どうい","consentimento"]],
+  "味":[["味","あじ","sabor"],["意味","いみ","significado"],["趣味","しゅみ","hobby"]],
+  "品":[["商品","しょうひん","produto (loja)"],["品物","しなもの","mercadoria"],["部品","ぶひん","peça (componente)"]],
+  "員":[["店員","てんいん","funcionário (loja)"],["社員","しゃいん","empregado"],["銀行員","ぎんこういん","bancário"]],
+  "問":[["問題","もんだい","problema / questão"],["質問","しつもん","pergunta"],["問い合わせ","といあわせ","consulta / contato"]],
+  "図":[["地図","ちず","mapa"],["図書館","としょかん","biblioteca"],["合図","あいず","sinal"]],
+  "地":[["地下鉄","ちかてつ","metrô"],["地元","じもと","região natal"],["地球","ちきゅう","Terra (planeta)"]],
+  "堂":[["食堂","しょくどう","refeitório"],["本堂","ほんどう","salão principal (templo)"],["講堂","こうどう","auditório"]],
+  "場":[["場所","ばしょ","lugar"],["場合","ばあい","no caso de"],["工場","こうじょう","fábrica"]],
+  "売":[["売る","うる","vender"],["売り場","うりば","seção (loja)"],["売店","ばいてん","quiosque"]],
+  "夏":[["夏","なつ","verão"],["夏休み","なつやすみ","férias de verão"],["夏服","なつふく","roupa de verão"]],
+  "夕":[["夕方","ゆうがた","fim de tarde"],["夕食","ゆうしょく","jantar"],["夕日","ゆうひ","pôr do sol"]],
+  "多":[["多い","おおい","muitos"],["多分","たぶん","talvez"],["多数","たすう","grande número"]],
+  "夜":[["夜","よる","noite"],["今夜","こんや","esta noite"],["夜中","よなか","madrugada"]],
+  "妹":[["妹","いもうと","irmã mais nova"],["姉妹","しまい","irmãs"],["妹さん","いもうとさん","sua irmã mais nova"]],
+  "姉":[["姉","あね","irmã mais velha"],["お姉さん","おねえさん","irmã / moça"],["姉妹","しまい","irmãs"]],
+  "始":[["始める","はじめる","começar (algo)"],["始まる","はじまる","começar (iniciar)"],["開始","かいし","início"]],
+  "字":[["漢字","かんじ","kanji"],["文字","もじ","letra / caractere"],["字","じ","caractere"]],
+  "安":[["安い","やすい","barato"],["安心","あんしん","alívio / seguro"],["安全","あんぜん","segurança"]],
+  "室":[["教室","きょうしつ","sala de aula"],["寝室","しんしつ","quarto"],["研究室","けんきゅうしつ","laboratório"]],
+  "家":[["家","いえ","casa"],["家族","かぞく","família"],["家庭","かてい","lar"]],
+  "少":[["少し","すこし","um pouco"],["少ない","すくない","pouco (quantidade)"],["少年","しょうねん","garoto"]],
+  "屋":[["部屋","へや","quarto"],["本屋","ほんや","livraria"],["花屋","はなや","floricultura"]],
+  "工":[["工場","こうじょう","fábrica"],["工事","こうじ","obra (construção)"],["工業","こうぎょう","indústria"]],
+  "帰":[["帰る","かえる","voltar"],["帰国","きこく","retornar ao país"],["帰り","かえり","volta"]],
+  "広":[["広い","ひろい","amplo"],["広告","こうこく","propaganda"],["広場","ひろば","praça"]],
+  "店":[["店","みせ","loja"],["店員","てんいん","funcionário"],["喫茶店","きっさてん","cafeteria"]],
+  "度":[["一度","いちど","uma vez"],["今度","こんど","da próxima vez"],["温度","おんど","temperatura"]],
+  "建":[["建てる","たてる","construir"],["建物","たてもの","prédio"],["建設","けんせつ","construção"]],
+  "弟":[["弟","おとうと","irmão mais novo"],["兄弟","きょうだい","irmãos"],["弟さん","おとうとさん","seu irmão mais novo"]],
+  "強":[["強い","つよい","forte"],["強風","きょうふう","vento forte"],["勉強","べんきょう","estudo"]],
+  "待":[["待つ","まつ","esperar"],["待ち合わせ","まちあわせ","encontro marcado"],["期待","きたい","expectativa"]],
+  "心":[["心","こころ","coração / mente"],["心配","しんぱい","preocupação"],["安心","あんしん","alívio"]],
+  "思":[["思う","おもう","pensar / achar"],["思い出","おもいで","lembrança"],["思い","おもい","sentimento"]],
+  "急":[["急ぐ","いそぐ","apressar"],["急に","きゅうに","de repente"],["急行","きゅうこう","expresso"]],
+  "悪":[["悪い","わるい","ruim"],["悪口","わるくち","falar mal"],["最悪","さいあく","péssimo"]],
+  "意":[["意味","いみ","significado"],["注意","ちゅうい","atenção"],["意見","いけん","opinião"]],
+  "手":[["手","て","mão"],["手紙","てがみ","carta"],["上手","じょうず","habilidoso"]],
+  "持":[["持つ","もつ","segurar / ter"],["持ち物","もちもの","pertences"],["持って行く","もっていく","levar"]],
+  "教":[["教える","おしえる","ensinar"],["教室","きょうしつ","sala de aula"],["教科書","きょうかしょ","livro didático"]],
+  "文":[["文法","ぶんぽう","gramática"],["文章","ぶんしょう","texto"],["作文","さくぶん","redação"]],
+  "料":[["料理","りょうり","cozinha / prato"],["料金","りょうきん","tarifa"],["資料","しりょう","material / dados"]],
+  "新":[["新しい","あたらしい","novo"],["新聞","しんぶん","jornal"],["新年","しんねん","ano novo"]],
+  "方":[["方法","ほうほう","método"],["〜の方","〜のほう","lado de / direção"],["夕方","ゆうがた","fim de tarde"]],
+  "旅":[["旅行","りょこう","viagem"],["旅館","りょかん","ryokan (pousada)"],["旅","たび","jornada"]],
+  "族":[["家族","かぞく","família"],["親族","しんぞく","parentes"],["民族","みんぞく","povo / etnia"]],
+  "早":[["早い","はやい","cedo / rápido"],["早く","はやく","rápido"],["早起き","はやおき","acordar cedo"]],
+  "明":[["明るい","あかるい","claro / alegre"],["説明","せつめい","explicação"],["明日","あした","amanhã"]],
+  "映":[["映画","えいが","filme"],["映る","うつる","aparecer / refletir"],["映す","うつす","projetar"]],
+  "春":[["春","はる","primavera"],["春休み","はるやすみ","férias de primavera"],["春風","はるかぜ","brisa da primavera"]],
+  "昼":[["昼","ひる","meio-dia / dia"],["昼ご飯","ひるごはん","almoço"],["昼休み","ひるやすみ","intervalo do almoço"]],
+  "曜":[["曜日","ようび","dia da semana"],["何曜日","なんようび","que dia da semana?"],["月曜日","げつようび","segunda-feira"]],
+  "有":[["有名","ゆうめい","famoso"],["有料","ゆうりょう","pago"],["有る","ある","existir / ter"]],
+  "服":[["服","ふく","roupa"],["洋服","ようふく","roupa (ocidental)"],["制服","せいふく","uniforme"]],
+  "朝":[["朝","あさ","manhã"],["朝ご飯","あさごはん","café da manhã"],["朝日","あさひ","sol da manhã"]],
+  "業":[["授業","じゅぎょう","aula"],["営業","えいぎょう","negócio / atendimento"],["工業","こうぎょう","indústria"]],
+  "楽":[["楽しい","たのしい","divertido"],["音楽","おんがく","música"],["楽","らく","confortável"]],
+  "歌":[["歌","うた","canção"],["歌う","うたう","cantar"],["歌手","かしゅ","cantor"]],
+  "止":[["止まる","とまる","parar"],["止める","とめる","parar (algo)"],["禁止","きんし","proibido"]],
+  "正":[["正しい","ただしい","correto"],["正月","しょうがつ","ano novo (JP)"],["正直","しょうじき","honesto"]],
+  "歩":[["歩く","あるく","andar"],["散歩","さんぽ","passeio"],["歩道","ほどう","calçada"]],
+  "死":[["死ぬ","しぬ","morrer"],["死亡","しぼう","falecimento"],["死者","ししゃ","falecido"]],
+  "注":[["注意","ちゅうい","atenção"],["注文","ちゅうもん","pedido"],["注ぐ","そそぐ","despejar"]],
+  "洋":[["洋服","ようふく","roupa (ocidental)"],["洋食","ようしょく","comida ocidental"],["西洋","せいよう","ocidente"]],
+  "海":[["海","うみ","mar"],["海外","かいがい","exterior"],["海水","かいすい","água do mar"]],
+  "漢":[["漢字","かんじ","kanji"],["漢語","かんご","termo sino-japonês"],["漢文","かんぶん","texto clássico"]],
+  "牛":[["牛乳","ぎゅうにゅう","leite"],["牛肉","ぎゅうにく","carne bovina"],["牛","うし","vaca"]],
+  "物":[["物","もの","coisa"],["買い物","かいもの","compras"],["動物","どうぶつ","animal"]],
+  "特":[["特に","とくに","especialmente"],["特別","とくべつ","especial"],["特急","とっきゅう","trem expresso"]],
+  "犬":[["犬","いぬ","cachorro"],["子犬","こいぬ","filhote"],["犬小屋","いぬごや","casinha do cachorro"]],
+  "理":[["理由","りゆう","motivo"],["料理","りょうり","culinária"],["理科","りか","ciências"]],
+  "用":[["用事","ようじ","assunto a resolver"],["利用","りよう","uso"],["〜用","〜よう","para (finalidade)"]],
+  "田":[["田舎","いなか","interior"],["田んぼ","たんぼ","arrozal"],["田中","たなか","Tanaka (sobrenome)"]],
+  "町":[["町","まち","cidade / bairro"],["町中","まちなか","no centro"],["町役場","まちやくば","prefeitura"]],
+  "画":[["映画","えいが","filme"],["漫画","まんが","mangá"],["画面","がめん","tela"]],
+  "界":[["世界","せかい","mundo"],["業界","ぎょうかい","setor (indústria)"],["境界","きょうかい","fronteira"]],
+  "病":[["病気","びょうき","doença"],["病院","びょういん","hospital"],["看病","かんびょう","cuidar do doente"]],
+  "発":[["出発","しゅっぱつ","partida"],["発音","はつおん","pronúncia"],["発明","はつめい","invenção"]],
+  "的":[["目的","もくてき","objetivo"],["基本的","きほんてき","básico"],["具体的","ぐたいてき","concreto"]],
+  "目":[["目","め","olho"],["目的","もくてき","objetivo"],["目薬","めぐすり","colírio"]],
+  "真":[["写真","しゃしん","foto"],["真面目","まじめ","sério"],["真っ白","まっしろ","branco puro"]],
+  "着":[["着る","きる","vestir"],["着く","つく","chegar"],["上着","うわぎ","casaco"]],
+  "知":[["知る","しる","saber"],["知らせる","しらせる","avisar"],["知識","ちしき","conhecimento"]],
+  "研":[["研究","けんきゅう","pesquisa"],["研究室","けんきゅうしつ","laboratório"],["研修","けんしゅう","treinamento"]],
+  "社":[["会社","かいしゃ","empresa"],["社会","しゃかい","sociedade"],["本社","ほんしゃ","sede"]],
+  "私":[["私","わたし","eu"],["私立","しりつ","privado (instituição)"],["私生活","しせいかつ","vida pessoal"]],
+  "秋":[["秋","あき","outono"],["秋風","あきかぜ","vento do outono"],["秋休み","あきやすみ","folga de outono"]],
+  "究":[["研究","けんきゅう","pesquisa"],["究明","きゅうめい","esclarecer"],["追究","ついきゅう","investigar a fundo"]],
+  "空":[["空","そら","céu"],["空気","くうき","ar"],["空港","くうこう","aeroporto"]],
+  "立":[["立つ","たつ","ficar em pé"],["立てる","たてる","erguer"],["独立","どくりつ","independência"]],
+  "答":[["答える","こたえる","responder"],["答え","こたえ","resposta"],["回答","かいとう","resposta (formal)"]],
+  "紙":[["紙","かみ","papel"],["手紙","てがみ","carta"],["用紙","ようし","formulário / folha"]],
+  "終":[["終わる","おわる","terminar"],["最終","さいしゅう","final"],["終電","しゅうでん","último trem"]],
+  "習":[["習う","ならう","aprender"],["練習","れんしゅう","prática"],["習慣","しゅうかん","hábito"]],
+  "考":[["考える","かんがえる","pensar"],["参考","さんこう","referência"],["考え","かんがえ","ideia"]],
+  "者":[["医者","いしゃ","médico"],["若者","わかもの","jovens"],["旅行者","りょこうしゃ","viajante"]],
+  "肉":[["肉","にく","carne"],["牛肉","ぎゅうにく","carne bovina"],["肉屋","にくや","açougue"]],
+  "自":[["自分","じぶん","eu mesmo"],["自転車","じてんしゃ","bicicleta"],["自動車","じどうしゃ","automóvel"]],
+  "色":[["色","いろ","cor"],["色々","いろいろ","vários"],["茶色","ちゃいろ","marrom"]],
+  "花":[["花","はな","flor"],["花火","はなび","fogos"],["花屋","はなや","floricultura"]],
+  "英":[["英語","えいご","inglês"],["英会話","えいかいわ","conversação em inglês"],["英文","えいぶん","texto em inglês"]],
+  "茶":[["お茶","おちゃ","chá"],["茶色","ちゃいろ","marrom"],["喫茶店","きっさてん","cafeteria"]],
+  "親":[["両親","りょうしん","pais"],["親切","しんせつ","gentil"],["親しい","したしい","íntimo"]],
+  "言":[["言う","いう","dizer"],["言葉","ことば","palavra"],["発言","はつげん","declaração"]],
+  "計":[["時計","とけい","relógio"],["計画","けいかく","plano"],["合計","ごうけい","total"]],
+  "試":[["試験","しけん","prova"],["試す","ためす","testar"],["試合","しあい","partida (esporte)"]],
+  "買":[["買う","かう","comprar"],["買い物","かいもの","compras"],["買い手","かいて","comprador"]],
+  "貸":[["貸す","かす","emprestar (dar)"],["貸し出す","かしだす","emprestar (serviço)"],["貸家","かしや","casa para alugar"]],
+  "質":[["質問","しつもん","pergunta"],["品質","ひんしつ","qualidade"],["性質","せいしつ","característica / natureza"]],
+  "赤":[["赤い","あかい","vermelho"],["赤","あか","vermelho"],["赤ちゃん","あかちゃん","bebê"]],
+  "走":[["走る","はしる","correr"],["競走","きょうそう","corrida"],["走り方","はしりかた","jeito de correr"]],
+  "起":[["起きる","おきる","acordar"],["起こす","おこす","acordar alguém"],["起こる","おこる","acontecer"]],
+  "足":[["足","あし","pé"],["足りる","たりる","ser suficiente"],["足す","たす","somar / adicionar"]],
+  "転":[["自転車","じてんしゃ","bicicleta"],["転ぶ","ころぶ","cair / tropeçar"],["運転","うんてん","dirigir"]],
+  "近":[["近い","ちかい","perto"],["最近","さいきん","recentemente"],["近所","きんじょ","vizinhança"]],
+  "送":[["送る","おくる","enviar"],["放送","ほうそう","transmissão"],["送料","そうりょう","frete"]],
+  "通":[["通る","とおる","passar"],["通う","かよう","frequentar (ir sempre)"],["普通","ふつう","normal / comum"]],
+  "週":[["今週","こんしゅう","esta semana"],["毎週","まいしゅう","toda semana"],["週末","しゅうまつ","fim de semana"]],
+  "運":[["運動","うんどう","exercício"],["運転","うんてん","dirigir"],["運ぶ","はこぶ","transportar"]],
+  "道":[["道","みち","caminho"],["道路","どうろ","estrada"],["道具","どうぐ","ferramenta"]],
+  "重":[["重い","おもい","pesado"],["重要","じゅうよう","importante"],["体重","たいじゅう","peso corporal"]],
+  "野":[["野菜","やさい","legumes"],["野球","やきゅう","beisebol"],["野原","のはら","campo aberto"]],
+  "銀":[["銀行","ぎんこう","banco"],["銀","ぎん","prata"],["銀色","ぎんいろ","cor prata"]],
+  "開":[["開ける","あける","abrir (algo)"],["開く","あく","abrir (intrans.)"],["開始","かいし","início"]],
+  "院":[["病院","びょういん","hospital"],["入院","にゅういん","internação"],["学院","がくいん","instituto"]],
+  "集":[["集める","あつめる","juntar"],["集まる","あつまる","reunir-se"],["集合","しゅうごう","reunião / juntar"]],
+  "青":[["青い","あおい","azul"],["青","あお","azul"],["青空","あおぞら","céu azul"]],
+  "音":[["音","おと","som"],["音楽","おんがく","música"],["発音","はつおん","pronúncia"]],
+  "題":[["宿題","しゅくだい","lição de casa"],["題名","だいめい","título"],["問題","もんだい","questão"]],
+  "風":[["風","かぜ","vento"],["台風","たいふう","tufão"],["扇風機","せんぷうき","ventilador"]],
+  "飯":[["ご飯","ごはん","arroz / refeição"],["朝ご飯","あさごはん","café da manhã"],["夕飯","ゆうはん","jantar (refeição)"]],
+  "飲":[["飲む","のむ","beber"],["飲み物","のみもの","bebida"],["飲み会","のみかい","encontro pra beber"]],
+  "館":[["図書館","としょかん","biblioteca"],["映画館","えいがかん","cinema"],["体育館","たいいくかん","ginásio"]],
+  "駅":[["駅","えき","estação"],["駅前","えきまえ","em frente à estação"],["最寄り駅","もよりえき","estação mais próxima"]],
+  "験":[["試験","しけん","prova"],["経験","けいけん","experiência"],["受験","じゅけん","fazer prova (vestibular)"]],
+  "魚":[["魚","さかな","peixe"],["金魚","きんぎょ","peixe dourado"],["魚屋","さかなや","peixaria"]],
+  "鳥":[["鳥","とり","pássaro"],["小鳥","ことり","passarinho"],["焼き鳥","やきとり","yakitori"]],
+  "黒":[["黒い","くろい","preto"],["黒","くろ","preto"],["黒板","こくばん","lousa"]]
 };
 
 /* =========================
@@ -1552,9 +1468,6 @@ function poolByLevel(level){
   if(level === "N4") return all.filter(k=>N4_SET.has(k));
   if(level === "N3") return all.filter(k=>N3_SET.has(k));
   return all;
-}
-function toHiragana(s){
-  return (s||"").replace(/[\u30A1-\u30F6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 }
 function normalizeSearch(s){
   return toHiragana((s||"").trim().toLowerCase());
@@ -1761,6 +1674,9 @@ async function showKanjiDetail(k, autoScroll){
   kdEmpty.style.display="none";
   kdBox.style.display="block";
 
+  // garante leituras para N3
+  await ensureKanjiReadingsLoaded(k);
+
   const info = safeInfo(k);
   const lvl = levelOf(k);
 
@@ -1799,7 +1715,8 @@ $("kdTrain").addEventListener("click", ()=>{
 const LS_KEY = "vampire_kanji_quiz_ptbr_v3_n3";
 const LS_REVIEW = "vampire_kanji_review_queue_v4_n3";
 
-const BUILD_ID = "2025-12-28-v5-n3";
+/* RESET de revisão quando o site é atualizado (build id) */
+const BUILD_ID = "2025-12-28-v5-N3";
 const BUILD_KEY = "vampire_build_id";
 (function(){
   try{
@@ -1930,7 +1847,8 @@ const quizState = {
   lockedAfterResult: false,
   lastPick: null,
 
-  mode: "normal",
+  mode: "normal", // "normal" | "review"
+
   startedOnce: false
 };
 
@@ -1985,7 +1903,10 @@ function updateBests(){
 function readingText(k){ return safeInfo(k).readings.join(" / "); }
 function meaningText(k){ return safeInfo(k).meaning; }
 
-function buildChoices(kind, correctKanji, pool){
+async function buildChoices(kind, correctKanji, pool){
+  // garante leituras para o kanji correto (especialmente N3)
+  if(kind === "reading") await ensureKanjiReadingsLoaded(correctKanji);
+
   const poolOthers = pool.filter(k => k !== correctKanji);
   const correctText = (kind === "reading") ? readingText(correctKanji) : meaningText(correctKanji);
 
@@ -1994,19 +1915,26 @@ function buildChoices(kind, correctKanji, pool){
   const shuffled = shuffle(poolOthers);
 
   for(const k of shuffled){
+    if(kind === "reading") await ensureKanjiReadingsLoaded(k);
+
     const t = (kind === "reading") ? readingText(k) : meaningText(k);
-    if(!t || used.has(t)) continue;
+    if(!t || used.has(t) || t==="—") continue;
     used.add(t);
     picks.push({ text: t, correct: false });
     if(picks.length === 4) break;
   }
 
-  while(picks.length < 4){
-    const k = poolOthers[Math.floor(Math.random() * poolOthers.length)];
-    const t = (kind === "reading") ? readingText(k) : meaningText(k);
-    if(!t || used.has(t)) continue;
-    used.add(t);
-    picks.push({ text: t, correct: false });
+  // fallback robusto: se faltou, usa pool ALL N5/N4 (já completos)
+  if(picks.length < 4){
+    const fallbackPool = poolByLevel("ALL").filter(x=> levelOf(x)!=="N3");
+    const shuffled2 = shuffle(fallbackPool);
+    for(const k of shuffled2){
+      const t = (kind === "reading") ? readingText(k) : meaningText(k);
+      if(!t || used.has(t) || t==="—") continue;
+      used.add(t);
+      picks.push({ text: t, correct: false });
+      if(picks.length === 4) break;
+    }
   }
 
   return shuffle(picks);
@@ -2092,7 +2020,7 @@ function pickKanji(pool){
 }
 
 /* =========================
-   TIMER
+   TIMER (só roda após Start)
 ========================= */
 function updateTimerUI(){
   const leftSec = Math.max(0, Math.ceil(quizState.timeLeftMs/1000));
@@ -2129,22 +2057,23 @@ function startTimer(reset){
 }
 
 /* =========================
-   VOCAB (3) — N3 NÃO MOSTRA
+   VOCAB (3) — N5 e N4 (igual modelo). N3 NÃO TEM.
 ========================= */
 function getVocab3ForKanji(kanji){
+  const lvl = levelOf(kanji);
+  if(lvl === "N3") return [];
   const arr = VOCAB_DB[kanji];
   if(Array.isArray(arr) && arr.length >= 3) return arr.slice(0,3);
   return [];
 }
+
 function renderVocab3(kanji){
   const lvl = levelOf(kanji);
-
-  // N3: sem vocabulário (conforme pedido)
   if(lvl === "N3"){
-    quizVocabLvl.textContent = "N3";
+    quizVocabLvl.textContent = lvl;
     quizVocabStatus.textContent = "N3: sem vocabulário";
-    quizVocabList.innerHTML = `<div class="small">N3 não precisa de vocabulário aqui.</div>`;
-    quizVocabBox.style.display = "none";
+    quizVocabList.innerHTML = `<div class="small">N3 não exibe vocabulário no jogo (como você pediu).</div>`;
+    quizVocabBox.style.display = "block";
     return;
   }
 
@@ -2182,18 +2111,22 @@ function renderVocab3(kanji){
 ========================= */
 let quizSvgEl = null;
 
-function setQuestion(kanji){
+async function setQuestion(kanji){
   if(!kanji || typeof kanji !== "string") kanji = "一";
   quizState.current = kanji;
   quizKanji.textContent = kanji;
 
   resetQuestionState();
 
+  // prepara UI enquanto carrega leituras N3
+  readingChoices.innerHTML = `<div class="small">Carregando opções...</div>`;
+  meaningChoices.innerHTML = `<div class="small">Carregando opções...</div>`;
+
   const pool = getQuizPool();
   const safePool = (pool && pool.length >= 6) ? pool : poolByLevel("ALL");
 
-  const rOpts = buildChoices("reading", kanji, safePool);
-  const mOpts = buildChoices("meaning", kanji, safePool);
+  const rOpts = await buildChoices("reading", kanji, safePool);
+  const mOpts = await buildChoices("meaning", kanji, safePool);
 
   renderChoiceButtons(readingChoices, rOpts, (ok)=>{
     quizState.answeredReading = true;
@@ -2216,10 +2149,10 @@ function setQuestion(kanji){
   else if(quizAuto.checked && quizState.startedOnce) startTimer(true);
 }
 
-function nextQuestion(){
+async function nextQuestion(){
   const pool = getQuizPool();
   const k = pickKanji(pool && pool.length ? pool : poolByLevel("ALL"));
-  setQuestion(k);
+  await setQuestion(k);
 }
 
 /* =========================
@@ -2227,6 +2160,8 @@ function nextQuestion(){
 ========================= */
 async function showFeedback(okAll, reason){
   const k = quizState.current;
+
+  await ensureKanjiReadingsLoaded(k);
   const info = safeInfo(k);
 
   quizFeedback.style.display = "block";
@@ -2314,7 +2249,7 @@ function updateReviewUI(){
 
 let reviewBusy = false;
 
-function toggleReview(){
+async function toggleReview(){
   if(reviewBusy) return;
   reviewBusy = true;
 
@@ -2340,7 +2275,7 @@ function toggleReview(){
     }
 
     updateReviewUI();
-    nextQuestion();
+    await nextQuestion();
   } finally {
     setTimeout(()=>{ reviewBusy = false; }, 220);
   }
@@ -2377,13 +2312,13 @@ $("quizPause").addEventListener("click", ()=>{
   if(quizState.running) stopTimer();
   else startTimer(false);
 });
-$("quizNext").addEventListener("click", ()=>{
+$("quizNext").addEventListener("click", async ()=>{
   quizState.startedOnce = true;
-  nextQuestion();
+  await nextQuestion();
   updateRightPanel();
   saveStats();
 });
-$("quizReset").addEventListener("click", ()=>{
+$("quizReset").addEventListener("click", async ()=>{
   stopTimer();
   quizState.sessionCorrect = 0;
   quizState.sessionWrong = 0;
@@ -2393,7 +2328,7 @@ $("quizReset").addEventListener("click", ()=>{
   saveStats();
   flash("bad");
   quizState.startedOnce = false;
-  setQuestion("一");
+  await setQuestion("一");
 });
 
 quizTime.addEventListener("change", ()=>{
@@ -2410,20 +2345,20 @@ quizSpeed.addEventListener("change", ()=>{
   if(!quizSvgEl) return;
   animateStrokeOrder(quizSvgEl, Number(quizSpeed.value));
 });
-quizLevel.addEventListener("change", ()=>{
-  nextQuestion();
+quizLevel.addEventListener("change", async ()=>{
+  await nextQuestion();
 });
 
 /* =========================
    INIT
 ========================= */
-function init(){
+async function init(){
   renderKanjiGrid();
   updateRightPanel();
   applyMood();
   updateScoreUI();
   updateReviewUI();
-  setQuestion("一");
+  await setQuestion("一"); // não inicia timer aqui
 }
 init();
 
