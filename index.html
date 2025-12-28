@@ -157,6 +157,7 @@ nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content
   align-items:center;
   gap:8px;
   white-space:nowrap;
+  text-decoration:none;
 }
 .btn:hover{ background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.38); }
 .btn:active{ transform: translateY(1px); }
@@ -170,6 +171,19 @@ nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content
 .btn.ghost{
   border-color: rgba(255,255,255,.18);
   background: rgba(255,255,255,.06);
+}
+
+/* =========================
+   (NOVO) BOTÃO — ANÁLISE DE TEXTO
+========================= */
+.btn.linkout{
+  border-color: hsla(var(--themeHue), 90%, 60%, .55);
+  background: rgba(255,255,255,.10);
+}
+.btn.linkout .dot{
+  width:8px; height:8px; border-radius:50%;
+  background: hsla(var(--themeHue), 90%, 60%, .95);
+  box-shadow: 0 0 18px hsla(var(--themeHue), 90%, 60%, .35);
 }
 
 select{
@@ -707,6 +721,11 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
     <nav>
       <div class="tabbtn active" id="tab-kanji">🈶 Kanji</div>
       <div class="tabbtn" id="tab-quiz">🎮 Jogo</div>
+
+      <!-- ✅ (NOVO) LINK PRO SITE DE ANÁLISE DE TEXTO -->
+      <a class="btn linkout" href="https://vanpaya.github.io/TEXTOOO/" target="_blank" rel="noopener">
+        <span class="dot"></span> Análise de Texto
+      </a>
     </nav>
   </div>
 </header>
@@ -1238,7 +1257,7 @@ const VOCAB_DB = {
   "目":[["目","め","olho"],["目的","もくてき","objetivo"],["目薬","めぐすり","colírio"]],
   "真":[["写真","しゃしん","foto"],["真面目","まじめ","sério"],["真っ白","まっしろ","branco puro"]],
   "着":[["着る","きる","vestir"],["着く","つく","chegar"],["上着","うわぎ","casaco"]],
-  "知":[["知る","しる","saber"],["知らせる","しらせる","avisar"],["知識","ちしき","conhecimento"]],
+  "知":[["知る","しる","saber"],["知らせる","しらせる","avisar"],["知識","ちきゅう","conhecimento"]],
   "研":[["研究","けんきゅう","pesquisa"],["研究室","けんきゅうしつ","laboratório"],["研修","けんしゅう","treinamento"]],
   "社":[["会社","かいしゃ","empresa"],["社会","しゃかい","sociedade"],["本社","ほんしゃ","sede"]],
   "私":[["私","わたし","eu"],["私立","しりつ","privado (instituição)"],["私生活","しせいかつ","vida pessoal"]],
