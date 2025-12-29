@@ -121,7 +121,6 @@ nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content
 }
 .badge.n5{ border-color: rgba(52,211,153,.45); color: rgba(52,211,153,.95); }
 .badge.n4{ border-color: rgba(59,130,246,.45); color: rgba(147,197,253,.95); }
-/* ✅ (ADD) N3 badge */
 .badge.n3{ border-color: rgba(251,191,36,.55); color: rgba(251,191,36,.95); }
 
 .badge.tag{ border-color: rgba(255,255,255,.22); color: var(--text); }
@@ -176,9 +175,7 @@ nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content
   background: rgba(255,255,255,.06);
 }
 
-/* =========================
-   (NOVO) BOTÃO — ANÁLISE DE TEXTO
-========================= */
+/* BOTÃO — ANÁLISE DE TEXTO */
 .btn.linkout{
   border-color: hsla(var(--themeHue), 90%, 60%, .55);
   background: rgba(255,255,255,.10);
@@ -378,16 +375,18 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
     radial-gradient(circle at 0 0, rgba(120,90,255,.16) 0 1px, transparent 1px 22px) 0 0/44px 44px;
   filter: blur(.2px);
 }
+
+/* ✅ (EDIT) chuva mais visível */
 #heroRain{
   position:absolute; inset:0;
-  opacity:.28;
+  opacity:.48;            /* era .28 */
   mix-blend-mode: screen;
   pointer-events:none;
-  filter: drop-shadow(0 0 8px rgba(0,0,0,.25));
+  filter: drop-shadow(0 0 10px rgba(0,0,0,.22));
 }
 
 /* =========================================================
-   (NOVO) PERGUNTA FILOSÓFICA — centralizada acima
+   PERGUNTA FILOSÓFICA — centralizada acima
 ========================================================= */
 .hero-question{
   position:absolute;
@@ -422,7 +421,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
     0 0 36px rgba(120,200,255,.22);
 }
 
-/* ✅ (ADD) LEFT/RIGHT HERO LABELS (sem estragar visual) */
+/* ✅ LEFT/RIGHT HERO LABELS */
 .hero-side{
   position:absolute;
   top:56%;
@@ -438,14 +437,16 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   font-weight: 900;
   letter-spacing: .8px;
   color: rgba(255,255,255,.92);
-  white-space:nowrap;
 
-  /* ✅ (ADD) permite 2 linhas mantendo mesmo “card”/designer */
+  /* ✅ (EDIT) permite 2 linhas sem mudar estilo */
   display:flex;
   flex-direction:column;
   gap:4px;
   line-height:1.15;
+  white-space:normal;
 }
+.hero-side .line{ white-space:nowrap; }
+
 .hero-side.left{ left:22px; }
 .hero-side.right{ right:22px; }
 @media (max-width: 820px){
@@ -548,9 +549,7 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   text-shadow: 0 0 18px rgba(160,240,255,.16);
 }
 
-/* =========================================================
-   VOCAB no FEEDBACK (3 itens)
-========================================================= */
+/* VOCAB no FEEDBACK (3 itens) */
 .vocabBox{
   margin-top:12px;
   border:1px solid rgba(255,255,255,.14);
@@ -592,25 +591,23 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   <div class="hero-pattern"></div>
   <canvas id="heroRain"></canvas>
 
-  <!-- (NOVO) PERGUNTA FILOSÓFICA — centralizada um pouco acima -->
   <div class="hero-question">
     <span>どんな哲学者や哲学が好きですか？</span>
   </div>
 
-  <!-- ✅ (UPDATE) textos lado esquerdo/direito do torii -->
+  <!-- ✅ (EDIT) esquerda com 2 linhas: "Vampyro 哲学者" abaixo -->
   <div class="hero-side left">
-    <div>Colab. <b>Kazulipe Sou Eu 無常</b></div>
-    <div>Vampyro <b>哲学者</b></div>
+    <div class="line">Colab. <b>Kazulipe Sou Eu 無常</b></div>
+    <div class="line">Vampyro <b>哲学者</b></div>
   </div>
-  <div class="hero-side right">Dev: <b>大学で勉強中</b></div>
+
+  <div class="hero-side right"><div class="line">Dev: <b>大学で勉強中</b></div></div>
 
   <div class="hero-mujo">無常</div>
 
-  <!-- TORII xintoísta (vermelho + detalhes) -->
   <div class="hero-torii">
     <svg viewBox="0 0 1400 800" role="presentation" aria-hidden="true">
       <defs>
-        <!-- Vermillion típico (朱色) -->
         <linearGradient id="toriiRed" x1="0" x2="1">
           <stop offset="0%"  stop-color="#ff6a5c"/>
           <stop offset="25%" stop-color="#e23b2e"/>
@@ -624,14 +621,12 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
           <stop offset="100%" stop-color="#a11416"/>
         </linearGradient>
 
-        <!-- Preto envernizado no topo / base -->
         <linearGradient id="toriiBlack" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0%" stop-color="#151b24"/>
           <stop offset="60%" stop-color="#0b0f14"/>
           <stop offset="100%" stop-color="#05070a"/>
         </linearGradient>
 
-        <!-- Leve granulação de madeira/pintura -->
         <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
           <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="7" result="n"/>
           <feColorMatrix in="n" type="matrix"
@@ -660,7 +655,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
           </feMerge>
         </filter>
 
-        <!-- brilho discreto -->
         <filter id="edgeGlow" x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="6" result="b"/>
           <feColorMatrix in="b" type="matrix"
@@ -675,25 +669,21 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
         </filter>
       </defs>
 
-      <!-- Topo (Kasagi) -->
       <path d="M120 185
                C 360 85, 1040 85, 1280 185
                C 1042 210, 358 210, 120 185 Z"
             fill="url(#toriiBlack)" filter="url(#shadow)"/>
 
-      <!-- Segundo topo (Shimaki) -->
       <path d="M170 235
                C 390 155, 1010 155, 1230 235
                C 1012 255, 388 255, 170 235 Z"
             fill="url(#toriiRed)" filter="url(#edgeGlow)"/>
 
-      <!-- Viga (Nuki) -->
       <path d="M265 315
                C 440 255, 960 255, 1135 315
                C 960 345, 440 345, 265 315 Z"
             fill="url(#toriiRed2)" filter="url(#grain)"/>
 
-      <!-- Placa central (Gakuzuka) -->
       <g filter="url(#shadow)">
         <path d="M645 285
                  C 655 265, 745 265, 755 285
@@ -706,15 +696,12 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
               fill="rgba(255,255,255,.06)"/>
       </g>
 
-      <!-- Postes (Hashira) -->
       <g filter="url(#grain)">
-        <!-- Esquerdo -->
         <path d="M395 305
                  C 375 430, 355 625, 370 732
                  C 380 770, 465 770, 480 732
                  C 500 625, 480 430, 462 305 Z"
               fill="url(#toriiRed2)"/>
-        <!-- Direito -->
         <path d="M938 305
                  C 920 430, 900 625, 915 732
                  C 925 770, 1010 770, 1025 732
@@ -722,7 +709,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
               fill="url(#toriiRed2)"/>
       </g>
 
-      <!-- Bases (Nemaki) -->
       <g filter="url(#shadow)">
         <path d="M330 740
                  C 395 700, 485 700, 550 740
@@ -734,7 +720,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
               fill="url(#toriiBlack)"/>
       </g>
 
-      <!-- Cunhas/encaixes e sombras de detalhe -->
       <g opacity=".55">
         <path d="M420 342 C 470 320, 520 320, 570 342 C 520 358, 470 358, 420 342 Z"
               fill="rgba(0,0,0,.26)"/>
@@ -742,7 +727,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
               fill="rgba(0,0,0,.26)"/>
       </g>
 
-      <!-- Highlights de pintura -->
       <g opacity=".22">
         <path d="M200 248 C 410 170, 990 170, 1200 248"
               stroke="rgba(255,255,255,.70)" stroke-width="6" stroke-linecap="round" fill="none"/>
@@ -771,7 +755,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
       <div class="tabbtn active" id="tab-kanji">🈶 Kanji</div>
       <div class="tabbtn" id="tab-quiz">🎮 Jogo</div>
 
-      <!-- ✅ (NOVO) LINK PRO SITE DE ANÁLISE DE TEXTO -->
       <a class="btn linkout" href="https://vanpaya.github.io/TEXTOOO/" target="_blank" rel="noopener">
         <span class="dot"></span> Análise de Texto
       </a>
@@ -781,7 +764,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 
 <div class="container">
 
-  <!-- ====================== KANJI ====================== -->
   <section id="kanji" class="section active">
     <div class="grid">
       <div class="panel">
@@ -850,7 +832,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
     </div>
   </section>
 
-  <!-- ====================== JOGO ====================== -->
   <section id="quiz" class="section">
     <div class="grid">
       <div class="panel">
@@ -931,7 +912,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
             <div class="mean" id="quizFeedbackTitle"></div>
             <div class="hira" id="quizFeedbackDetail"></div>
 
-            <!-- ✅ VOCAB aparece só quando existir (N3 vai ficar oculto automaticamente no JS) -->
             <div class="vocabBox" id="quizVocabBox" style="display:none;">
               <div class="vocabTop">
                 <div class="mean" style="margin:0;">
@@ -1012,8 +992,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
 ========================= */
 const N5_LIST = ["一","七","万","三","上","下","中","九","二","五","人","今","休","何","先","入","八","六","円","出","分","前","北","十","千","午","半","南","友","右","名","四","国","土","外","大","天","女","子","学","小","山","川","左","年","後","日","時","書","月","木","本","来","東","校","母","毎","気","水","火","父","生","男","白","百","聞","行","西","見","話","語","読","車","金","長","間","雨","電","食","高"];
 const N4_LIST = ["不","世","主","事","京","仕","代","以","会","住","体","作","使","借","元","兄","公","写","冬","切","別","力","勉","動","医","去","口","古","台","同","味","品","員","問","図","地","堂","場","売","夏","夕","多","夜","妹","姉","始","字","安","室","家","少","屋","工","帰","広","店","度","建","弟","強","待","心","思","急","悪","意","手","持","教","文","料","新","方","旅","族","早","明","映","春","昼","曜","有","服","朝","業","楽","歌","止","正","歩","死","注","洋","海","漢","牛","物","特","犬","理","用","田","町","画","界","病","発","的","目","真","着","知","研","社","私","秋","究","空","立","答","紙","終","習","考","者","肉","自","色","花","英","茶","親","言","計","試","買","貸","質","赤","走","起","足","転","近","送","通","週","運","道","重","野","銀","開","院","集","青","音","題","風","飯","飲","館","駅","験","魚","鳥","黒"];
-
-/* ✅ (ADD) N3 list (exatamente como você mandou) */
 const N3_LIST = ["与","両","乗","予","争","互","亡","交","他","付","件","任","伝","似","位","余","例","供","便","係","信","倒","候","値","偉","側","偶","備","働","優","光","全","共","具","内","冷","処","列","初","判","利","到","制","刻","割","加","助","努","労","務","勝","勤","化","単","危","原","参","反","収","取","受","可","号","合","向","君","否","吸","吹","告","呼","命","和","商","喜","回","因","困","園","在","報","増","声","変","夢","太","夫","失","好","妻","娘","婚","婦","存","宅","守","完","官","定","実","客","害","容","宿","寄","富","寒","寝","察","対","局","居","差","市","師","席","常","平","幸","幾","座","庭","式","引","当","形","役","彼","徒","得","御","必","忘","忙","念","怒","怖","性","恐","恥","息","悲","情","想","愛","感","慣","成","戦","戻","所","才","打","払","投","折","抜","抱","押","招","指","捕","掛","探","支","放","政","敗","散","数","断","易","昔","昨","晩","景","晴","暗","暮","曲","更","最","望","期","未","末","束","杯","果","格","構","様","権","横","機","欠","次","欲","歯","歳","残","段","殺","民","求","決","治","法","泳","洗","活","流","浮","消","深","済","渡","港","満","演","点","然","煙","熱","犯","状","猫","王","現","球","産","由","申","留","番","疑","疲","痛","登","皆","盗","直","相","眠","石","破","確","示","礼","祖","神","福","科","程","種","積","突","窓","笑","等","箱","米","精","約","組","経","給","絵","絶","続","緒","罪","置","美","老","耳","職","育","背","能","腹","舞","船","良","若","苦","草","落","葉","薬","術","表","要","規","覚","観","解","記","訪","許","認","誤","説","調","談","論","識","警","議","負","財","貧","責","費","資","賛","越","路","身","辞","込","迎","返","迷","追","退","逃","途","速","連","進","遅","遊","過","達","違","遠","適","選","部","都","配","酒","閉","関","阪","降","限","除","険","陽","際","雑","難","雪","静","非","面","靴","頂","頭","頼","顔","願","類","飛","首","馬","髪","鳴"];
 
 const N5_SET = new Set(N5_LIST);
@@ -1024,7 +1002,7 @@ const N3_SET = new Set(N3_LIST);
    KANJI_INFO (PT-BR)
 ========================= */
 const KANJI_INFO = {
-  /* ===== N5 (igual ao seu) ===== */
+  /* ===== N5 ===== */
   "一":{readings:["いち","ひと"], meaning:"um"},"七":{readings:["しち","なな"], meaning:"sete"},"万":{readings:["まん"], meaning:"dez mil"},"三":{readings:["さん","みっ"], meaning:"três"},
   "上":{readings:["うえ","じょう"], meaning:"cima / sobre"},"下":{readings:["した","か"], meaning:"baixo / descer"},"中":{readings:["なか","ちゅう"], meaning:"meio / dentro"},
   "九":{readings:["きゅう","ここの"], meaning:"nove"},"二":{readings:["に","ふた"], meaning:"dois"},"五":{readings:["ご","いつ"], meaning:"cinco"},
@@ -1053,7 +1031,7 @@ const KANJI_INFO = {
   "雨":{readings:["あめ","う"], meaning:"chuva"},"電":{readings:["でん"], meaning:"eletricidade"},"食":{readings:["た","しょく"], meaning:"comer / comida"},
   "高":{readings:["たか","こう"], meaning:"alto / caro"},
 
-  /* ===== N4 (igual ao seu) ===== */
+  /* ===== N4 ===== */
   "不":{readings:["ふ","ない"], meaning:"não / negativo"},"世":{readings:["せい","よ"], meaning:"mundo / sociedade"},"主":{readings:["しゅ","ぬし"], meaning:"principal / dono"},
   "事":{readings:["こと","じ"], meaning:"coisa / assunto"},"京":{readings:["きょう","けい"], meaning:"capital"},"仕":{readings:["し"], meaning:"servir / trabalho"},
   "代":{readings:["だい","たい","か"], meaning:"substituir / era"},"以":{readings:["い"], meaning:"a partir de / por"},"会":{readings:["かい","あ"], meaning:"encontro / reunião"},
@@ -1112,7 +1090,7 @@ const KANJI_INFO = {
   "鳥":{readings:["とり","ちょう"], meaning:"pássaro"},"黒":{readings:["くろ","こく"], meaning:"preto"}
 };
 
-/* ✅ (ADD) N3: significado PT + leituras (mínimo funcional, sem quebrar o jogo) */
+/* ✅ N3: significado PT + leituras (mínimo funcional) */
 (function addN3Info(){
   const N3_MIN = {
     "与":{readings:["あた","よ"], meaning:"dar / conceder"},
@@ -1486,9 +1464,7 @@ const KANJI_INFO = {
     "髪":{readings:["かみ"], meaning:"cabelo"},
     "鳴":{readings:["な","めい"], meaning:"cantar / tocar (som)"}
   };
-  for(const k in N3_MIN){
-    KANJI_INFO[k] = N3_MIN[k];
-  }
+  for(const k in N3_MIN) KANJI_INFO[k] = N3_MIN[k];
 })();
 
 function isInfoComplete(k){
@@ -1497,12 +1473,9 @@ function isInfoComplete(k){
 }
 
 /* =========================
-   VOCAB DB (3 por kanji) — COMPLETO (N5+N4)
-   formato: ["palavra","leitura","significado"]
-   (N3 NÃO terá vocabulário no jogo — só vai ficar oculto)
+   VOCAB DB (3 por kanji) — N5+N4
 ========================= */
 const VOCAB_DB = {
-  /* N5 (igual ao seu) */
   "一":[["一つ","ひとつ","um (objeto)"],["一人","ひとり","uma pessoa / sozinho"],["一日","いちにち","um dia"]],
   "七":[["七つ","ななつ","sete (objetos)"],["七時","しちじ","7 horas"],["七月","しちがつ","julho"]],
   "万":[["一万円","いちまんえん","10.000 ienes"],["万年","まんねん","muitos anos"],["万歳","ばんざい","viva!"]],
@@ -1584,7 +1557,7 @@ const VOCAB_DB = {
   "食":[["食べる","たべる","comer"],["食事","しょくじ","refeição"],["朝食","ちょうしょく","café da manhã"]],
   "高":[["高い","たかい","alto / caro"],["高校","こうこう","ensino médio"],["最高","さいこう","o melhor"]],
 
-  /* N4 (já estava no seu código — mantém como está) */
+  /* N4 (mantém como estava no seu código) */
   "不":[["不安","ふあん","ansiedade / insegurança"],["不便","ふべん","inconveniente"],["不思議","ふしぎ","estranho / misterioso"]],
   "世":[["世界","せかい","mundo"],["世話","せわ","cuidado / ajuda"],["世の中","よのなか","a sociedade"]],
   "主":[["主人","しゅじん","marido / dono"],["主に","おもに","principalmente"],["主役","しゅやく","protagonista"]],
@@ -2037,7 +2010,6 @@ $("kdTrain").addEventListener("click", ()=>{
 const LS_KEY = "vampire_kanji_quiz_ptbr_v2";
 const LS_REVIEW = "vampire_kanji_review_queue_v3";
 
-/* RESET de revisão quando o site é atualizado (build id) */
 const BUILD_ID = "2025-12-26-v5-n3";
 const BUILD_KEY = "vampire_build_id";
 (function(){
@@ -2169,7 +2141,7 @@ const quizState = {
   lockedAfterResult: false,
   lastPick: null,
 
-  mode: "normal", // "normal" | "review"
+  mode: "normal",
   startedOnce: false
 };
 
@@ -2331,7 +2303,7 @@ function pickKanji(pool){
 }
 
 /* =========================
-   TIMER (só roda após Start)
+   TIMER
 ========================= */
 function updateTimerUI(){
   const leftSec = Math.max(0, Math.ceil(quizState.timeLeftMs/1000));
@@ -2368,7 +2340,7 @@ function startTimer(reset){
 }
 
 /* =========================
-   VOCAB (3) — N3 fica OCULTO (sem texto extra)
+   VOCAB (3) — N3 fica OCULTO
 ========================= */
 function getVocab3ForKanji(kanji){
   const arr = VOCAB_DB[kanji];
@@ -2378,7 +2350,6 @@ function getVocab3ForKanji(kanji){
 function renderVocab3(kanji){
   const lvl = levelOf(kanji);
 
-  /* ✅ (ADD) N3: não exibe vocabulário e NÃO mostra mensagem */
   if(lvl === "N3"){
     quizVocabBox.style.display = "none";
     return;
@@ -2459,7 +2430,7 @@ function nextQuestion(){
 }
 
 /* =========================
-   FEEDBACK + RESULT COMMIT
+   FEEDBACK + RESULT
 ========================= */
 async function showFeedback(okAll, reason){
   const k = quizState.current;
@@ -2496,9 +2467,7 @@ function commitResult(okAll, reason){
 
     if(quizState.mode === "review"){
       removeFromReviewQueue(k);
-      if(reviewCount() === 0){
-        setMode("normal");
-      }
+      if(reviewCount() === 0) setMode("normal");
     }
   }else{
     quizState.sessionWrong += 1;
@@ -2508,11 +2477,8 @@ function commitResult(okAll, reason){
     pushRecent(false);
     flash("bad");
 
-    if(quizState.mode === "normal"){
-      addToReviewQueue(k);
-    }else{
-      bumpReviewToEnd(k);
-    }
+    if(quizState.mode === "normal") addToReviewQueue(k);
+    else bumpReviewToEnd(k);
   }
 
   updateScoreUI();
@@ -2543,13 +2509,10 @@ function updateReviewUI(){
   quizReviewCountEl.textContent = String(c);
   quizReviewCountBadge.style.display = c > 0 ? "inline-flex" : "none";
   quizReviewBtn.style.display = c > 0 ? "inline-flex" : "none";
-  if(c === 0 && quizState.mode === "review"){
-    setMode("normal");
-  }
+  if(c === 0 && quizState.mode === "review") setMode("normal");
 }
 
 let reviewBusy = false;
-
 function toggleReview(){
   if(reviewBusy) return;
   reviewBusy = true;
@@ -2581,7 +2544,6 @@ function toggleReview(){
     setTimeout(()=>{ reviewBusy = false; }, 220);
   }
 }
-
 quizReviewBtn.addEventListener("click", ()=> toggleReview());
 
 let lastP = 0;
@@ -2664,7 +2626,7 @@ function init(){
 init();
 
 /* =========================
-   HERO KANJI RAIN (bem leve)
+   HERO KANJI RAIN (✅ mais visível)
 ========================= */
 (function(){
   const canvas = document.getElementById("heroRain");
@@ -2677,7 +2639,7 @@ init();
   let W=0,H=0,cols=0;
   let drops = [];
   let last=0;
-  let skipMod = 4;
+  let skipMod = 3; // era 4/5
 
   function resize(){
     const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
@@ -2687,12 +2649,12 @@ init();
     canvas.height = Math.floor(H * dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
 
-    const fontSize = Math.max(14, Math.min(18, Math.floor(W/70)));
+    const fontSize = Math.max(14, Math.min(19, Math.floor(W/68))); // levemente maior
     cols = Math.max(1, Math.floor(W / fontSize));
     drops = Array.from({length: cols}, ()=>Math.random()*H);
     canvas.__fontSize = fontSize;
 
-    skipMod = W > 1200 ? 5 : 4;
+    skipMod = W > 1200 ? 3 : 2; // mais colunas desenhando
   }
 
   function rndGlyph(){
@@ -2700,12 +2662,13 @@ init();
   }
 
   function draw(ts){
-    if(ts - last < 42) { requestAnimationFrame(draw); return; }
+    if(ts - last < 38) { requestAnimationFrame(draw); return; } // um pouco mais “vivo”
     last = ts;
 
     const fs = canvas.__fontSize || 16;
 
-    ctx.fillStyle = "rgba(10,14,20,0.30)";
+    /* ✅ menos “apagado” pra acumular mais trilha */
+    ctx.fillStyle = "rgba(10,14,20,0.20)"; // era 0.30
     ctx.fillRect(0,0,W,H);
 
     ctx.font = `900 ${fs}px "Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif`;
@@ -2714,15 +2677,18 @@ init();
 
     for(let i=0;i<cols;i++){
       if(i % skipMod !== 0) continue;
-      if(Math.random() < 0.58) continue;
 
-      const x = i*fs + (fs*0.1);
+      /* ✅ desenha mais vezes */
+      if(Math.random() < 0.22) continue; // era 0.58
+
+      const x = i*fs + (fs*0.08);
       const y = drops[i];
 
-      ctx.fillStyle = `hsla(${hue}, 90%, 74%, 0.30)`;
+      /* ✅ mais alpha */
+      ctx.fillStyle = `hsla(${hue}, 92%, 78%, 0.55)`; // era 0.30
       ctx.fillText(rndGlyph(), x, y);
 
-      drops[i] += (fs * 0.30) + (Math.random()*0.35);
+      drops[i] += (fs * 0.44) + (Math.random()*0.55); // um pouco mais rápido
 
       if(drops[i] > H + fs*2){
         drops[i] = -Math.random()*H*0.25;
