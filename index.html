@@ -439,6 +439,12 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   letter-spacing: .8px;
   color: rgba(255,255,255,.92);
   white-space:nowrap;
+
+  /* ✅ (ADD) permite 2 linhas mantendo mesmo “card”/designer */
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  line-height:1.15;
 }
 .hero-side.left{ left:22px; }
 .hero-side.right{ right:22px; }
@@ -453,18 +459,6 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
   -webkit-background-clip:text;
   background-clip:text;
   color: transparent;
-}
-
-/* ✅ (ADD) SUBTEXTO ABAIXO DO COLAB */
-.hero-sub{
-  display:block;
-  margin-top:6px;
-  font-size:12px;
-  font-weight:1000;
-  letter-spacing:1.1px;
-  color: rgba(238,242,255,.90);
-  opacity:.96;
-  text-shadow: 0 0 16px rgba(160,240,255,.10);
 }
 
 .hero-mujo{
@@ -603,10 +597,10 @@ hr.sep{ border:none; border-top:1px solid rgba(255,255,255,.10); margin:14px 0; 
     <span>どんな哲学者や哲学が好きですか？</span>
   </div>
 
-  <!-- ✅ (ADD) textos lado esquerdo/direito do torii -->
+  <!-- ✅ (UPDATE) textos lado esquerdo/direito do torii -->
   <div class="hero-side left">
-    Colab. <b>Kazulipe Sou Eu 無常</b>
-    <span class="hero-sub">Vampyro 哲学者</span>
+    <div>Colab. <b>Kazulipe Sou Eu 無常</b></div>
+    <div>Vampyro <b>哲学者</b></div>
   </div>
   <div class="hero-side right">Dev: <b>大学で勉強中</b></div>
 
