@@ -3,1304 +3,297 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kanji Trainer — Leitura x Significado</title>
+  <title>Kanji Card (igual à imagem)</title>
+
+  <!--
+    ✅ IMPORTANTE:
+    - Eu NÃO redesenhei “o site todo”.
+    - Este CSS está TODO “escopado” dentro de .ksc-wrap
+      (não vai mexer no resto do seu site se você colar lá).
+    - Se você quiser, copie só o bloco HTML dentro de .ksc-wrap
+      + o CSS abaixo.
+  -->
+
   <style>
-    :root{
-      --themeHue: 175;
-      --bg: #0b1020;
-      --fg: rgba(255,255,255,.92);
-      --muted: rgba(238,242,255,.72);
-      --card: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.14);
-      --good: rgba(36, 255, 157, .9);
-      --bad: rgba(255, 88, 120, .9);
+    /* ================
+       SÓ ESTE BLOCO
+       ================ */
+    .ksc-wrap{
+      /* ajuste aqui se quiser */
+      --teal: #2f9b93;
+      --border: #bfc7c6;
+      --light: #f6f7f7;
+      --text: #1c2321;
+      --muted: #5f6b67;
+
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
     }
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background:
-        radial-gradient(1200px 700px at 20% -10%, hsla(var(--themeHue),90%,55%,.25), transparent 60%),
-        radial-gradient(900px 600px at 100% 0%, rgba(124,58,237,.18), transparent 55%),
-        var(--bg);
-      color: var(--fg);
-      min-height:100vh;
+    .ksc-card{
+      width: min(720px, 100%);
+      border: 2px solid var(--border);
+      background: #fff;
+      margin: 16px auto;
     }
 
-    .wrap{ max-width:1100px; margin:0 auto; padding:18px 14px 40px; }
-    .topbar{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      flex-wrap:wrap;
-      padding:14px 14px;
-      border:1px solid var(--stroke);
-      border-radius:18px;
-      background: rgba(0,0,0,.22);
-      backdrop-filter: blur(10px);
-    }
-    .brand{
-      display:flex; gap:10px; align-items:center;
-      font-weight:1000;
-      letter-spacing:.5px;
-    }
-    .dot{
-      width:10px; height:10px; border-radius:999px;
-      background: hsla(var(--themeHue),90%,55%,1);
-      box-shadow: 0 0 18px hsla(var(--themeHue),90%,55%,.45);
-    }
-    .controls{
-      display:flex; gap:10px; align-items:center;
-      flex-wrap:wrap;
-    }
-    select, input[type="range"]{
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.18);
-      color: var(--fg);
-      padding:8px 10px;
-      border-radius:12px;
-      outline:none;
-    }
-    .btn{
-      user-select:none;
-      cursor:pointer;
-      padding:9px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.06);
-      color: var(--fg);
-      font-weight:900;
-      letter-spacing:.2px;
-    }
-    .btn:hover{ background: rgba(255,255,255,.09); }
-    .btn.primary{
-      border-color: hsla(var(--themeHue),80%,55%,.55);
-      background: hsla(var(--themeHue),80%,50%,.25);
-    }
-    .btn.danger{
-      border-color: rgba(255,88,120,.55);
-      background: rgba(255,88,120,.14);
-    }
-    .btn:disabled{ opacity:.55; cursor:not-allowed; }
-
-    .grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
+    .ksc-top{
+      padding: 18px 16px 8px;
+      text-align: center;
     }
 
-    .card{
-      border:1px solid var(--stroke);
-      border-radius:18px;
-      background: rgba(0,0,0,.22);
-      backdrop-filter: blur(10px);
-      padding:14px;
+    .ksc-kanji{
+      font-size: 96px;
+      line-height: 1;
+      font-weight: 700;
+      margin: 0;
     }
 
-    .stats{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap:10px;
-    }
-    @media (max-width: 700px){
-      .stats{ grid-template-columns: repeat(2, 1fr); }
-    }
-    .stat{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:14px;
-      background: rgba(255,255,255,.05);
-      padding:10px 12px;
-    }
-    .stat .k{ font-size:12px; color: var(--muted); }
-    .stat .v{ margin-top:4px; font-weight:1000; font-size:18px; }
-
-    .qHead{
-      display:flex; gap:10px; align-items:flex-end; justify-content:space-between;
-      flex-wrap:wrap;
-      margin-bottom:12px;
-    }
-    .qTitle{ font-weight:1000; letter-spacing:.4px; }
-    .small{ font-size:12px; color: var(--muted); }
-
-    .kanjiBox{
-      display:flex; align-items:center; justify-content:center;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      padding:18px 12px;
-      background: rgba(255,255,255,.05);
-    }
-    .bigKanji{
-      font-size:96px;
-      font-weight:1000;
-      line-height:1;
-      letter-spacing:2px;
-      text-shadow: 0 0 26px rgba(0,0,0,.45);
+    .ksc-meaningbar{
+      background: var(--teal);
+      color: #fff;
+      font-weight: 700;
+      text-align: center;
+      padding: 10px 12px;
+      letter-spacing: .2px;
     }
 
-    .twoCols{
-      margin-top:12px;
-      display:grid;
+    .ksc-reads{
+      display: grid;
       grid-template-columns: 1fr 1fr;
-      gap:12px;
-    }
-    @media (max-width: 780px){
-      .twoCols{ grid-template-columns: 1fr; }
-    }
-    .col{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      background: rgba(255,255,255,.04);
-      padding:12px;
-    }
-    .colHead{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .badge{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.08);
-      font-size:11px;
-      font-weight:1000;
-      letter-spacing:.4px;
-    }
-    .tag{
-      border-color: hsla(var(--themeHue),70%,55%,.35);
-      background: hsla(var(--themeHue),70%,50%,.18);
+      position: relative;
+      padding: 14px 14px 10px;
+      gap: 12px;
+      background: #fff;
     }
 
-    .choiceGrid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-    }
-    .choiceBtn{
-      text-align:left;
-      width:100%;
-      padding:11px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      color: var(--fg);
-      font-weight:900;
-      cursor:pointer;
-    }
-    .choiceBtn:hover{ background: rgba(255,255,255,.08); }
-    .choiceBtn.correct{
-      border-color: rgba(36,255,157,.55);
-      background: rgba(36,255,157,.12);
-    }
-    .choiceBtn.wrong{
-      border-color: rgba(255,88,120,.55);
-      background: rgba(255,88,120,.12);
-    }
-    .choiceBtn:disabled{ cursor:not-allowed; opacity:.92; }
-
-    .actions{
-      margin-top:12px;
-      display:flex; gap:10px; flex-wrap:wrap;
-      align-items:center; justify-content:space-between;
-    }
-
-    /* =========================================
-       QUIZ FEEDBACK — CARD estilo “foto” (会)
-    ========================================= */
-    .kanjiStudyCard{
-      border:1px solid rgba(255,255,255,.16);
-      border-radius:18px;
-      overflow:hidden;
-      background: rgba(0,0,0,.22);
-    }
-
-    .kscTop{
-      padding:14px 14px 10px;
-      text-align:center;
-      background: rgba(255,255,255,.04);
-    }
-
-    .kscBigKanji{
-      font-size:96px;
-      font-weight:1000;
-      line-height:1;
-      letter-spacing:2px;
-      color: rgba(255,255,255,.96);
-      text-shadow: 0 0 24px rgba(0,0,0,.45);
-      margin: 6px 0 8px;
-    }
-
-    .kscMeaningBar{
-      padding:8px 12px;
-      border-top:1px solid rgba(255,255,255,.12);
-      border-bottom:1px solid rgba(255,255,255,.12);
-      background: hsla(var(--themeHue), 75%, 50%, .32);
-      color: rgba(255,255,255,.95);
-      font-weight:1000;
-      text-align:center;
-      letter-spacing:.4px;
-    }
-
-    .kscMetaRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:center;
-      padding:10px 12px 12px;
-      background: rgba(255,255,255,.03);
-    }
-    .kscMetaRow .small{ margin:0; }
-
-    .kscReadGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      position:relative;
-      background: rgba(255,255,255,.04);
-    }
-    .kscReadGrid::after{
+    /* linha tracejada vertical no meio (igual a imagem) */
+    .ksc-reads::after{
       content:"";
       position:absolute;
-      left:50%;
-      top:12px;
-      bottom:12px;
-      width:0;
-      border-left:2px dashed rgba(255,255,255,.22);
-      transform: translateX(-1px);
-      pointer-events:none;
-      opacity:.8;
+      top: 14px;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 3px dashed #c9d1cf;
+      pointer-events: none;
     }
 
-    .kscReadCell{
-      padding:12px;
-    }
-    .kscLabel{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:6px 10px;
-      border-radius:8px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.08);
-      font-size:11px;
-      font-weight:1000;
-      color: rgba(255,255,255,.92);
-      letter-spacing:.5px;
-    }
-    .kscReadValue{
-      margin-top:10px;
-      font-size:14px;
-      font-weight:1000;
-      color: rgba(255,255,255,.95);
-    }
-    .kscReadSub{
-      margin-top:8px;
-      color: rgba(238,242,255,.75);
-      font-size:12px;
+    .ksc-box{
+      padding: 2px 6px;
     }
 
-    .commonWordsBox{
-      border-top:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
-      padding:12px;
+    .ksc-pill{
+      display: inline-block;
+      background: #e8eceb;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 2px;
+      margin-bottom: 8px;
     }
 
-    .commonWordsHead{
+    .ksc-readingJP{
+      font-size: 18px;
+      font-weight: 700;
+      margin: 2px 0 0;
+    }
+
+    .ksc-readingRO{
+      font-size: 12px;
+      color: var(--muted);
+      margin: 4px 0 0;
+    }
+
+    .ksc-common{
+      border-top: 2px solid var(--border);
+      background: #fff;
+      padding: 12px 14px 14px;
+    }
+
+    .ksc-common-title{
       display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:10px;
-    }
-
-    .commonWordsTitle{
-      font-weight:1000;
-      letter-spacing:.6px;
-      color: rgba(255,255,255,.92);
-    }
-
-    .commonWordsList{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:14px;
-      overflow:hidden;
-      background: rgba(255,255,255,.05);
-    }
-
-    .cwRow{
-      display:grid;
-      grid-template-columns: 1.2fr .9fr 1.4fr;
-      gap:10px;
-      padding:10px 12px;
-      border-top:1px solid rgba(255,255,255,.10);
-    }
-    .cwRow:first-child{ border-top:none; }
-
-    .cwW{ font-weight:1000; color: rgba(255,255,255,.96); }
-    .cwR{ color: rgba(238,242,255,.78); font-weight:900; }
-    .cwM{ color: rgba(238,242,255,.80); }
-
-    @media (max-width: 820px){
-      .cwRow{ grid-template-columns: 1fr; }
-      .kscReadGrid{ grid-template-columns: 1fr; }
-      .kscReadGrid::after{ display:none; }
-    }
-
-    .strokeBox{
-      margin-top:12px;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      background: rgba(255,255,255,.04);
-      overflow:hidden;
-    }
-    .strokeHead{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px; flex-wrap:wrap;
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
-    .strokeHead .t{ font-weight:1000; }
-    .strokeHead .row{ display:flex; gap:10px; align-items:center; }
-    .strokeBody{
-      padding:12px;
-      display:flex;
-      align-items:center;
       justify-content:center;
-      min-height:240px;
+      margin: 0 0 10px;
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 13px;
     }
-    .strokeNote{
-      padding:8px 12px;
-      border-top:1px solid rgba(255,255,255,.10);
-      font-size:12px;
+
+    .ksc-table{
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .ksc-table th,
+    .ksc-table td{
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      vertical-align: top;
+      background: #fff;
+    }
+
+    .ksc-table th{
+      background: #eef2f1;
+      text-align: left;
+      font-size: 12px;
       color: var(--muted);
     }
 
-    .sideCardList{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:12px;
-    }
-    .rowItem{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:14px;
-      background: rgba(255,255,255,.05);
-      padding:10px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .rowItem .left{
-      display:flex; gap:10px; align-items:center;
-    }
-    .miniKanji{
-      width:44px; height:44px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:1000;
-      font-size:22px;
-    }
-    .rowItem .meta{
-      display:flex; flex-direction:column; gap:2px;
-    }
-    .rowItem .meta .m1{ font-weight:1000; }
-    .rowItem .meta .m2{ font-size:12px; color: var(--muted); }
+    .ksc-jp{ font-weight: 700; }
+    .ksc-furi{ color: var(--muted); }
+    .ksc-mean{ }
 
-    .hr{ height:1px; background: rgba(255,255,255,.10); margin:12px 0; }
-
-    .good{ color: var(--good); font-weight:1000; }
-    .bad{ color: var(--bad); font-weight:1000; }
+    /* responsivo */
+    @media (max-width: 560px){
+      .ksc-reads{ grid-template-columns: 1fr; }
+      .ksc-reads::after{ display:none; }
+      .ksc-kanji{ font-size: 84px; }
+    }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="dot"></div>
-        <div>Kanji Trainer</div>
-        <span class="badge tag" id="poolInfo">pool: —</span>
+  <!--
+    ✅ ESSE BLOCO É O “CARD IGUAL À FOTO”.
+    Edite o conteúdo “data-” ou no JS abaixo.
+  -->
+  <div class="ksc-wrap">
+    <div class="ksc-card" id="kanjiCard">
+      <div class="ksc-top">
+        <h1 class="ksc-kanji" id="k-kanji">会</h1>
       </div>
 
-      <div class="controls">
-        <select id="modeSelect" title="Pool">
-          <option value="MIX" selected>Mix (N5+N4+N3)</option>
-          <option value="N5">Somente N5</option>
-          <option value="N4">Somente N4</option>
-          <option value="N3">Somente N3</option>
-          <option value="REVIEW">Revisão (erros)</option>
-        </select>
+      <div class="ksc-meaningbar" id="k-meaning">meeting; meet</div>
 
-        <select id="qMode" title="Alvo">
-          <option value="BOTH" selected>Leitura + Significado</option>
-          <option value="READING">Só Leitura</option>
-          <option value="MEANING">Só Significado</option>
-        </select>
-
-        <label class="small" style="display:flex;gap:8px;align-items:center;">
-          tema
-          <input id="hueRange" type="range" min="0" max="360" value="175" />
-        </label>
-
-        <button class="btn danger" id="resetBtn">Zerar progresso</button>
-      </div>
-    </div>
-
-    <div class="grid">
-      <!-- LEFT: GAME -->
-      <div>
-        <div class="card">
-          <div class="stats">
-            <div class="stat">
-              <div class="k">Tentativas</div>
-              <div class="v" id="stAttempts">0</div>
-            </div>
-            <div class="stat">
-              <div class="k">Acertos</div>
-              <div class="v" id="stCorrect">0</div>
-            </div>
-            <div class="stat">
-              <div class="k">Assertividade</div>
-              <div class="v" id="stAcc">0%</div>
-            </div>
-            <div class="stat">
-              <div class="k">Streak</div>
-              <div class="v" id="stStreak">0</div>
-            </div>
-          </div>
-
-          <div class="hr"></div>
-
-          <div class="qHead">
-            <div>
-              <div class="qTitle">Rodada</div>
-              <div class="small" id="roundInfo">—</div>
-            </div>
-            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-              <span class="badge tag" id="lvlBadge">—</span>
-              <span class="badge" id="lockBadge">aguardando</span>
-            </div>
-          </div>
-
-          <div class="kanjiBox">
-            <div class="bigKanji" id="qKanji">会</div>
-          </div>
-
-          <div class="twoCols">
-            <div class="col">
-              <div class="colHead">
-                <div style="font-weight:1000;">Leitura</div>
-                <span class="badge tag">hiragana</span>
-              </div>
-              <div class="choiceGrid" id="readingChoices"></div>
-            </div>
-
-            <div class="col">
-              <div class="colHead">
-                <div style="font-weight:1000;">Significado</div>
-                <span class="badge tag">pt-br</span>
-              </div>
-              <div class="choiceGrid" id="meaningChoices"></div>
-            </div>
-          </div>
-
-          <div class="actions">
-            <div class="small" id="hintLine">Dica: responda um lado e depois o outro.</div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-              <button class="btn" id="skipBtn">Pular</button>
-              <button class="btn primary" id="nextBtn" disabled>Próximo</button>
-            </div>
-          </div>
+      <div class="ksc-reads">
+        <div class="ksc-box">
+          <span class="ksc-pill">Onyomi</span>
+          <div class="ksc-readingJP" id="k-onyomi-jp">カイ</div>
+          <div class="ksc-readingRO" id="k-onyomi-ro">kai</div>
         </div>
 
-        <!-- FEEDBACK CARD (ESTILO FOTO) -->
-        <div id="quizFeedback" class="card" style="display:none; margin-top:14px;">
-          <div class="kanjiStudyCard">
-            <div class="kscTop">
-              <div class="kscBigKanji" id="qscKanji">一</div>
-            </div>
-
-            <div class="kscMeaningBar" id="qscMeaning">—</div>
-
-            <div class="kscMetaRow">
-              <span class="badge tag" id="qscMeaningRes">Significado: —</span>
-              <span class="badge tag" id="qscReadingRes">Leitura: —</span>
-
-              <div class="small" id="qscMeaningPick">Sua resposta (significado): —</div>
-              <div class="small" id="qscMeaningCorrect">Correto (significado): —</div>
-
-              <div class="small" id="qscReadingPick">Sua resposta (leitura): —</div>
-              <div class="small" id="qscReadingCorrect">Correto (leitura): —</div>
-            </div>
-
-            <div class="kscReadGrid">
-              <div class="kscReadCell">
-                <div class="kscLabel">Onyomi</div>
-                <div class="kscReadValue" id="qscOnyomi">—</div>
-                <div class="kscReadSub">*Heurística: leituras curtas tendem a Onyomi</div>
-              </div>
-
-              <div class="kscReadCell">
-                <div class="kscLabel">Kunyomi</div>
-                <div class="kscReadValue" id="qscKunyomi">—</div>
-                <div class="kscReadSub">*Heurística: leituras longas tendem a Kunyomi</div>
-              </div>
-            </div>
-
-            <div class="commonWordsBox" id="quizVocabBox" style="display:none;">
-              <div class="commonWordsHead">
-                <div class="commonWordsTitle">Common Words (3)</div>
-                <span class="badge tag" id="quizVocabLvl">—</span>
-                <div class="small" id="quizVocabStatus">—</div>
-              </div>
-
-              <div class="commonWordsList" id="quizVocabList"></div>
-            </div>
-          </div>
-
-          <div class="strokeBox">
-            <div class="strokeHead">
-              <div class="t">Ordem dos traços</div>
-              <div class="row">
-                <button class="btn primary" id="quizReplay">Repetir</button>
-                <select id="quizSpeed" title="Velocidade">
-                  <option value="0.7">Rápido</option>
-                  <option value="1" selected>Normal</option>
-                  <option value="1.35">Lento</option>
-                </select>
-              </div>
-            </div>
-            <div class="strokeBody" id="quizStroke"></div>
-            <div class="strokeNote">Fonte: KanjiVG (fallback interno quando disponível).</div>
-          </div>
+        <div class="ksc-box">
+          <span class="ksc-pill">Kunyomi</span>
+          <div class="ksc-readingJP" id="k-kunyomi-jp">あ(う)</div>
+          <div class="ksc-readingRO" id="k-kunyomi-ro">a(u)</div>
         </div>
       </div>
 
-      <!-- RIGHT: REVIEW / LISTS -->
-      <div>
-        <div class="card">
-          <div class="qHead">
-            <div>
-              <div class="qTitle">Revisão (erros)</div>
-              <div class="small">Gerenciamento de risco: o que erra vai pra revisão.</div>
-            </div>
-            <button class="btn" id="clearReviewBtn">Limpar revisão</button>
-          </div>
-          <div class="small" id="reviewInfo">—</div>
-          <div class="sideCardList" id="reviewList"></div>
-        </div>
+      <div class="ksc-common">
+        <div class="ksc-common-title">Common Words</div>
 
-        <div class="card" style="margin-top:14px;">
-          <div class="qHead">
-            <div>
-              <div class="qTitle">Notas rápidas</div>
-              <div class="small">Como editar seus dados (KANJI_DB / VOCAB_DB) está comentado no JS.</div>
-            </div>
-          </div>
-          <div class="small">
-            • Pool define quais kanji entram no sorteio.<br/>
-            • Modo define se você responde os dois lados ou só um.<br/>
-            • N3: por padrão esconde “Common Words”.<br/>
-            • Tudo persiste em <code>localStorage</code>.
-          </div>
-        </div>
+        <table class="ksc-table" id="k-table">
+          <thead>
+            <tr>
+              <th style="width:34%;">Palavra</th>
+              <th style="width:26%;">Leitura</th>
+              <th style="width:40%;">Significado</th>
+            </tr>
+          </thead>
+          <tbody id="k-tbody">
+            <tr>
+              <td class="ksc-jp">会社</td>
+              <td class="ksc-furi">かいしゃ</td>
+              <td class="ksc-mean">company</td>
+            </tr>
+            <tr>
+              <td class="ksc-jp">会話</td>
+              <td class="ksc-furi">かいわ</td>
+              <td class="ksc-mean">conversation</td>
+            </tr>
+            <tr>
+              <td class="ksc-jp">会計</td>
+              <td class="ksc-furi">かいけい</td>
+              <td class="ksc-mean">account; finance</td>
+            </tr>
+            <tr>
+              <td class="ksc-jp">学会</td>
+              <td class="ksc-furi">がっかい</td>
+              <td class="ksc-mean">scientific society</td>
+            </tr>
+            <tr>
+              <td class="ksc-jp">会館</td>
+              <td class="ksc-furi">かいかん</td>
+              <td class="ksc-mean">meeting hall</td>
+            </tr>
+            <tr>
+              <td class="ksc-jp">社会</td>
+              <td class="ksc-furi">しゃかい</td>
+              <td class="ksc-mean">society; public</td>
+            </tr>
+            <tr>
+              <td class="ksc-jp">会う</td>
+              <td class="ksc-furi">あ(う)</td>
+              <td class="ksc-mean">to meet, to encounter, to see</td>
+            </tr>
+            <tr>
+              <td class="ksc-jp">会わせる</td>
+              <td class="ksc-furi">あ(わせる)</td>
+              <td class="ksc-mean">to make (someone) meet</td>
+            </tr>
+            <tr>
+              <td class="ksc-jp">出会う</td>
+              <td class="ksc-furi">であ(う)</td>
+              <td class="ksc-mean">to meet (by chance)</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-<script>
-/* ============================================================
-  DADOS (EDITÁVEIS)
-  -> Troque/cole aqui seus bancos N5/N4/N3 completos.
-  Estrutura:
-  KANJI_DB = [{ kanji:"会", level:"N5", meaning:"meeting; meet", readings:["かい","あ(う)"] }, ...]
-  VOCAB_DB = { "会": [ ["会社","かいしゃ","empresa"], ["会う","あう","encontrar"], ... ] }
-============================================================ */
-const KANJI_DB = [
-  // N5 (amostra)
-  {kanji:"会", level:"N5", meaning:"meeting; meet", readings:["かい","あ(う)"]},
-  {kanji:"人", level:"N5", meaning:"person", readings:["じん","にん","ひと"]},
-  {kanji:"日", level:"N5", meaning:"day; sun", readings:["にち","じつ","ひ"]},
-  {kanji:"本", level:"N5", meaning:"book; origin", readings:["ほん","もと"]},
-  {kanji:"学", level:"N5", meaning:"study; learning", readings:["がく","まな(ぶ)"]},
-  {kanji:"生", level:"N5", meaning:"life; birth; student", readings:["せい","しょう","い(きる)","う(まれる)"]},
-  {kanji:"大", level:"N5", meaning:"big", readings:["だい","たい","おお(きい)"]},
-  {kanji:"小", level:"N5", meaning:"small", readings:["しょう","ちい(さい)"]},
-  {kanji:"山", level:"N5", meaning:"mountain", readings:["さん","やま"]},
-  {kanji:"川", level:"N5", meaning:"river", readings:["せん","かわ"]},
-  {kanji:"中", level:"N5", meaning:"middle; inside", readings:["ちゅう","なか"]},
-  {kanji:"上", level:"N5", meaning:"up; above", readings:["じょう","うえ","あ(がる)"]},
-  {kanji:"下", level:"N5", meaning:"down; below", readings:["か","した","さ(がる)"]},
-  {kanji:"年", level:"N5", meaning:"year", readings:["ねん","とし"]},
-  {kanji:"時", level:"N5", meaning:"time; hour", readings:["じ","とき"]},
-  {kanji:"間", level:"N5", meaning:"interval; between", readings:["かん","けん","あいだ"]},
-  {kanji:"行", level:"N5", meaning:"go; act", readings:["こう","ぎょう","い(く)","おこな(う)"]},
-  {kanji:"来", level:"N5", meaning:"come", readings:["らい","く(る)"]},
-  {kanji:"見", level:"N5", meaning:"see; look", readings:["けん","み(る)"]},
-  {kanji:"食", level:"N5", meaning:"eat; food", readings:["しょく","た(べる)"]},
-  {kanji:"飲", level:"N5", meaning:"drink", readings:["いん","の(む)"]},
-  {kanji:"買", level:"N5", meaning:"buy", readings:["ばい","か(う)"]},
-  {kanji:"女", level:"N5", meaning:"woman", readings:["じょ","おんな"]},
-  {kanji:"男", level:"N5", meaning:"man", readings:["だん","おとこ"]},
-  {kanji:"友", level:"N5", meaning:"friend", readings:["ゆう","とも"]},
-
-  // N4 (amostra)
-  {kanji:"社", level:"N4", meaning:"company; society; shrine", readings:["しゃ","やしろ"]},
-  {kanji:"地", level:"N4", meaning:"ground; earth", readings:["ち"]},
-  {kanji:"図", level:"N4", meaning:"map; diagram", readings:["ず","と"]},
-  {kanji:"駅", level:"N4", meaning:"station", readings:["えき"]},
-  {kanji:"病", level:"N4", meaning:"illness", readings:["びょう","や(む)"]},
-  {kanji:"館", level:"N4", meaning:"building; hall", readings:["かん"]},
-  {kanji:"便", level:"N4", meaning:"convenience; mail", readings:["べん","びん"]},
-
-  // N3 (amostra)
-  {kanji:"続", level:"N3", meaning:"continue", readings:["ぞく","つづ(く)"]},
-  {kanji:"機", level:"N3", meaning:"machine; opportunity", readings:["き"]},
-  {kanji:"資", level:"N3", meaning:"resources; capital", readings:["し"]},
-];
-
-const VOCAB_DB = {
-  "会": [
-    ["会社","かいしゃ","empresa"],
-    ["会話","かいわ","conversa"],
-    ["会う","あう","encontrar (ver alguém)"]
-  ],
-  "社": [
-    ["社会","しゃかい","sociedade"],
-    ["会社","かいしゃ","empresa"],
-    ["神社","じんじゃ","santuário xintoísta"]
-  ],
-  "学": [
-    ["学生","がくせい","estudante"],
-    ["学校","がっこう","escola"],
-    ["大学","だいがく","universidade"]
-  ]
-};
-
-/* KanjiVG (mini fallback interno só pra demo).
-   Se você tiver um pack de SVGs, substitua este objeto por mais entradas. */
-const KANJIVG_SVGS = {
-  "会": `
-  <svg width="240" height="240" viewBox="0 0 109 109" xmlns="http://www.w3.org/2000/svg">
-    <g fill="none" stroke="rgba(255,255,255,.9)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M23 22 L86 22" />
-      <path d="M35 34 L74 34" />
-      <path d="M26 48 L83 48" />
-      <path d="M33 48 L33 85" />
-      <path d="M76 48 L76 85" />
-      <path d="M33 62 L76 62" />
-      <path d="M33 74 L76 74" />
-      <path d="M33 85 L76 85" />
-      <path d="M44 58 L65 58" />
-      <path d="M44 69 L65 69" />
-    </g>
-  </svg>`
-};
-
-/* ============================================================
-  STORAGE / ESTADO (persistência = gestão de risco)
-============================================================ */
-const LS_KEY = "kanjiTrainer_v1";
-const defaultState = {
-  attempts: 0,
-  correct: 0,
-  streak: 0,
-  review: {}, // {kanji: {wrong: n, last: ts}}
-  seen: {}    // {kanji: n}
-};
-
-function loadState(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return structuredClone(defaultState);
-    const obj = JSON.parse(raw);
-    return { ...structuredClone(defaultState), ...obj };
-  }catch(e){
-    return structuredClone(defaultState);
-  }
-}
-function saveState(){
-  localStorage.setItem(LS_KEY, JSON.stringify(APP));
-}
-
-let APP = loadState();
-
-/* ============================================================
-  HELPERS
-============================================================ */
-const $ = (id)=> document.getElementById(id);
-
-function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-function shuffle(a){
-  const arr = a.slice();
-  for(let i=arr.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]] = [arr[j],arr[i]];
-  }
-  return arr;
-}
-function uniq(arr){
-  const s = new Set();
-  const out = [];
-  for(const x of arr){
-    if(!s.has(x)){ s.add(x); out.push(x); }
-  }
-  return out;
-}
-function toHiragana(s){
-  // converte katakana -> hiragana (básico)
-  return s.replace(/[\u30a1-\u30f6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
-}
-function safeInfo(k){
-  return KANJI_DB.find(x=>x.kanji===k) || {kanji:k, level:"—", meaning:"—", readings:["—"]};
-}
-function levelOf(k){ return safeInfo(k).level; }
-function meaningText(k){ return safeInfo(k).meaning || "—"; }
-function readingText(k){
-  const r = safeInfo(k).readings || [];
-  // usa a primeira leitura “limpa” como resposta-alvo (padrão)
-  const first = r[0] || "—";
-  return toHiragana(String(first)).replace(/\s+/g,"");
-}
-function readingsAll(k){
-  const r = safeInfo(k).readings || [];
-  return r.map(x => toHiragana(String(x))).filter(Boolean);
-}
-function splitOnKun(readings){
-  const r = Array.isArray(readings) ? readings.filter(Boolean) : [];
-  const ony = [];
-  const kun = [];
-
-  for(const x of r){
-    const s = toHiragana(String(x));
-    // heurística simples: leituras curtas => Onyomi
-    if(s.length <= 2) ony.push(s);
-    else kun.push(s);
-  }
-  if(!ony.length && r.length) ony.push(toHiragana(String(r[0])));
-  if(!kun.length && r.length > 1){
-    for(let i=1;i<r.length;i++) kun.push(toHiragana(String(r[i])));
-  }
-  return {
-    onyomi: ony.length ? ony : ["—"],
-    kunyomi: kun.length ? kun : ["—"]
-  };
-}
-function poolByMode(mode){
-  if(mode === "N5") return KANJI_DB.filter(x=>x.level==="N5").map(x=>x.kanji);
-  if(mode === "N4") return KANJI_DB.filter(x=>x.level==="N4").map(x=>x.kanji);
-  if(mode === "N3") return KANJI_DB.filter(x=>x.level==="N3").map(x=>x.kanji);
-  if(mode === "REVIEW"){
-    const ks = Object.keys(APP.review || {});
-    return ks.length ? ks : KANJI_DB.map(x=>x.kanji);
-  }
-  return KANJI_DB.map(x=>x.kanji);
-}
-function getVocab3ForKanji(kanji){
-  return (VOCAB_DB[kanji] || []).slice(0,3);
-}
-
-/* ============================================================
-  UI REFS
-============================================================ */
-const modeSelect = $("modeSelect");
-const qMode = $("qMode");
-const hueRange = $("hueRange");
-const resetBtn = $("resetBtn");
-const poolInfo = $("poolInfo");
-
-const stAttempts = $("stAttempts");
-const stCorrect = $("stCorrect");
-const stAcc = $("stAcc");
-const stStreak = $("stStreak");
-
-const roundInfo = $("roundInfo");
-const lvlBadge = $("lvlBadge");
-const lockBadge = $("lockBadge");
-
-const qKanji = $("qKanji");
-const readingChoices = $("readingChoices");
-const meaningChoices = $("meaningChoices");
-
-const skipBtn = $("skipBtn");
-const nextBtn = $("nextBtn");
-
-const quizFeedback = $("quizFeedback");
-const quizStroke = $("quizStroke");
-const quizReplay = $("quizReplay");
-const quizSpeed = $("quizSpeed");
-
-const quizVocabBox = $("quizVocabBox");
-const quizVocabLvl = $("quizVocabLvl");
-const quizVocabStatus = $("quizVocabStatus");
-const quizVocabList = $("quizVocabList");
-
-const reviewList = $("reviewList");
-const reviewInfo = $("reviewInfo");
-const clearReviewBtn = $("clearReviewBtn");
-
-// card ids
-const qscKanji = $("qscKanji");
-const qscMeaning = $("qscMeaning");
-const qscOnyomi = $("qscOnyomi");
-const qscKunyomi = $("qscKunyomi");
-
-const qscMeaningRes = $("qscMeaningRes");
-const qscReadingRes = $("qscReadingRes");
-
-const qscMeaningPick = $("qscMeaningPick");
-const qscMeaningCorrect = $("qscMeaningCorrect");
-
-const qscReadingPick = $("qscReadingPick");
-const qscReadingCorrect = $("qscReadingCorrect");
-
-/* ============================================================
-  QUIZ STATE
-============================================================ */
-const quizState = {
-  pool: [],
-  current: null,
-
-  answeredReading: false,
-  answeredMeaning: false,
-  okReading: false,
-  okMeaning: false,
-
-  pickReadingText: null,
-  pickMeaningText: null,
-  correctReadingText: null,
-  correctMeaningText: null,
-
-  lockedAfterResult: false,
-  round: 0
-};
-
-function resetQuestionState(){
-  quizState.answeredReading = false;
-  quizState.answeredMeaning = false;
-  quizState.okReading = false;
-  quizState.okMeaning = false;
-  quizState.pickReadingText = null;
-  quizState.pickMeaningText = null;
-  quizState.correctReadingText = null;
-  quizState.correctMeaningText = null;
-  quizState.lockedAfterResult = false;
-  nextBtn.disabled = true;
-  lockBadge.textContent = "aguardando";
-  lockBadge.className = "badge";
-}
-
-/* ============================================================
-  RENDERERS
-============================================================ */
-function renderStats(){
-  stAttempts.textContent = APP.attempts || 0;
-  stCorrect.textContent = APP.correct || 0;
-  stStreak.textContent = APP.streak || 0;
-  const a = APP.attempts || 0;
-  const c = APP.correct || 0;
-  const acc = a ? Math.round((c/a)*100) : 0;
-  stAcc.textContent = acc + "%";
-}
-function renderPoolInfo(){
-  poolInfo.textContent = `pool: ${quizState.pool.length}`;
-}
-function renderReview(){
-  const keys = Object.keys(APP.review || {});
-  reviewInfo.textContent = keys.length ? `${keys.length} kanji em revisão` : "nenhum erro no momento";
-  reviewList.innerHTML = "";
-  if(!keys.length){
-    const div = document.createElement("div");
-    div.className = "small";
-    div.textContent = "Sem itens. Errou? entra aqui automaticamente.";
-    reviewList.appendChild(div);
-    return;
-  }
-  const sorted = keys
-    .map(k=>({k, wrong: APP.review[k].wrong || 0, last: APP.review[k].last || 0}))
-    .sort((a,b)=> b.wrong - a.wrong || b.last - a.last);
-
-  for(const it of sorted){
-    const info = safeInfo(it.k);
-    const row = document.createElement("div");
-    row.className = "rowItem";
-    row.innerHTML = `
-      <div class="left">
-        <div class="miniKanji">${it.k}</div>
-        <div class="meta">
-          <div class="m1">${info.meaning}</div>
-          <div class="m2">${info.level} • erros: ${it.wrong}</div>
-        </div>
-      </div>
-      <button class="btn" data-k="${it.k}">Treinar</button>
-    `;
-    row.querySelector("button").addEventListener("click", ()=>{
-      modeSelect.value = "REVIEW";
-      syncPool();
-      setQuestion(it.k);
-    });
-    reviewList.appendChild(row);
-  }
-}
-function renderChoiceButtons(targetEl, options, onPick){
-  targetEl.innerHTML = "";
-  for(const opt of options){
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "choiceBtn";
-    b.textContent = opt.text;
-
-    b.addEventListener("click", ()=>{
-      if(quizState.lockedAfterResult) return;
-
-      const btns = Array.from(targetEl.querySelectorAll(".choiceBtn"));
-      btns.forEach(btn=> btn.disabled = true);
-
-      btns.forEach((btn, idx)=>{ if(options[idx].correct) btn.classList.add("correct"); });
-
-      if(opt.correct) b.classList.add("correct");
-      else b.classList.add("wrong");
-
-      onPick(opt.correct, opt.text);
-    });
-
-    targetEl.appendChild(b);
-  }
-}
-
-/* ============================================================
-  FEEDBACK CARD (estilo foto) + VOCAB + STROKES
-============================================================ */
-function updateStudyCardUI(){
-  const k = quizState.current;
-  const info = safeInfo(k);
-
-  qscKanji.textContent = k;
-  qscMeaning.textContent = info.meaning || "—";
-
-  const parts = splitOnKun(info.readings);
-  qscOnyomi.textContent = parts.onyomi.join(" / ");
-  qscKunyomi.textContent = parts.kunyomi.join(" / ");
-
-  if(!quizState.correctReadingText) quizState.correctReadingText = readingText(k);
-  if(!quizState.correctMeaningText) quizState.correctMeaningText = meaningText(k);
-
-  if(quizState.answeredMeaning){
-    qscMeaningRes.innerHTML = quizState.okMeaning ? `Significado: ✅ <b>ok</b>` : `Significado: ❌ <b>erro</b>`;
-    qscMeaningPick.innerHTML = `Sua resposta (significado): <b>${quizState.pickMeaningText || "—"}</b>`;
-  }else{
-    qscMeaningRes.innerHTML = `Significado: —`;
-    qscMeaningPick.textContent = `Sua resposta (significado): —`;
-  }
-  qscMeaningCorrect.innerHTML = `Correto (significado): <b>${quizState.correctMeaningText || "—"}</b>`;
-
-  if(quizState.answeredReading){
-    qscReadingRes.innerHTML = quizState.okReading ? `Leitura: ✅ <b>ok</b>` : `Leitura: ❌ <b>erro</b>`;
-    qscReadingPick.innerHTML = `Sua resposta (leitura): <b>${quizState.pickReadingText || "—"}</b>`;
-  }else{
-    qscReadingRes.innerHTML = `Leitura: —`;
-    qscReadingPick.textContent = `Sua resposta (leitura): —`;
-  }
-  qscReadingCorrect.innerHTML = `Correto (leitura): <b>${quizState.correctReadingText || "—"}</b>`;
-}
-
-function renderVocab3(kanji){
-  const lvl = levelOf(kanji);
-  if(lvl === "N3"){
-    quizVocabBox.style.display = "none";
-    return;
-  }
-
-  const items = getVocab3ForKanji(kanji);
-
-  quizVocabLvl.textContent = lvl;
-  quizVocabStatus.textContent = items.length ? "ok" : "sem dados";
-  quizVocabList.innerHTML = "";
-
-  if(!items.length){
-    quizVocabList.innerHTML = `<div class="cwRow"><div class="cwM">Sem dados de palavras comuns para este kanji.</div></div>`;
-    quizVocabBox.style.display = "block";
-    return;
-  }
-
-  for(const it of items){
-    const [w,r,m] = it;
-    const row = document.createElement("div");
-    row.className = "cwRow";
-    row.innerHTML = `
-      <div class="cwW">${w || "—"}</div>
-      <div class="cwR">${r || "—"}</div>
-      <div class="cwM">${m || "—"}</div>
-    `;
-    quizVocabList.appendChild(row);
-  }
-
-  quizVocabBox.style.display = "block";
-}
-
-function showStrokes(kanji){
-  const svg = KANJIVG_SVGS[kanji];
-  if(!svg){
-    quizStroke.innerHTML = `<div class="small">Sem SVG (fallback) para este kanji. Se você tiver o pack KanjiVG, cole os SVGs no objeto <code>KANJIVG_SVGS</code>.</div>`;
-    return;
-  }
-  // “animação” simples via fade-in por stroke (fake): re-render com delay
-  quizStroke.innerHTML = svg;
-
-  // Se quiser algo mais avançado: precisa de SVG com ids por stroke.
-  // Aqui fica robusto e sem quebrar offline.
-}
-
-function replayStrokes(){
-  showStrokes(quizState.current);
-}
-
-/* ============================================================
-  ENGINE
-============================================================ */
-function syncPool(){
-  quizState.pool = poolByMode(modeSelect.value);
-  renderPoolInfo();
-}
-
-function buildReadingOptions(kanji){
-  const correct = readingText(kanji);
-
-  // distractors: pega leituras-alvo de outros kanji do pool
-  const pool = quizState.pool.length ? quizState.pool : KANJI_DB.map(x=>x.kanji);
-  const picks = [];
-  for(const k of shuffle(pool)){
-    if(k===kanji) continue;
-    const t = readingText(k);
-    if(t && t !== correct) picks.push(t);
-    if(picks.length >= 3) break;
-  }
-  // fallback se pool pequeno
-  while(picks.length < 3){
-    const t = readingText(pick(KANJI_DB).kanji);
-    if(t && t !== correct && !picks.includes(t)) picks.push(t);
-  }
-
-  const opts = shuffle([
-    {text: correct, correct:true},
-    ...picks.map(x=>({text:x, correct:false}))
-  ]);
-  return opts;
-}
-
-function buildMeaningOptions(kanji){
-  const correct = meaningText(kanji);
-
-  const pool = quizState.pool.length ? quizState.pool : KANJI_DB.map(x=>x.kanji);
-  const picks = [];
-  for(const k of shuffle(pool)){
-    if(k===kanji) continue;
-    const t = meaningText(k);
-    if(t && t !== correct) picks.push(t);
-    if(picks.length >= 3) break;
-  }
-  while(picks.length < 3){
-    const t = meaningText(pick(KANJI_DB).kanji);
-    if(t && t !== correct && !picks.includes(t)) picks.push(t);
-  }
-
-  const opts = shuffle([
-    {text: correct, correct:true},
-    ...picks.map(x=>({text:x, correct:false}))
-  ]);
-  return opts;
-}
-
-function setQuestion(forceKanji=null){
-  resetQuestionState();
-  syncPool();
-
-  const pool = quizState.pool;
-  const kanji = forceKanji || pick(pool);
-  quizState.current = kanji;
-  quizState.round += 1;
-
-  qKanji.textContent = kanji;
-  const info = safeInfo(kanji);
-  lvlBadge.textContent = info.level;
-  roundInfo.textContent = `#${quizState.round} • modo: ${modeSelect.value} • alvo: ${qMode.value}`;
-
-  // define corretos (pra card)
-  quizState.correctReadingText = readingText(kanji);
-  quizState.correctMeaningText = meaningText(kanji);
-
-  // dependendo do qMode, pode esconder uma coluna (sem quebrar layout)
-  const mode = qMode.value;
-
-  if(mode === "MEANING"){
-    readingChoices.innerHTML = `<div class="small">Desativado (modo: só significado)</div>`;
-    meaningChoices.innerHTML = "";
-  }else if(mode === "READING"){
-    meaningChoices.innerHTML = `<div class="small">Desativado (modo: só leitura)</div>`;
-    readingChoices.innerHTML = "";
-  }else{
-    readingChoices.innerHTML = "";
-    meaningChoices.innerHTML = "";
-  }
-
-  if(mode !== "MEANING"){
-    const rOpts = buildReadingOptions(kanji);
-    renderChoiceButtons(readingChoices, rOpts, (ok, pickedText)=>{
-      quizState.answeredReading = true;
-      quizState.okReading = ok;
-      quizState.pickReadingText = pickedText;
-
-      quizFeedback.style.display = "block";
-      updateStudyCardUI();
-
-      evaluateIfComplete();
-    });
-  }
-
-  if(mode !== "READING"){
-    const mOpts = buildMeaningOptions(kanji);
-    renderChoiceButtons(meaningChoices, mOpts, (ok, pickedText)=>{
-      quizState.answeredMeaning = true;
-      quizState.okMeaning = ok;
-      quizState.pickMeaningText = pickedText;
-
-      quizFeedback.style.display = "block";
-      updateStudyCardUI();
-
-      evaluateIfComplete();
-    });
-  }
-
-  // prepara feedback (esconde até clicar)
-  quizFeedback.style.display = "none";
-}
-
-function evaluateIfComplete(){
-  const mode = qMode.value;
-
-  const needReading = (mode !== "MEANING");
-  const needMeaning = (mode !== "READING");
-
-  const doneReading = needReading ? quizState.answeredReading : true;
-  const doneMeaning = needMeaning ? quizState.answeredMeaning : true;
-
-  if(!(doneReading && doneMeaning)){
-    lockBadge.textContent = "parcial";
-    lockBadge.className = "badge tag";
-    nextBtn.disabled = true;
-    // ainda dá pra responder o outro lado
-    return;
-  }
-
-  // completou
-  const okAll = (needReading ? quizState.okReading : true) && (needMeaning ? quizState.okMeaning : true);
-  showFeedback(okAll);
-}
-
-function showFeedback(okAll){
-  updateStudyCardUI();
-
-  // contabiliza
-  APP.attempts = (APP.attempts || 0) + 1;
-  if(okAll){
-    APP.correct = (APP.correct || 0) + 1;
-    APP.streak = (APP.streak || 0) + 1;
-    lockBadge.textContent = "ok";
-    lockBadge.className = "badge tag";
-  }else{
-    APP.streak = 0;
-    lockBadge.textContent = "erro";
-    lockBadge.className = "badge";
-    lockBadge.style.borderColor = "rgba(255,88,120,.55)";
-    lockBadge.style.background = "rgba(255,88,120,.14)";
-
-    const k = quizState.current;
-    if(!APP.review) APP.review = {};
-    if(!APP.review[k]) APP.review[k] = {wrong:0, last:0};
-    APP.review[k].wrong += 1;
-    APP.review[k].last = Date.now();
-  }
-
-  // mark seen
-  const k = quizState.current;
-  if(!APP.seen) APP.seen = {};
-  APP.seen[k] = (APP.seen[k] || 0) + 1;
-
-  saveState();
-  renderStats();
-  renderReview();
-
-  // mostra feedback completo + common words + strokes
-  quizFeedback.style.display = "block";
-  renderVocab3(k);
-  showStrokes(k);
-
-  quizState.lockedAfterResult = true;
-  nextBtn.disabled = false;
-}
-
-/* ============================================================
-  EVENTS
-============================================================ */
-modeSelect.addEventListener("change", ()=>{
-  syncPool();
-  setQuestion();
-});
-qMode.addEventListener("change", ()=>{
-  setQuestion();
-});
-hueRange.addEventListener("input", ()=>{
-  const v = clamp(parseInt(hueRange.value,10)||175, 0, 360);
-  document.documentElement.style.setProperty("--themeHue", v);
-});
-resetBtn.addEventListener("click", ()=>{
-  APP = structuredClone(defaultState);
-  saveState();
-  renderStats();
-  renderReview();
-  setQuestion();
-});
-skipBtn.addEventListener("click", ()=>{
-  // “pular” = sem contabilizar tentativa (gestão de risco: não entra no score)
-  setQuestion();
-});
-nextBtn.addEventListener("click", ()=>{
-  setQuestion();
-});
-quizReplay.addEventListener("click", replayStrokes);
-quizSpeed.addEventListener("change", replayStrokes);
-
-clearReviewBtn.addEventListener("click", ()=>{
-  APP.review = {};
-  saveState();
-  renderReview();
-  if(modeSelect.value === "REVIEW"){
-    syncPool();
-    setQuestion();
-  }
-});
-
-/* ============================================================
-  INIT
-============================================================ */
-(function init(){
-  // tema
-  const v = clamp(parseInt(hueRange.value,10)||175, 0, 360);
-  document.documentElement.style.setProperty("--themeHue", v);
-
-  renderStats();
-  renderReview();
-  syncPool();
-  setQuestion("会"); // inicia igual à “foto”
-})();
-</script>
+  <script>
+    /*
+      Se você quiser “injetar” dinamicamente (sem mexer no resto do site),
+      edite este objeto e chame renderKanjiCard().
+    */
+    const CARD_DATA = {
+      kanji: "会",
+      meaning: "meeting; meet",
+      onyomi: { jp: "カイ", ro: "kai" },
+      kunyomi: { jp: "あ(う)", ro: "a(u)" },
+      commonWords: [
+        ["会社","かいしゃ","company"],
+        ["会話","かいわ","conversation"],
+        ["会計","かいけい","account; finance"],
+        ["学会","がっかい","scientific society"],
+        ["会館","かいかん","meeting hall"],
+        ["社会","しゃかい","society; public"],
+        ["会う","あ(う)","to meet, to encounter, to see"],
+        ["会わせる","あ(わせる)","to make (someone) meet"],
+        ["出会う","であ(う)","to meet (by chance)"],
+      ]
+    };
+
+    function renderKanjiCard(d){
+      document.getElementById("k-kanji").textContent = d.kanji || "—";
+      document.getElementById("k-meaning").textContent = d.meaning || "—";
+
+      document.getElementById("k-onyomi-jp").textContent = d.onyomi?.jp || "—";
+      document.getElementById("k-onyomi-ro").textContent = d.onyomi?.ro || "—";
+
+      document.getElementById("k-kunyomi-jp").textContent = d.kunyomi?.jp || "—";
+      document.getElementById("k-kunyomi-ro").textContent = d.kunyomi?.ro || "—";
+
+      const tbody = document.getElementById("k-tbody");
+      tbody.innerHTML = "";
+
+      (d.commonWords || []).forEach(row=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="ksc-jp">${row[0] ?? "—"}</td>
+          <td class="ksc-furi">${row[1] ?? "—"}</td>
+          <td class="ksc-mean">${row[2] ?? "—"}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // inicia com o padrão igual à imagem
+    renderKanjiCard(CARD_DATA);
+  </script>
 </body>
 </html>
